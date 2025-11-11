@@ -1,0 +1,10 @@
+#TYPE=VSDadmin2
+#Data requested for: EE Tel RA: 277.24363 DEC: -56.23250 Field size: 30 Limiting mag: 14.0
+# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=276.344065&tora=278.143195&fromdec=-56.732500&todec=-55.732500&tomag=14.0&source=29&limit=5000
+# chart:, https://www.aavso.org/apps/vsp/chart/?title=EE+Tel&ra=277.24363&dec=-56.23250&fov=30&maglimit=14.0
+# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=EE+Tel&ra=277.24363&dec=-56.23250&fov=30&maglimit=14.0&all=on
+#TARGET=EE Tel
+#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,source,[filter triplets with name, mag, err]
+107,18,28,19.05,-56,12,45.1,29, V,10.738,0.027, B,11.281,0.043, SG,10.926,0.034, SR,10.009,0.061, SI,9.543,0.079, R,10.348,0.061, I,9.982,0.079, SZ,9.533,0.079,
+117,18,30,2.46,-56,11,55.7,29, V,11.704,0.014, B,12.461,0.027, SG,11.991,0.019, SR,10.880,0.044, SI,10.327,0.058, R,11.219,0.044, I,10.766,0.058, SZ,10.317,0.058,
+122,18,28,54.01,-56,10,13.0,29, V,12.254,0.013, B,13.007,0.034, SG,12.539,0.020, SR,11.461,0.043, SI,10.936,0.057, R,11.800,0.043, I,11.375,0.057, SZ,10.926,0.057,

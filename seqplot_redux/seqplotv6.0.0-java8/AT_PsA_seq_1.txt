@@ -1,0 +1,12 @@
+#TYPE=VSDadmin1
+#Data requested for: AT PsA RA: 337.43164 DEC: -35.76202 Field size: 60 Limiting mag: 14.0
+# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=336.815460&tora=338.047820&fromdec=-36.262020&todec=-35.262020&tomag=14.0&source=29&limit=5000
+# chart:, https://www.aavso.org/apps/vsp/chart/?title=AT+PsA&ra=337.43164&dec=-35.76202&fov=60&maglimit=14.0
+# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=AT+PsA&ra=337.43164&dec=-35.76202&fov=60&maglimit=14.0&all=on
+#TARGET=AT PsA
+#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,V,Verr,B-V,B-Verr,U-B,U-Berr,V-R,V-Rerr,R-I,R-Ierr,V-I,V-Ierr,Source,# Comments
+117,22,29,57.37,-35,34,42.8,11.683,0.062,1.026,0.07,NA,NA,0.537,0.11,0.501,0.101,1.038,0.149,29,# 
+119,22,28,58.90,-35,50,56.0,11.868,0.057,0.746,0.062,NA,NA,0.46,0.072,0.43,0.066,0.89,0.098,29,# 
+124,22,29,30.77,-35,54,52.5,12.36,0.053,0.86,0.056,NA,NA,0.495,0.084,0.462,0.077,0.957,0.115,29,# 
+126,22,29,27.05,-36,4,58.8,12.577,0.059,0.756,0.062,NA,NA,0.386,0.079,0.362,0.073,0.748,0.108,29,# 
+130,22,30,1.56,-35,57,36.3,13.008,0.061,0.882,0.067,NA,NA,0.533,0.076,0.497,0.07,1.03,0.103,29,# 

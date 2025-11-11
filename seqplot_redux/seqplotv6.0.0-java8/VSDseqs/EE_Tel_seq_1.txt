@@ -1,0 +1,10 @@
+#TYPE=VSDadmin1
+#Data requested for: EE Tel RA: 277.24363 DEC: -56.23250 Field size: 30 Limiting mag: 14.0
+# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=276.344065&tora=278.143195&fromdec=-56.732500&todec=-55.732500&tomag=14.0&source=29&limit=5000
+# chart:, https://www.aavso.org/apps/vsp/chart/?title=EE+Tel&ra=277.24363&dec=-56.23250&fov=30&maglimit=14.0
+# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=EE+Tel&ra=277.24363&dec=-56.23250&fov=30&maglimit=14.0&all=on
+#TARGET=EE Tel
+#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,V,Verr,B-V,B-Verr,U-B,U-Berr,V-R,V-Rerr,R-I,R-Ierr,V-I,V-Ierr,Source,# Comments
+107,18,28,19.05,-56,12,45.1,10.738,0.027,0.543,0.034,99.999,9.999,0.390,0.055,0.366,0.050,0.756,0.074,29,# 
+117,18,30,2.46,-56,11,55.7,11.704,0.014,0.757,0.023,99.999,9.999,0.485,0.042,0.453,0.038,0.938,0.056,29,# 
+122,18,28,54.01,-56,10,13.0,12.254,0.013,0.753,0.031,99.999,9.999,0.454,0.041,0.425,0.037,0.879,0.055,29,# 

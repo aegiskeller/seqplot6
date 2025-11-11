@@ -1,0 +1,18 @@
+Based on the Excel file and D.W. Evans et al. paper on Gaia DR2 photometric transformations,
+the standard transformations from Gaia G, BP, RP to Johnson-Cousins V, R, I are:
+
+For stars with BP-RP color (assuming BP < 19 mag as per the constraint):
+
+The transformations use polynomial relationships with BP-RP as the color term.
+These are from Evans et al. 2018, A&A 616, A4 (2018), Section A2.
+
+Standard transformations (simplified from the paper):
+
+V = G - (-0.01760 - 0.006860*(BP-RP) - 0.1732*(BP-RP)^2)
+or equivalently:
+V = G + 0.01760 + 0.006860*(BP-RP) + 0.1732*(BP-RP)^2
+
+For R and I, similar polynomial forms exist but need the actual coefficients from the paper.
+
+The spreadsheet likely implements these exact equations.
+Let me check the calculated values in the Process sheet to reverse-engineer the formulas.

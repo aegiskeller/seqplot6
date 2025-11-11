@@ -1,0 +1,10 @@
+#TYPE=VSDadmin3
+#Data requested for: EE Tel RA: 277.24363 DEC: -56.23250 Field size: 30 Limiting mag: 14.0
+# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=276.344065&tora=278.143195&fromdec=-56.732500&todec=-55.732500&tomag=14.0&source=29&limit=5000
+# chart:, https://www.aavso.org/apps/vsp/chart/?title=EE+Tel&ra=277.24363&dec=-56.23250&fov=30&maglimit=14.0
+# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=EE+Tel&ra=277.24363&dec=-56.23250&fov=30&maglimit=14.0&all=on
+#TARGET=EE Tel
+#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,source,B-V,U mag,U err,B mag,B err,V mag,V err,R mag,R err,I mag,I err,SU mag,SU err,SG mag,SG err,SR mag,SR err,SI mag,SI err,SZ mag,SZ err,Y mag,Y err,# Comments
+117,18,29,27.29,-56,11,22.5,29,0.547,NA,NA,12.306,0.027,11.759,0.017,11.358,0.044,10.982,0.058,NA,NA,11.949,0.020,11.019,0.044,10.543,0.058,10.533,0.058,NA,NA,# 
+118,18,28,33.43,-56,13,31.1,29,0.617,NA,NA,12.422,0.032,11.805,0.018,11.378,0.043,10.978,0.056,NA,NA,12.027,0.022,11.039,0.043,10.539,0.056,10.529,0.056,NA,NA,# 
+122,18,28,54.01,-56,10,13.0,29,0.753,NA,NA,13.007,0.034,12.254,0.013,11.800,0.043,11.375,0.057,NA,NA,12.539,0.019,11.461,0.043,10.936,0.057,10.926,0.057,NA,NA,# 

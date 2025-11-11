@@ -1,0 +1,47 @@
+# Build artifacts
+build/
+bin/
+seqplot*.jar
+!lib/*.jar
+*.class
+
+# Distribution packages
+*.tar.gz
+*.zip
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+*.swp
+*.swo
+*~
+
+# Backup directories
+backup_*/
+backup/
+
+# Temporary files
+*.tmp
+*.bak
+erty
+
+# Test output
+*.jpg
+*.png
+/*.xml
+test_output/
+
+# Excel files (test data)
+*.xls
+*.xlsx

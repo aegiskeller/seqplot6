@@ -1,0 +1,12 @@
+#TYPE=VSDadmin1
+#Data requested for: V970 Mon RA: 99.94938 DEC: -9.73406 Field size: 52 Limiting mag: 14.0
+# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=99.077433&tora=100.821317&fromdec=-10.593444&todec=-8.874667&tomag=14.0&source=29&limit=5000
+# chart:, https://www.aavso.org/apps/vsp/chart/?title=V970+Mon&ra=99.94938&dec=-9.73406&fov=52&maglimit=14.0
+# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=V970+Mon&ra=99.94938&dec=-9.73406&fov=52&maglimit=14.0&all=on
+#TARGET=V970 Mon
+#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,V,Verr,B-V,B-Verr,U-B,U-Berr,V-R,V-Rerr,R-I,R-Ierr,V-I,V-Ierr,Source,# Comments
+107,6,40,36.62,-9,33,54.3,10.681,0.038,1.088,0.090,NA,NA,0.578,0.061,0.538,0.056,1.116,0.083,29,# 
+111,6,40,5.38,-9,48,52.8,11.121,0.026,0.544,0.100,NA,NA,0.533,0.511,0.497,0.469,1.030,0.694,29,# 
+116,6,40,28.35,-9,37,22.5,11.587,0.038,0.553,0.099,NA,NA,0.458,0.161,0.428,0.147,0.886,0.218,29,# 
+122,6,40,35.20,-9,48,10.6,12.232,0.027,0.567,0.090,NA,NA,0.667,0.575,0.620,0.528,1.287,0.780,29,# 
+125,6,39,50.69,-9,55,42.3,12.494,0.023,0.693,0.098,NA,NA,0.570,0.190,0.531,0.174,1.101,0.257,29,# 

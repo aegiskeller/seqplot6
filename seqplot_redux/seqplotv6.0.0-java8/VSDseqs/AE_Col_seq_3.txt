@@ -1,0 +1,9 @@
+#TYPE=VSDadmin3
+#Data requested for: AE Col RA: 92.06033 DEC: -28.99467 Field size: 60 Limiting mag: 14.0
+# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=90.917038&tora=93.203628&fromdec=-29.994667&todec=-27.994667&tomag=14.0&source=29&limit=5000
+# chart:, https://www.aavso.org/apps/vsp/chart/?title=AE+Col&ra=92.06033&dec=-28.99467&fov=60&maglimit=14.0
+# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=AE+Col&ra=92.06033&dec=-28.99467&fov=60&maglimit=14.0&all=on
+#TARGET=AE Col
+#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,source,B-V,U mag,U err,B mag,B err,V mag,V err,R mag,R err,I mag,I err,SU mag,SU err,SG mag,SG err,SR mag,SR err,SI mag,SI err,SZ mag,SZ err,Y mag,Y err,# Comments
+84,6,7,4.59,-29,7,25.5,1,1.025,NA,NA,9.460,0.050,8.435,0.032,-91.564,9.999,-191.563,14.141,NA,NA,8.847,0.037,-91.903,9.999,-192.002,14.141,-192.012,14.141,NA,NA,# 
+123,6,8,30.01,-29,6,56.1,29,0.558,NA,NA,12.874,0.037,12.316,0.021,11.978,0.042,11.660,0.053,NA,NA,12.511,0.025,11.639,0.042,11.221,0.053,11.211,0.053,NA,NA,# 
