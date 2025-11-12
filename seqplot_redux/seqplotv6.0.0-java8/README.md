@@ -1,18 +1,69 @@
-## Getting Started
+# SeqPlot v6.0.0
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+🌟 **Astronomical Sequence Plotting Tool for AAVSO**
 
-## Folder Structure
+<!-- Add a screenshot here -->
+![SeqPlot Application](images/seqplot-screenshot.png)
 
-The workspace contains two folders by default, where:
+## ✨ Features
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- 🔭 **Multi-Catalog Support**: GAIA, SDSS, PanSTARRS integration
+- 🎨 **Enhanced UI**: Warm pastel color scheme with modern styling
+- 📊 **Advanced Plotting**: Interactive star charts with magnitude sequences
+- 🖼️ **Image Integration**: DSS2 background images with coordinate grids
+- 📱 **User-Friendly**: Intuitive interface for astronomical data visualization
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## 🚀 Getting Started
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+### Prerequisites
+- Java 8 or higher
+- Internet connection for catalog queries
 
-## Dependency Management
+### Quick Start
+1. Download the latest release: `seqplot-6.0.0.jar`
+2. Run the application:
+   ```bash
+   java -jar seqplot-6.0.0.jar
+   ```
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+### Building from Source
+```bash
+# Clone the repository
+git clone https://github.com/aegiskeller/seqplot6.git
+cd seqplot6
+
+# Build the JAR file
+./package.sh
+
+# Run the application
+java -jar seqplot-6.0.0.jar
+```
+
+## 📁 Project Structure
+
+```
+├── src/                    # Source code
+│   └── AAVSOtools/        # Main application packages
+├── lib/                   # Dependencies (JFreeChart)
+├── test_data/            # Sample data files
+├── scripts/              # Utility scripts
+└── VSDseqs/              # Variable star sequence data
+```
+
+## 🛠️ Development
+
+- **Build**: `./build.sh` (compile only)
+- **Package**: `./package.sh` (build + create JAR)
+- **Test**: Various test scripts available in project root
+
+## 📖 Documentation
+
+See `README_v6.0.0.md` for detailed version information and `DEBUG_LOG_REFERENCE.md` for troubleshooting.
+
+## 🤝 Contributing
+
+Contributions welcome! Please read the documentation and test your changes before submitting pull requests.
+
+## 📄 License
+
+AAVSO Tools Project
