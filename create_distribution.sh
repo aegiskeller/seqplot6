@@ -14,12 +14,12 @@ echo "========================================="
 
 # Clean old distribution
 if [ -d "$DIST_DIR" ]; then
-    echo "Removing old distribution directory..."
+    echo "Removing old distribution dir..."
     rm -rf "$DIST_DIR"
 fi
 
 # Create distribution directory structure
-echo "Creating directory structure..."
+echo "Creating dir structure..."
 mkdir -p "$DIST_DIR"
 mkdir -p "$DIST_DIR/lib"
 mkdir -p "$DIST_DIR/bin"
@@ -61,7 +61,7 @@ RUNEOF
 chmod +x "$DIST_DIR/run.sh"
 
 # Create run script for Windows
-echo "Creating run script (Windows)..."
+echo "Creating run script (Windose)..."
 cat > "$DIST_DIR/run.bat" << 'BATEOF'
 @echo off
 REM Seqplot v6.0.0 Launch Script for Windows
@@ -158,7 +158,6 @@ CHANGELOG - Seqplot v6.0.0
 --------------------------
 New Features:
   * VSP API integration for AAVSO comparison stars
-  * Visual VSP star overlay with rounded purple boxes
   * Click detection for VSP labels with detailed photometry display
   * "Check VSX" button on Request Star dialog
   * Help menu with Sequence Team Homepage link
@@ -207,6 +206,6 @@ echo "To test locally:"
 echo "  cd $DIST_DIR"
 echo "  ./run.sh"
 echo ""
-echo "To share with coworkers:"
+echo "To share with the bros:"
 echo "  Send them the .tar.gz (Mac/Linux) or .zip (Windows) file"
 echo ""
