@@ -1,6 +1,0 @@
-#TYPE=VSDadmin1
-#Data requested for: TT Eri RA: 43.16342 DEC: -23.77597 Field size: 30 Limiting mag: 14.0
-# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=42.617049&tora=43.709791&fromdec=-24.275970&todec=-23.275970&tomag=14.0&source=29&limit=5000
-# chart:, https://www.aavso.org/apps/vsp/chart/?title=TT+Eri&ra=43.16342&dec=-23.77597&fov=30&maglimit=14.0
-# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=TT+Eri&ra=43.16342&dec=-23.77597&fov=30&maglimit=14.0&all=on
-#TARGET=TT
