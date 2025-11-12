@@ -1,19 +1,19 @@
 # SeqPlot v6.0.0
 
-🌟 **Astronomical Sequence Plotting Tool for AAVSO**
+Astronomical Sequence Plotting Tool for AAVSO
 
 <!-- Add a screenshot here -->
 ![SeqPlot Application](images/seqplot-screenshot.png)
 
-## ✨ Features
+## Features
 
-- 🔭 **Multi-Catalog Support**: GAIA, SDSS, PanSTARRS integration
-- 🎨 **Enhanced UI**: Warm pastel color scheme with modern styling
-- 📊 **Advanced Plotting**: Interactive star charts with magnitude sequences
-- 🖼️ **Image Integration**: DSS2 background images with coordinate grids
-- 📱 **User-Friendly**: Intuitive interface for astronomical data visualization
+- **Multi-Catalog Support**: GAIA, SDSS, PanSTARRS integration
+-  **Enhanced UI**: Warm pastel color scheme with modern styling
+-  **Advanced Plotting**: Interactive star charts with magnitude sequences
+-  **Image Integration**: DSS2 background images with coordinate grids
+-  **User-Friendly**: Intuitive interface for astronomical data visualization
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Java 8 or higher
@@ -39,7 +39,7 @@ cd seqplot6
 java -jar seqplot-6.0.0.jar
 ```
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ├── src/                    # Source code
@@ -50,20 +50,16 @@ java -jar seqplot-6.0.0.jar
 └── VSDseqs/              # Variable star sequence data
 ```
 
-## 🛠️ Development
+##  Development
 
 - **Build**: `./build.sh` (compile only)
 - **Package**: `./package.sh` (build + create JAR)
 - **Test**: Various test scripts available in project root
 
-## 📖 Documentation
 
-See `README_v6.0.0.md` for detailed version information and `DEBUG_LOG_REFERENCE.md` for troubleshooting.
-
-## 🤝 Contributing
+##  Contributing
 
 Contributions welcome! Please read the documentation and test your changes before submitting pull requests.
 
-## 📄 License
 
-AAVSO Tools Project
+
