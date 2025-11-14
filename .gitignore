@@ -46,3 +46,14 @@ test_output/
 # Excel files (test data)
 *.xls
 *.xlsx
+# Ignore other project directories
+.ipynb_checkpoints/
+.localized
+AAVSO/
+Alpyca-trial/
+Arduino/
+GitHub/
+Python/
+seqplot6/
+stdphot/
+processPhotometry/
