@@ -1,0 +1,78 @@
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║              Seqplot v6.0.0 - Quick Start                  ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+FASTEST WAY TO START:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+     double-click:  Seqplot-6.0.0.jar
+
+   The application should start immediately.
+
+
+IF THAT DOESN'T WORK:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You probably need to install Java first.
+
+Windows Users:
+  1. Read the file: WINDOWS_README.txt
+  2. It has step-by-step instructions for installing Java
+  3. Then try double-clicking the JAR again
+
+Mac/Linux Users:
+  1. Open Terminal
+  2. Type: java -version
+  3. If you see an error, install Java from:
+     https://adoptium.net/temurin/releases/
+  4. Then run: java -jar Seqplot-6.0.0.jar
+
+
+FOR MORE INFORMATION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  README.txt ............... General usage and features
+  WINDOWS_README.txt ........ Detailed Windows setup guide
+  CHANGELOG.txt ............. What's new in this version
+
+
+WHAT YOU NEED:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✓ Java 11 or newer (free from https://adoptium.net/)
+  ✓ Internet connection (for downloading star catalogs)
+  ✓ That's all!
+
+
+TIPS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • On Windows, if JAR files open in WinRAR/7-Zip instead of
+    running, right-click → Open With → Java(TM) Platform SE Binary
+
+  • You can also run from command line:
+    java -jar Seqplot-6.0.0.jar
+
+  • Alternative launchers are provided:
+    - Windows: Seqplot.bat (checks for Java first)
+    - Mac/Linux: run.sh
+
+
+GETTING STARTED:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Launch Seqplot
+  2. Enter a star name (like "R CrB" or "EW Cru")
+  3. Click "Find RA & Dec for Star"
+  4. Click "Get Plot"
+  5. Explore your data!
+
+
+SUPPORT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Stefan Keller: aegiskeller@gmail.com
+
+═══════════════════════════════════════════════════════════════

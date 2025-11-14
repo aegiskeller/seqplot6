@@ -12,6 +12,14 @@ echo "========================================="
 echo "Creating Seqplot Distribution Package"
 echo "========================================="
 
+# First, create the executable JAR
+echo "Step 1: Creating executable JAR..."
+./create_jar.sh
+if [ ! -f "Seqplot-${VERSION}.jar" ]; then
+    echo "ERROR: Failed to create JAR file!"
+    exit 1
+fi
+
 # Clean old distribution
 if [ -d "$DIST_DIR" ]; then
     echo "Removing old distribution dir..."
@@ -26,7 +34,11 @@ mkdir -p "$DIST_DIR/bin"
 mkdir -p "$DIST_DIR/src"
 mkdir -p "$DIST_DIR/docs"
 
-# Copy compiled classes
+# Copy the executable JAR (main distribution method)
+echo "Copying executable JAR..."
+cp "Seqplot-${VERSION}.jar" "$DIST_DIR/"
+
+# Copy compiled classes (backup method)
 echo "Copying compiled application..."
 if [ -d "build" ]; then
     cp -r build/* "$DIST_DIR/bin/"
@@ -35,7 +47,7 @@ else
     exit 1
 fi
 
-# Copy libraries
+# Copy libraries (for backup method)
 echo "Copying libraries..."
 cp lib/*.jar "$DIST_DIR/lib/"
 
@@ -47,27 +59,47 @@ cp -r src/AAVSOtools "$DIST_DIR/src/"
 echo "Copying documentation..."
 cp README*.md "$DIST_DIR/docs/" 2>/dev/null || echo "No README files found"
 cp *.md "$DIST_DIR/docs/" 2>/dev/null || true
+cp WINDOWS_README.txt "$DIST_DIR/" 2>/dev/null || true
+cp START_HERE.txt "$DIST_DIR/" 2>/dev/null || true
 
-# Create run script for Unix/Mac
+# Copy Windows launcher
+echo "Copying Windows launcher..."
+cp Seqplot.bat "$DIST_DIR/" 2>/dev/null || echo "Warning: Seqplot.bat not found"
+
+# Create run script for Unix/Mac (updated to use JAR)
 echo "Creating run script (Unix/Mac)..."
 cat > "$DIST_DIR/run.sh" << 'RUNEOF'
 #!/bin/bash
 # Seqplot v6.0.0 Launch Script
 
 cd "$(dirname "$0")"
-java -cp "bin:lib/jcommon-1.0.23.jar:lib/jfreechart-1.0.19.jar" AAVSOtools.Seqplot
+
+# Try to run JAR first
+if [ -f "Seqplot-6.0.0.jar" ]; then
+    java -jar Seqplot-6.0.0.jar
+else
+    # Fallback to class files
+    java -cp "bin:lib/jcommon-1.0.23.jar:lib/jfreechart-1.0.19.jar" AAVSOtools.Seqplot
+fi
 RUNEOF
 
 chmod +x "$DIST_DIR/run.sh"
 
-# Create run script for Windows
-echo "Creating run script (Windose)..."
+# Create run script for Windows (updated to use JAR)
+echo "Creating run script (Windows)..."
 cat > "$DIST_DIR/run.bat" << 'BATEOF'
 @echo off
 REM Seqplot v6.0.0 Launch Script for Windows
 
 cd /d "%~dp0"
-java -cp "bin;lib\jcommon-1.0.23.jar;lib\jfreechart-1.0.19.jar" AAVSOtools.Seqplot
+
+REM Try to run JAR first
+if exist "Seqplot-6.0.0.jar" (
+    java -jar Seqplot-6.0.0.jar
+) else (
+    REM Fallback to class files
+    java -cp "bin;lib\jcommon-1.0.23.jar;lib\jfreechart-1.0.19.jar" AAVSOtools.Seqplot
+)
 pause
 BATEOF
 
@@ -78,7 +110,13 @@ cat > "$DIST_DIR/README.txt" << 'READMEEOF'
 Seqplot v6.0.0 - AAVSO Sequence Plotter
 ========================================
 
-Date: 2025-11-08
+Date: 2025-11-14
+
+*** EASIEST WAY TO RUN ***
+==========================
+Just double-click: Seqplot-6.0.0.jar
+
+If that doesn't work, see WINDOWS_README.txt for detailed instructions.
 
 REQUIREMENTS:
 -------------
@@ -91,20 +129,28 @@ INSTALLATION:
 2. Ensure Java is installed:
    - Run: java -version
    - Should show version 11 or higher
+   - If not installed, visit: https://adoptium.net/temurin/releases/
 
 RUNNING SEQPLOT:
 ----------------
-Mac/Linux:
+EASIEST:
+  Double-click Seqplot-6.0.0.jar
+
+Mac/Linux (alternative):
   ./run.sh
 
-Windows:
+Windows (alternative):
+  Double-click Seqplot.bat
+  OR
   Double-click run.bat
   OR
-  Open Command Prompt and run: run.bat
+  Open Command Prompt and run: java -jar Seqplot-6.0.0.jar
+
+*** For Windows users having trouble, see WINDOWS_README.txt ***
 
 FEATURES:
 ---------
-- Multi-catalog support (APASS9, Gaia DR2/DR3, PanSTARRS, SDSS, Tycho-2)
+- Multi-catalog support (APASS, Gaia DR2/DR3, PanSTARRS, SDSS, Tycho-2)
 - VSP comparison star overlay with AAVSO photometry
 - Interactive sky/points view with DSS2 background
 - Export to CSV, TSV, AAVSO WebObs format
@@ -119,14 +165,15 @@ NEW IN THIS VERSION:
 - "Check VSX" button to open star details in browser
 - Help menu with Sequence Team Homepage link
 - Improved coordinate handling and Y-axis correction
-- Wider Request Star dialog (600px)
+- Easier distribution with executable JAR file
+- Only APASS catalog selected by default
 
 GETTING STARTED:
 ----------------
-1. Launch the application
+1. Launch the application (double-click the JAR file)
 2. Enter a star name (e.g., "EW Cru") or coordinates
 3. Click "Find RA & Dec for Star" if using star name
-4. Select catalogs to query
+4. Select catalogs to query (APASS is selected by default)
 5. Click "Get Plot" to retrieve data
 6. Use Sky View or Points View to visualize
 7. Click stars to see details
@@ -204,7 +251,17 @@ ls -lh "$DIST_DIR"
 echo ""
 echo "To test locally:"
 echo "  cd $DIST_DIR"
+echo "  java -jar Seqplot-${VERSION}.jar"
+echo "  OR"
 echo "  ./run.sh"
+echo ""
+echo "Distribution includes:"
+echo "  - Seqplot-${VERSION}.jar (all-in-one executable)"
+echo "  - Seqplot.bat (Windows launcher with Java checker)"
+echo "  - WINDOWS_README.txt (detailed Windows instructions)"
+echo "  - README.txt (general instructions)"
+echo "  - run.sh / run.bat (alternative launchers)"
+echo "  - bin/ and lib/ (backup class files and libraries)"
 echo ""
 echo "To share with the bros:"
 echo "  Send them the .tar.gz (Mac/Linux) or .zip (Windows) file"

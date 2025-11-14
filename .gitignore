@@ -37,6 +37,7 @@ backup/
 erty
 
 # Test output
+REPLY*
 *.jpg
 *.png
 /*.xml

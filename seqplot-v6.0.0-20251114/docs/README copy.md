@@ -2,6 +2,9 @@
 
 A tool for creating comparison star sequences.
 
+<!-- Add a screenshot here -->
+![SeqPlot Application](images/seqplot-screenshot.png)
+
 ##  Getting Started
 
 ### Prerequisites
