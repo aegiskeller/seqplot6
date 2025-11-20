@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.xml.parsers.DocumentBuilder;
@@ -301,15 +302,29 @@ RangeInfo {
             defaultFilename = type.equals("logfile") ? String.valueOf(defaultFilename) + "_seq.txt" : String.valueOf(defaultFilename) + "_table.csv";
         }
         String fullpath = JOptionPane.showInputDialog(this.frame, "What would you like to call your file?", String.valueOf(this.getPathToLogfile()) + defaultFilename);
+        
+        // Check if user cancelled the dialog
+        if (fullpath == null) {
+            return;
+        }
+        
         File fileObject = new File(fullpath);
         try {
             if (fileObject.exists() && fileObject.canRead()) {
                 fullpath = JOptionPane.showInputDialog(this.frame, "Your file already exists.\nNew selections will be appended\nunless you rename the file now.", fullpath);
+                // Check again if user cancelled
+                if (fullpath == null) {
+                    return;
+                }
             }
         }
         catch (Exception exception) {}
         while (fullpath.equals(DEFAULT_STAR)) {
             fullpath = JOptionPane.showInputDialog(this.frame, "Illegal file name, please re-enter:  ", "Invalid File Name", 2);
+            // Check if user cancelled during retry
+            if (fullpath == null) {
+                return;
+            }
         }
         if (fullpath != null) {
             if (type.equals("logfile")) {
@@ -659,7 +674,7 @@ RangeInfo {
         if (hasAAVSOCatalogs) {
         try {
             try {
-                this.calibUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.calib" + "&fromra=" + URLEncoder.encode(String.valueOf(String.format("%.6f", this.getLowerRA())).trim(), "UTF-8") + "&tora=" + URLEncoder.encode(String.valueOf(String.format("%.6f", this.getUpperRA())).trim(), "UTF-8") + "&fromdec=" + URLEncoder.encode(String.valueOf(String.format("%.6f", this.getLowerDec())).trim(), "UTF-8") + "&todec=" + URLEncoder.encode(String.valueOf(String.format("%.6f", this.getUpperDec())).trim(), "UTF-8") + "&tomag=" + URLEncoder.encode(String.valueOf(this.getLimitingMag()).trim(), "UTF-8") + "&source=" + this.getCatalogString().trim() + "&limit=" + 5000);
+                this.calibUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.calib" + "&fromra=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getLowerRA())).trim(), "UTF-8") + "&tora=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getUpperRA())).trim(), "UTF-8") + "&fromdec=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getLowerDec())).trim(), "UTF-8") + "&todec=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getUpperDec())).trim(), "UTF-8") + "&tomag=" + URLEncoder.encode(String.valueOf(this.getLimitingMag()).trim(), "UTF-8") + "&source=" + this.getCatalogString().trim() + "&limit=" + 5000);
                 NodeList dataObjectNodes = this.getDocument(this.calibUrl).getElementsByTagName("Object");
                 int apiReturnedCount = dataObjectNodes.getLength();
                 // Limit to 5000 to prevent array overflow (API sometimes returns more than requested limit)

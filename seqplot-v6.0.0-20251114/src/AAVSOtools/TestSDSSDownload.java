@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 
 /**
@@ -85,7 +86,7 @@ public class TestSDSSDownload {
      */
     private static BufferedImage downloadImage(String survey, double ra, double dec, double fov, int size) throws Exception {
         // Build URL for FITS download
-        String urlStr = String.format(
+        String urlStr = String.format(Locale.US,
             "%s?hips=%s&ra=%.6f&dec=%.6f&fov=%.6f&width=%d&height=%d&format=fits&projection=TAN",
             HIPS_BASE_URL,
             URLEncoder.encode(survey, "UTF-8"),

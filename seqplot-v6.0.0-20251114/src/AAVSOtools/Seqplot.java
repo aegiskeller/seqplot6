@@ -200,7 +200,7 @@ MouseListener {
     private ValueAxis rAxis;
     private TextTitle mainTitle;
     private TextTitle subTitle;
-    private DecimalFormat threeDecimalFormat = new DecimalFormat("0.0##");
+    private DecimalFormat threeDecimalFormat = new DecimalFormat("0.0##", new java.text.DecimalFormatSymbols(java.util.Locale.US));
     private Container cp;
     private ChartPanel chartPanel;
     private Frame frame;
@@ -589,7 +589,10 @@ MouseListener {
                 // Store original RA/Dec/fieldSize for Reset View button
                 this.storeOriginalCoordinates();
                 
-                this.mainTitle.setText(this.getMainTitleText());
+                // Update title (only if using JFreeChart mode)
+                if (this.mainTitle != null) {
+                    this.mainTitle.setText(this.getMainTitleText());
+                }
                 String subtitle = "Data from the Calibration Database - limiting magnitude " + this.db.getLimitingMag() + 
                     " - VSX position matching tolerance " + String.format("%.1f", this.db.getPositionTolerance() * 3600.0) + " arcseconds";
                 this.setSubtitleText(subtitle);

@@ -997,6 +997,43 @@ FocusListener {
             this.starnameField.setText(formattedStarName);
             this.db.setStar(formattedStarName);
             this.db.setLimitingMag(this.stringToDouble(this.limitingMagField.getText()));
+            
+            // Warn if limiting magnitude is too bright for the variable star
+            String vsxDetails = this.db.getVsxDetails();
+            if (vsxDetails != null && vsxDetails.contains("Min:")) {
+                try {
+                    // Extract MinMag from VSX details
+                    int minIndex = vsxDetails.indexOf("Min:");
+                    String minPart = vsxDetails.substring(minIndex + 4).trim();
+                    int endIndex = minPart.indexOf(' ');
+                    if (endIndex > 0) {
+                        minPart = minPart.substring(0, endIndex);
+                    }
+                    double minMag = Double.parseDouble(minPart);
+                    double limitingMag = this.db.getLimitingMag();
+                    
+                    // If limiting mag is brighter than (less than) the star's faintest magnitude
+                    if (limitingMag < minMag) {
+                        int response = JOptionPane.showConfirmDialog(this,
+                            String.format("Warning: Your limiting magnitude (%.1f) is brighter than\n" +
+                                         "the star's faintest magnitude (%.1f).\n\n" +
+                                         "This may result in no comparison stars being found.\n" +
+                                         "Recommended limiting magnitude: %.1f or fainter.\n\n" +
+                                         "Do you want to continue anyway?",
+                                         limitingMag, minMag, minMag + 2.0),
+                            "Limiting Magnitude Warning",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                        
+                        if (response == JOptionPane.NO_OPTION) {
+                            return; // User chose not to continue
+                        }
+                    }
+                } catch (Exception e) {
+                    // Silently ignore parsing errors
+                }
+            }
+            
             if (this.chartSizeCombo != null) {
                 this.db.setChartSizeSelection((String)this.chartSizeCombo.getSelectedItem());
             }
@@ -1280,53 +1317,22 @@ FocusListener {
             return;
         }
         
-        // Determine magnitude limit based on VSX MinMag
-        double magLimit = this.db.getLimitingMag(); // Default fallback
+        // Get magnitude limit from the Limiting mag field, or default to 14.0
+        double magLimit = 14.0; // Default value
         
-        // Try to get MinMag from VSX details string
-        String vsxDetails = this.db.getVsxDetails();
-        if (vsxDetails != null && vsxDetails.contains("Min:")) {
-            try {
-                // Extract MinMag from "Min: X.XX V" or "Min: X.XX" format
-                int minIndex = vsxDetails.indexOf("Min:");
-                String minPart = vsxDetails.substring(minIndex + 4).trim();
-                
-                // Find the end of the magnitude value (space or end of string)
-                int endIndex = minPart.indexOf(' ');
-                if (endIndex > 0) {
-                    minPart = minPart.substring(0, endIndex);
-                }
-                
-                double minMag = Double.parseDouble(minPart);
-                
-                // Apply magnitude limit rules based on MinMag
-                if (minMag < 10.0) {
-                    magLimit = 13.0;
-                } else if (minMag >= 10.0 && minMag < 12.0) {
-                    magLimit = 14.0;
-                } else if (minMag >= 12.0 && minMag < 13.0) {
-                    magLimit = 15.0;
-                } else if (minMag >= 13.0 && minMag < 14.0) {
-                    magLimit = 16.0;
-                } else if (minMag >= 14.0 && minMag < 15.0) {
-                    magLimit = 17.0;
-                } else if (minMag >= 15.0 && minMag < 16.0) {
-                    magLimit = 18.0;
-                } else {
-                    magLimit = 20.0; // For very faint stars (>= 16)
-                }
-                
-                System.out.println("DEBUG: VSX MinMag = " + minMag + " -> VSP maglimit = " + magLimit);
-            } catch (Exception e) {
-                System.err.println("WARNING: Could not parse MinMag from VSX details: " + vsxDetails);
-                System.err.println("DEBUG: Using default maglimit = " + magLimit);
+        try {
+            String magFieldText = this.limitingMagField.getText();
+            if (magFieldText != null && !magFieldText.trim().isEmpty()) {
+                magLimit = Double.parseDouble(magFieldText.trim());
             }
-        } else {
-            System.out.println("DEBUG: No VSX MinMag available, using default maglimit = " + magLimit);
+        } catch (NumberFormatException e) {
+            System.err.println("WARNING: Could not parse limiting mag field, using default 14.0");
         }
         
+        System.out.println("DEBUG: Using Limiting mag from field: " + magLimit);
+        
         // Try to get VSP chart - first by star name, then by AUID if that fails
-        String vspPageUrl = String.format("https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
+        String vspPageUrl = String.format(Locale.US, "https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
             starName.replace(" ", "+"), magLimit);
         
         // DEBUG: Print URL to console
@@ -1343,7 +1349,7 @@ FocusListener {
             String auid = db.getAuid();
             if (auid != null && !auid.isEmpty() && !auid.equals("NA")) {
                 System.out.println("WARNING: Star name lookup failed, trying AUID: " + auid);
-                vspPageUrl = String.format("https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
+                vspPageUrl = String.format(Locale.US, "https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
                     auid, magLimit);
                 System.out.println("VSP Page URL (AUID): " + vspPageUrl);
                 vspImageUrl = extractImageUrlFromVspHtml(vspPageUrl);

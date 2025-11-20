@@ -22,7 +22,7 @@ public class PhotCompWindow extends JFrame {
     private Map<Integer, JCheckBox> catalogCheckBoxes;
     private JLabel statsLabel;
     private JTextField matchToleranceField;
-    private DecimalFormat df2 = new DecimalFormat("0.00");
+    private DecimalFormat df2 = new DecimalFormat("0.00", new java.text.DecimalFormatSymbols(java.util.Locale.US));
     private JLabel step1Label;
     private JLabel step2Label;
     private JLabel recommendationLabel;

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.*;
 import java.net.*;
+import java.util.Locale;
 import java.util.concurrent.*;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
@@ -291,7 +292,7 @@ public class DSS2Manager {
         
         // Build HiPS2FITS URL for other surveys
         // Format: hips2fits?hips=SURVEY&ra=RA&dec=DEC&fov=FOV&width=SIZE&height=SIZE&format=fits&projection=TAN
-        String urlStr = String.format(
+        String urlStr = String.format(Locale.US,
             "%s?hips=%s&ra=%.6f&dec=%.6f&fov=%.6f&width=%d&height=%d&format=fits&projection=TAN",
             HIPS_BASE_URL,
             URLEncoder.encode(survey, "UTF-8"),
@@ -356,7 +357,7 @@ public class DSS2Manager {
     private BufferedImage downloadSDSSviaSIAP(double centerRA, double centerDec, double fieldOfViewDeg, int imageSize) throws IOException {
         // SIAP getSIAP endpoint with FORMAT=image/fits
         // POS = "RA,DEC" (comma-separated), SIZE = field of view in degrees
-        String siapUrl = String.format(
+        String siapUrl = String.format(Locale.US,
             "https://skyserver.sdss.org/dr17/SkyServerWS/SIAP/getSIAP?POS=%.6f,%.6f&SIZE=%.6f&FORMAT=image/fits",
             centerRA,
             centerDec,
@@ -666,7 +667,7 @@ public class DSS2Manager {
      * Download JPG version for display purposes
      */
     private BufferedImage downloadImageForDisplay() throws IOException {
-        String urlStr = String.format(
+        String urlStr = String.format(Locale.US,
             "%s?hips=%s&ra=%.6f&dec=%.6f&fov=%.6f&width=%d&height=%d&format=jpg&projection=TAN",
             HIPS_BASE_URL,
             URLEncoder.encode(currentSurvey, "UTF-8"),

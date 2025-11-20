@@ -16,6 +16,7 @@ import java.awt.print.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 
 /**
@@ -30,8 +31,8 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
     // Plot dimensions and margins
     private int plotWidth, plotHeight;
     private int leftMargin = 80, rightMargin = 30, topMargin = 50, bottomMargin = 80;
-    private final DecimalFormat df = new DecimalFormat("0.0000");
-    private final DecimalFormat arcMinuteFormat = new DecimalFormat("0.0");
+    private final DecimalFormat df = new DecimalFormat("0.0000", new java.text.DecimalFormatSymbols(Locale.US));
+    private final DecimalFormat arcMinuteFormat = new DecimalFormat("0.0", new java.text.DecimalFormatSymbols(Locale.US));
     
     // Interaction variables
     private int hoveredRecord = -1;
