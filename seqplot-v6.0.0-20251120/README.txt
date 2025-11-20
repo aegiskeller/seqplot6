@@ -2,8 +2,9 @@
 
 ## Quick Start
 
-### Windows Users
-Double-click `run.bat` to start Seqplot.
+### Windows Users (Recommended)
+Double-click `run-jar.bat` to start Seqplot (uses single JAR file).
+Alternatively, double-click `run.bat` (uses class files + libraries).
 
 ### Mac/Linux Users
 Run `./run.sh` in a terminal.
@@ -35,8 +36,10 @@ Run `./run.sh` in a terminal.
 ## File Structure
 ```
 seqplot-v6.0.0-20251120/
-├── run.bat          # Windows launcher
+├── run-jar.bat      # Windows launcher (JAR version - recommended)
+├── run.bat          # Windows launcher (class files version)
 ├── run.sh           # Mac/Linux launcher  
+├── Seqplot-6.0.0.jar # Executable JAR with all dependencies
 ├── bin/             # Compiled Java classes
 ├── lib/             # Required libraries (JFreeChart, JCommon)
 ├── src/             # Source code
