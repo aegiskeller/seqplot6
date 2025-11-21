@@ -29,11 +29,11 @@ public class TestBlankDetection {
                 BufferedImage image = ImageIO.read(file);
                 boolean isBlank = checkIfBlank(image);
                 
-                System.out.printf("%-30s : %s\n", filename, 
-                    isBlank ? "✗ BLANK (no coverage)" : "✓ Has content");
+                System.out.printf(java.util.Locale.US, "%-30s : %s\n", filename, 
+                    isBlank ? "BLANK (no coverage)" : "Has content");
                 
             } catch (Exception e) {
-                System.out.printf("%-30s : ERROR - %s\n", filename, e.getMessage());
+                System.out.printf(java.util.Locale.US, "%-30s : ERROR - %s\n", filename, e.getMessage());
             }
         }
         
@@ -75,7 +75,7 @@ public class TestBlankDetection {
         int avgBrightness = (int)(totalBrightness / sampleCount);
         int brightnessRange = maxBrightness - minBrightness;
         
-        System.out.printf("  Details: range=%d, avg=%d, min=%d, max=%d\n", 
+        System.out.printf(java.util.Locale.US, "  Details: range=%d, avg=%d, min=%d, max=%d\n", 
                          brightnessRange, avgBrightness, minBrightness, maxBrightness);
         
         // An astronomical image should have significant brightness variation

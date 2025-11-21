@@ -31,10 +31,10 @@ public class CDSMirrorSelector {
     }
     
     public enum HealthStatus {
-        HEALTHY("● Healthy", new java.awt.Color(0, 180, 0)),           // Green
-        SLOW("◐ Slow", new java.awt.Color(255, 165, 0)),              // Orange
-        UNREACHABLE("● Unreachable", new java.awt.Color(200, 0, 0)),  // Red
-        UNKNOWN("○ Unknown", new java.awt.Color(128, 128, 128));       // Gray
+        HEALTHY("Healthy", new java.awt.Color(0, 180, 0)),           // Green
+        SLOW("Slow", new java.awt.Color(255, 165, 0)),              // Orange
+        UNREACHABLE("Unreachable", new java.awt.Color(200, 0, 0)),  // Red
+        UNKNOWN("Unknown", new java.awt.Color(128, 128, 128));       // Gray
         
         public final String displayText;
         public final java.awt.Color color;

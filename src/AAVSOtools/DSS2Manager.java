@@ -168,7 +168,7 @@ public class DSS2Manager {
         
         @Override
         public String toString() {
-            return String.format("WCS[center=(%.6f,%.6f), scale=(%.6f,%.6f), ref=(%.1f,%.1f), size=(%d,%d)]",
+            return String.format(java.util.Locale.US, "WCS[center=(%.6f,%.6f), scale=(%.6f,%.6f), ref=(%.1f,%.1f), size=(%d,%d)]",
                 crval1, crval2, cdelt1, cdelt2, crpix1, crpix2, naxis1, naxis2);
         }
     }
@@ -226,7 +226,7 @@ public class DSS2Manager {
             return;
         }
         
-        System.out.printf("DEBUG: Fetching survey image - Survey=%s, RA=%.6f, Dec=%.6f, FOV=%.4f deg, Size=%d px\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Fetching survey image - Survey=%s, RA=%.6f, Dec=%.6f, FOV=%.4f deg, Size=%d px\n",
                          survey, centerRA, centerDec, fieldOfViewDeg, imageSize);
         
         currentSurvey = survey;
@@ -245,9 +245,9 @@ public class DSS2Manager {
                     // Create WCS parameters for this image
                     currentWCS = new WCSParameters(centerRA, centerDec, fieldOfViewDeg, imageSize);
                     
-                    System.out.printf("DEBUG: DSS2 image loaded successfully - %dx%d pixels\n", 
+                    System.out.printf(java.util.Locale.US, "DEBUG: DSS2 image loaded successfully - %dx%d pixels\n", 
                                      image.getWidth(), image.getHeight());
-                    System.out.printf("DEBUG: WCS parameters: %s\n", currentWCS);
+                    System.out.printf(java.util.Locale.US, "DEBUG: WCS parameters: %s\n", currentWCS);
                     
                     // Notify on EDT
                     SwingUtilities.invokeLater(() -> {
@@ -268,7 +268,7 @@ public class DSS2Manager {
             } catch (Exception e) {
                 currentImage = null;
                 currentWCS = null;
-                System.err.printf("ERROR: Exception downloading DSS2 image: %s\n", e.getMessage());
+                System.err.printf(java.util.Locale.US, "ERROR: Exception downloading DSS2 image: %s\n", e.getMessage());
                 e.printStackTrace();
                 SwingUtilities.invokeLater(() -> {
                     if (loadListener != null) {
@@ -292,7 +292,7 @@ public class DSS2Manager {
         
         // Build HiPS2FITS URL for other surveys
         // Format: hips2fits?hips=SURVEY&ra=RA&dec=DEC&fov=FOV&width=SIZE&height=SIZE&format=fits&projection=TAN
-        String urlStr = String.format(Locale.US,
+        String urlStr = String.format(java.util.Locale.US,
             "%s?hips=%s&ra=%.6f&dec=%.6f&fov=%.6f&width=%d&height=%d&format=fits&projection=TAN",
             HIPS_BASE_URL,
             URLEncoder.encode(survey, "UTF-8"),
@@ -303,7 +303,7 @@ public class DSS2Manager {
             imageSize
         );
         
-        System.out.printf("DEBUG: HiPS FITS URL: %s\n", urlStr);
+        System.out.printf(java.util.Locale.US, "DEBUG: HiPS FITS URL: %s\n", urlStr);
         
         URI uri = URI.create(urlStr);
         HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -316,13 +316,13 @@ public class DSS2Manager {
             connection.setRequestProperty("User-Agent", "Seqplot-6.0.0-FITS-Client");
             
             int responseCode = connection.getResponseCode();
-            System.out.printf("DEBUG: HiPS response code: %d\n", responseCode);
+            System.out.printf(java.util.Locale.US, "DEBUG: HiPS response code: %d\n", responseCode);
             
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 try (InputStream inputStream = connection.getInputStream()) {
                     // Download FITS file to temporary location
                     byte[] fitsData = inputStream.readAllBytes();
-                    System.out.printf("DEBUG: Downloaded FITS file: %d bytes\n", fitsData.length);
+                    System.out.printf(java.util.Locale.US, "DEBUG: Downloaded FITS file: %d bytes\n", fitsData.length);
                     
                     // Parse FITS file and extract image + WCS
                     return processFITSFile(fitsData, centerRA, centerDec, fieldOfViewDeg, imageSize);
@@ -341,7 +341,7 @@ public class DSS2Manager {
                     // Ignore error stream reading failures
                 }
                 
-                System.err.printf("ERROR: Survey '%s' failed with HTTP %d: %s\n", survey, responseCode, errorMessage);
+                System.err.printf(java.util.Locale.US, "ERROR: Survey '%s' failed with HTTP %d: %s\n", survey, responseCode, errorMessage);
                 System.err.println("This survey may not be available for this field or the service may be down.");
                 throw new IOException("HTTP error " + responseCode + ": " + errorMessage);
             }
@@ -357,14 +357,14 @@ public class DSS2Manager {
     private BufferedImage downloadSDSSviaSIAP(double centerRA, double centerDec, double fieldOfViewDeg, int imageSize) throws IOException {
         // SIAP getSIAP endpoint with FORMAT=image/fits
         // POS = "RA,DEC" (comma-separated), SIZE = field of view in degrees
-        String siapUrl = String.format(Locale.US,
+        String siapUrl = String.format(java.util.Locale.US,
             "https://skyserver.sdss.org/dr17/SkyServerWS/SIAP/getSIAP?POS=%.6f,%.6f&SIZE=%.6f&FORMAT=image/fits",
             centerRA,
             centerDec,
             fieldOfViewDeg
         );
         
-        System.out.printf("DEBUG: SDSS SIAP URL: %s\n", siapUrl);
+        System.out.printf(java.util.Locale.US, "DEBUG: SDSS SIAP URL: %s\n", siapUrl);
         
         URI uri = URI.create(siapUrl);
         HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -376,13 +376,13 @@ public class DSS2Manager {
             connection.setRequestProperty("User-Agent", "Seqplot-6.0.0-SDSS-Client");
             
             int responseCode = connection.getResponseCode();
-            System.out.printf("DEBUG: SDSS SIAP response code: %d\n", responseCode);
+            System.out.printf(java.util.Locale.US, "DEBUG: SDSS SIAP response code: %d\n", responseCode);
             
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 try (InputStream inputStream = connection.getInputStream()) {
                     // SIAP returns VOTable XML with image URLs, not the image itself
                     byte[] votableData = inputStream.readAllBytes();
-                    System.out.printf("DEBUG: SDSS SIAP VOTable response: %d bytes\n", votableData.length);
+                    System.out.printf(java.util.Locale.US, "DEBUG: SDSS SIAP VOTable response: %d bytes\n", votableData.length);
                     
                     // Parse VOTable to extract FITS URL
                     String fitsUrl = extractFITSUrlFromVOTable(votableData);
@@ -390,7 +390,7 @@ public class DSS2Manager {
                         throw new IOException("No FITS URL found in SDSS SIAP response (field may have no coverage)");
                     }
                     
-                    System.out.printf("DEBUG: Downloading FITS from: %s\n", fitsUrl);
+                    System.out.printf(java.util.Locale.US, "DEBUG: Downloading FITS from: %s\n", fitsUrl);
                     
                     // Now download the actual FITS file
                     HttpURLConnection fitsConnection = (HttpURLConnection) URI.create(fitsUrl).toURL().openConnection();
@@ -403,7 +403,7 @@ public class DSS2Manager {
                         if (fitsResponseCode == HttpURLConnection.HTTP_OK) {
                             try (InputStream fitsStream = fitsConnection.getInputStream()) {
                                 byte[] fitsData = fitsStream.readAllBytes();
-                                System.out.printf("DEBUG: SDSS FITS file downloaded: %d bytes\n", fitsData.length);
+                                System.out.printf(java.util.Locale.US, "DEBUG: SDSS FITS file downloaded: %d bytes\n", fitsData.length);
                                 
                                 // Process FITS file and extract image + WCS
                                 return processFITSFile(fitsData, centerRA, centerDec, fieldOfViewDeg, imageSize);
@@ -428,7 +428,7 @@ public class DSS2Manager {
                     // Ignore error stream reading failures
                 }
                 
-                System.err.printf("ERROR: SDSS SIAP failed with HTTP %d: %s\n", responseCode, errorMessage);
+                System.err.printf(java.util.Locale.US, "ERROR: SDSS SIAP failed with HTTP %d: %s\n", responseCode, errorMessage);
                 System.err.println("SDSS may not have coverage for this field.");
                 throw new IOException("HTTP error " + responseCode + ": " + errorMessage);
             }
@@ -459,7 +459,7 @@ public class DSS2Manager {
                         String url = line.substring(start, end).trim();
                         // Validate it looks like a URL
                         if (url.startsWith("http://") || url.startsWith("https://")) {
-                            System.out.printf("DEBUG: Found FITS URL in VOTable: %s\n", url);
+                            System.out.printf(java.util.Locale.US, "DEBUG: Found FITS URL in VOTable: %s\n", url);
                             return url;
                         }
                     }
@@ -468,12 +468,12 @@ public class DSS2Manager {
             
             // Alternative: look for RESOURCE/TABLE/DATA/TABLEDATA/TR/TD pattern
             // Print first 1000 chars of XML for debugging
-            System.out.printf("DEBUG: VOTable content (first 1000 chars):\n%s\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: VOTable content (first 1000 chars):\n%s\n", 
                 xml.length() > 1000 ? xml.substring(0, 1000) : xml);
             
             return null;
         } catch (Exception e) {
-            System.err.printf("ERROR parsing VOTable: %s\n", e.getMessage());
+            System.err.printf(java.util.Locale.US, "ERROR parsing VOTable: %s\n", e.getMessage());
             return null;
         }
     }
@@ -510,7 +510,7 @@ public class DSS2Manager {
         
         // Update current WCS with actual FITS parameters
         currentWCS = actualWCS;
-        System.out.printf("DEBUG: Extracted WCS from FITS: %s\n", currentWCS);
+        System.out.printf(java.util.Locale.US, "DEBUG: Extracted WCS from FITS: %s\n", currentWCS);
         
         return image;
     }
@@ -534,7 +534,7 @@ public class DSS2Manager {
             }
         }
         
-        System.out.printf("DEBUG: Extracted FITS header (%d bytes)\n", headerSize);
+        System.out.printf(java.util.Locale.US, "DEBUG: Extracted FITS header (%d bytes)\n", headerSize);
         return header.toString();
     }
     
@@ -554,7 +554,7 @@ public class DSS2Manager {
             int naxis1 = (int)extractKeywordValue(header, "NAXIS1", fallbackSize);
             int naxis2 = (int)extractKeywordValue(header, "NAXIS2", fallbackSize);
             
-            System.out.printf("DEBUG: FITS WCS - CRVAL1=%.6f, CRVAL2=%.6f, CDELT1=%.6f, CDELT2=%.6f\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: FITS WCS - CRVAL1=%.6f, CRVAL2=%.6f, CDELT1=%.6f, CDELT2=%.6f\n", 
                              crval1, crval2, cdelt1, cdelt2);
             
             return new WCSParameters(crval1, crval2, crpix1, crpix2, cdelt1, cdelt2, naxis1, naxis2);
@@ -592,13 +592,13 @@ public class DSS2Manager {
         try {
             return downloadImageForDisplay();
         } catch (Exception e) {
-            System.out.printf("DEBUG: JPG download failed (%s), attempting FITS image extraction\n", e.getMessage());
+            System.out.printf(java.util.Locale.US, "DEBUG: JPG download failed (%s), attempting FITS image extraction\n", e.getMessage());
             
             // If JPG fails, try to extract image data from FITS
             try {
                 return extractImageFromFITS(fitsData);
             } catch (Exception fitsError) {
-                System.out.printf("DEBUG: FITS extraction also failed (%s), creating placeholder\n", fitsError.getMessage());
+                System.out.printf(java.util.Locale.US, "DEBUG: FITS extraction also failed (%s), creating placeholder\n", fitsError.getMessage());
                 
                 // Last resort: create a simple placeholder
                 BufferedImage placeholder = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
@@ -633,7 +633,7 @@ public class DSS2Manager {
             }
         }
         
-        System.out.printf("DEBUG: FITS header ends at byte %d\n", headerEnd);
+        System.out.printf(java.util.Locale.US, "DEBUG: FITS header ends at byte %d\n", headerEnd);
         
         if (headerEnd >= fitsData.length) {
             throw new IOException("No image data found in FITS file");
@@ -667,7 +667,7 @@ public class DSS2Manager {
      * Download JPG version for display purposes
      */
     private BufferedImage downloadImageForDisplay() throws IOException {
-        String urlStr = String.format(Locale.US,
+        String urlStr = String.format(java.util.Locale.US,
             "%s?hips=%s&ra=%.6f&dec=%.6f&fov=%.6f&width=%d&height=%d&format=jpg&projection=TAN",
             HIPS_BASE_URL,
             URLEncoder.encode(currentSurvey, "UTF-8"),
@@ -677,7 +677,7 @@ public class DSS2Manager {
             512, 512
         );
         
-        System.out.printf("DEBUG: JPG URL: %s\n", urlStr);
+        System.out.printf(java.util.Locale.US, "DEBUG: JPG URL: %s\n", urlStr);
         
         URI uri = URI.create(urlStr);
         HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
@@ -687,13 +687,13 @@ public class DSS2Manager {
             connection.setReadTimeout(TIMEOUT_MS);
             
             int responseCode = connection.getResponseCode();
-            System.out.printf("DEBUG: JPG response code: %d\n", responseCode);
+            System.out.printf(java.util.Locale.US, "DEBUG: JPG response code: %d\n", responseCode);
             
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 try (InputStream inputStream = connection.getInputStream()) {
                     BufferedImage image = ImageIO.read(inputStream);
                     if (image != null) {
-                        System.out.printf("DEBUG: JPG image loaded: %dx%d\n", image.getWidth(), image.getHeight());
+                        System.out.printf(java.util.Locale.US, "DEBUG: JPG image loaded: %dx%d\n", image.getWidth(), image.getHeight());
                         
                         // Check if image is blank (no coverage)
                         if (isImageBlank(image)) {
@@ -707,13 +707,13 @@ public class DSS2Manager {
                     }
                 }
             } else {
-                System.out.printf("DEBUG: JPG download failed with code: %d\n", responseCode);
+                System.out.printf(java.util.Locale.US, "DEBUG: JPG download failed with code: %d\n", responseCode);
             }
         } catch (IOException e) {
             // Re-throw IOException to propagate "no coverage" message
             throw e;
         } catch (Exception e) {
-            System.out.printf("DEBUG: JPG download exception: %s\n", e.getMessage());
+            System.out.printf(java.util.Locale.US, "DEBUG: JPG download exception: %s\n", e.getMessage());
         } finally {
             connection.disconnect();
         }
@@ -767,7 +767,7 @@ public class DSS2Manager {
                          (brightnessRange < 10 && avgBrightness < 10);
         
         if (isBlank) {
-            System.out.printf("DEBUG: Image detected as blank (range=%d, avg=%d, samples=%d)\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: Image detected as blank (range=%d, avg=%d, samples=%d)\n", 
                             brightnessRange, avgBrightness, sampleCount);
         }
         
@@ -863,7 +863,7 @@ public class DSS2Manager {
         fov = Math.max(fov, 0.02);  // Minimum 1.2 arcmin
         fov = Math.min(fov, 10.0);  // Maximum 10 degrees
         
-        System.out.printf("DEBUG: Calculated FOV - RA range=%.4f°, Dec range=%.4f°, FOV=%.4f°\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Calculated FOV - RA range=%.4f°, Dec range=%.4f°, FOV=%.4f°\n",
                          raRange, decRange, fov);
         
         return fov;

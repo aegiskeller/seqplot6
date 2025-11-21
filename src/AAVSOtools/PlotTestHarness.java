@@ -100,7 +100,7 @@ public class PlotTestHarness extends JFrame {
         centralRA = 47.575380;
         centralDec = -1.694720;
         
-        System.out.printf("DEBUG: Test harness using central coordinates: RA=%.6f, Dec=%.6f\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Test harness using central coordinates: RA=%.6f, Dec=%.6f\n", 
                          centralRA, centralDec);
         
         // Add some test stars around EE Eri
@@ -118,7 +118,7 @@ public class PlotTestHarness extends JFrame {
                               10.0 + i * 0.3, i % 5));
         }
         
-        System.out.printf("DEBUG: Added %d test stars\n", stars.size());
+        System.out.printf(java.util.Locale.US, "DEBUG: Added %d test stars\n", stars.size());
     }
     
     private void updatePlot() {
@@ -157,7 +157,7 @@ public class PlotTestHarness extends JFrame {
                 currentIndex[star.series]++;
                 
                 if (idx < 3) { // Debug first few stars
-                    System.out.printf("DEBUG: Star %d: RA=%.6f, Dec=%.6f -> X=%.6f, Y=%.6f, Z=%.6f, Series=%d\n",
+                    System.out.printf(java.util.Locale.US, "DEBUG: Star %d: RA=%.6f, Dec=%.6f -> X=%.6f, Y=%.6f, Z=%.6f, Series=%d\n",
                                      idx, star.ra, star.dec, xy[0], xy[1], z, star.series);
                 }
             }
@@ -167,7 +167,7 @@ public class PlotTestHarness extends JFrame {
         for (int i = 0; i < 5; i++) {
             if (seriesCounts[i] > 0) {
                 dataset.addSeries("Series " + i, allSeriesData[i]);
-                System.out.printf("DEBUG: Added series %d with %d stars\n", i, seriesCounts[i]);
+                System.out.printf(java.util.Locale.US, "DEBUG: Added series %d with %d stars\n", i, seriesCounts[i]);
             }
         }
         
@@ -217,7 +217,7 @@ public class PlotTestHarness extends JFrame {
             maxY = Math.max(maxY, xy[1]);
         }
         
-        System.out.printf("DEBUG: Coordinate ranges - X: %.6f to %.6f, Y: %.6f to %.6f\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Coordinate ranges - X: %.6f to %.6f, Y: %.6f to %.6f\n",
                          minX, maxX, minY, maxY);
         
         // Set axis ranges with 5% padding
@@ -231,7 +231,7 @@ public class PlotTestHarness extends JFrame {
         rangeAxis.setRange(1.05 * minY, 1.05 * maxY);
         rangeAxis.setAutoRangeIncludesZero(false);
         
-        System.out.printf("DEBUG: Set axis ranges - X: %.6f to %.6f, Y: %.6f to %.6f\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Set axis ranges - X: %.6f to %.6f, Y: %.6f to %.6f\n",
                          1.05 * minX, 1.05 * maxX, 1.05 * minY, 1.05 * maxY);
     }
     

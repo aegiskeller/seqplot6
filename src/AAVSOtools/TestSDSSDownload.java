@@ -46,7 +46,7 @@ public class TestSDSSDownload {
                         System.err.println("ERROR: Returned image is NULL");
                     } else {
                         System.out.println("SUCCESS: Image downloaded");
-                        System.out.printf("  Size: %d x %d pixels\n", image.getWidth(), image.getHeight());
+                        System.out.printf(java.util.Locale.US, "  Size: %d x %d pixels\n", image.getWidth(), image.getHeight());
                         
                         // Check if image is blank (all pixels same color)
                         boolean isBlank = checkIfBlank(image);
@@ -55,7 +55,7 @@ public class TestSDSSDownload {
                         if (!isBlank) {
                             // Get pixel statistics
                             int[] stats = getPixelStats(image);
-                            System.out.printf("  Pixel range: min=%d, max=%d, avg=%d\n", 
+                            System.out.printf(java.util.Locale.US, "  Pixel range: min=%d, max=%d, avg=%d\n", 
                                 stats[0], stats[1], stats[2]);
                         }
                         
@@ -86,7 +86,7 @@ public class TestSDSSDownload {
      */
     private static BufferedImage downloadImage(String survey, double ra, double dec, double fov, int size) throws Exception {
         // Build URL for FITS download
-        String urlStr = String.format(Locale.US,
+        String urlStr = String.format(java.util.Locale.US,
             "%s?hips=%s&ra=%.6f&dec=%.6f&fov=%.6f&width=%d&height=%d&format=fits&projection=TAN",
             HIPS_BASE_URL,
             URLEncoder.encode(survey, "UTF-8"),

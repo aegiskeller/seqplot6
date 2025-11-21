@@ -418,7 +418,7 @@ RangeInfo {
                 this.seqplot.setMainTitleText(String.valueOf(this.getStar()) + "  RA: " + this.getFormattedRA() + "  Dec: " + this.getFormattedDec() + "  FoV: " + Math.round(this.getFieldSize() * 60.0) + " arcmin");
                 double toleranceArcsec = this.getPositionTolerance() * 3600.0;
                 this.seqplot.setSubtitleText("Data from the Calibration Database - limiting magnitude " + this.getLimitingMag() + 
-                    " - VSX position matching tolerance " + String.format("%.1f", toleranceArcsec) + " arcseconds");
+                    " - VSX position matching tolerance " + String.format(java.util.Locale.US, "%.1f", toleranceArcsec) + " arcseconds");
             }
         }
     }
@@ -444,7 +444,7 @@ RangeInfo {
             this.seqplot.setMainTitleText(String.valueOf(this.getStar()) + "  RA: " + this.getFormattedRA() + "  Dec: " + this.getFormattedDec() + "  FoV: " + Math.round(this.getFieldSize() * 60.0) + " arcmin");
             double toleranceArcsec = this.getPositionTolerance() * 3600.0;
             this.seqplot.setSubtitleText("Data from the Calibration Database - limiting magnitude " + this.getLimitingMag() + 
-                " - VSX position matching tolerance " + String.format("%.1f", toleranceArcsec) + " arcseconds");
+                " - VSX position matching tolerance " + String.format(java.util.Locale.US, "%.1f", toleranceArcsec) + " arcseconds");
         }
     }
 
@@ -674,7 +674,7 @@ RangeInfo {
         if (hasAAVSOCatalogs) {
         try {
             try {
-                this.calibUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.calib" + "&fromra=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getLowerRA())).trim(), "UTF-8") + "&tora=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getUpperRA())).trim(), "UTF-8") + "&fromdec=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getLowerDec())).trim(), "UTF-8") + "&todec=" + URLEncoder.encode(String.valueOf(String.format(Locale.US, "%.6f", this.getUpperDec())).trim(), "UTF-8") + "&tomag=" + URLEncoder.encode(String.valueOf(this.getLimitingMag()).trim(), "UTF-8") + "&source=" + this.getCatalogString().trim() + "&limit=" + 5000);
+                this.calibUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.calib" + "&fromra=" + URLEncoder.encode(String.valueOf(String.format(java.util.Locale.US, "%.6f", this.getLowerRA())).trim(), "UTF-8") + "&tora=" + URLEncoder.encode(String.valueOf(String.format(java.util.Locale.US, "%.6f", this.getUpperRA())).trim(), "UTF-8") + "&fromdec=" + URLEncoder.encode(String.valueOf(String.format(java.util.Locale.US, "%.6f", this.getLowerDec())).trim(), "UTF-8") + "&todec=" + URLEncoder.encode(String.valueOf(String.format(java.util.Locale.US, "%.6f", this.getUpperDec())).trim(), "UTF-8") + "&tomag=" + URLEncoder.encode(String.valueOf(this.getLimitingMag()).trim(), "UTF-8") + "&source=" + this.getCatalogString().trim() + "&limit=" + 5000);
                 NodeList dataObjectNodes = this.getDocument(this.calibUrl).getElementsByTagName("Object");
                 int apiReturnedCount = dataObjectNodes.getLength();
                 // Limit to 5000 to prevent array overflow (API sometimes returns more than requested limit)
@@ -687,7 +687,7 @@ RangeInfo {
                     // Show warning popup on EDT
                     SwingUtilities.invokeLater(() -> {
                         JOptionPane.showMessageDialog(null,
-                            String.format("Field contains %d stars (limit is 5000).\n\n" +
+                            String.format(java.util.Locale.US, "Field contains %d stars (limit is 5000).\n\n" +
                                 "Only the first 5000 stars will be displayed.\n" +
                                 "To see all stars, try reducing:\n" +
                                 "  • Field of View (FOV)\n" +
@@ -967,7 +967,7 @@ RangeInfo {
             
             // Construct ADQL query for APASS DR9 catalog via CDS Vizier TAP
             String tapUrl = CDSMirrorSelector.getSelectedTapUrl();
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT RAJ2000, DEJ2000, e_RAJ2000, e_DEJ2000, Field, nobs, mobs, " +
                 "\"B-V\", \"e_B-V\", Vmag, e_Vmag, Bmag, e_Bmag, " +
                 "\"g'mag\", \"e_g'mag\", \"r'mag\", \"e_r'mag\", " +
@@ -987,7 +987,7 @@ RangeInfo {
 
             System.out.println("\n========== APASS9 CATALOG LOADING ==========");
             System.out.println("Service: CDS VizieR TAP (II/336/apass9)");
-            System.out.printf("Field: RA=%.6f, Dec=%.6f, Radius=%.2f arcmin, MagLimit=%.1f\n", 
+            System.out.printf(java.util.Locale.US, "Field: RA=%.6f, Dec=%.6f, Radius=%.2f arcmin, MagLimit=%.1f\n", 
                 this.getCentralRA(), this.getCentralDec(), 
                 this.getFieldSize() * 60.0, this.getLimitingMag());
             System.out.println("ADQL Query:");
@@ -997,14 +997,14 @@ RangeInfo {
             System.out.println("Connecting to VizieR...");
             long stepStartTime = System.currentTimeMillis();
             URL url = new URL(queryUrl);
-            System.out.printf("  → Opening connection to %s\n", url.getHost());
+            System.out.printf(java.util.Locale.US, "  → Opening connection to %s\n", url.getHost());
             java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(30000);  // 30 second connection timeout
             connection.setReadTimeout(this.getCatalogReadTimeoutSeconds() * 1000);  // User-configurable read timeout
-            System.out.printf("  → Sending TAP request...\n");
+            System.out.printf(java.util.Locale.US, "  → Sending TAP request...\n");
             InputStream inputStream = connection.getInputStream();
             int responseCode = connection.getResponseCode();
-            System.out.printf("  → Response code: %d, downloading VOTable...\n", responseCode);
+            System.out.printf(java.util.Locale.US, "  → Response code: %d, downloading VOTable...\n", responseCode);
             
             // Wrap in a buffered stream to count bytes
             java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
@@ -1019,7 +1019,7 @@ RangeInfo {
             
             long downloadTime = System.currentTimeMillis() - stepStartTime;
             double downloadRate = (totalBytes / 1024.0) / (downloadTime / 1000.0);
-            System.out.printf("✓ Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
+            System.out.printf(java.util.Locale.US, "Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
                 totalBytes, downloadTime / 1000.0, downloadRate);
             
             // Parse XML document
@@ -1029,18 +1029,18 @@ RangeInfo {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new java.io.ByteArrayInputStream(baos.toByteArray()));
             long parseTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Completed in %.2f sec\n", parseTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", parseTime / 1000.0);
             
             // Parse VOTable response
             System.out.print("Processing catalog data... ");
             stepStartTime = System.currentTimeMillis();
             this.parseApass9VOTable(document);
             long processTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Found %,d stars in %.2f sec\n", 
+            System.out.printf(java.util.Locale.US, "✓ Found %,d stars in %.2f sec\n", 
                 this.getTotalCount(), processTime / 1000.0);
             
             long totalTime = System.currentTimeMillis() - totalStartTime;
-            System.out.printf("TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
             System.out.println("===========================================\n");
             
             // Hide loading indicator
@@ -1048,7 +1048,7 @@ RangeInfo {
             // Close the EnterStar dialog when data loading is complete
             disposeStarWindowAsync();
             
-            System.out.printf("DEBUG APASS9 Results: Found %d stars\n", this.getTotalCount());
+            System.out.printf(java.util.Locale.US, "DEBUG APASS9 Results: Found %d stars\n", this.getTotalCount());
             
             if (this.getTotalCount() == 0) {
                 showMessageDialogAsync(null, 
@@ -1057,7 +1057,7 @@ RangeInfo {
             } else {
                 // Process the data for plotting
                 this.processApass9Data();
-                System.out.printf("DEBUG: Processed %d APASS9 stars for plotting\n", this.getTotalCount());
+                System.out.printf(java.util.Locale.US, "DEBUG: Processed %d APASS9 stars for plotting\n", this.getTotalCount());
             }
             
         } catch (MalformedURLException e) {
@@ -1086,7 +1086,7 @@ RangeInfo {
             // Parse VOTable format from CDS Vizier - look for TABLEDATA section
             NodeList tableDataNodes = document.getElementsByTagName("TABLEDATA");
             
-            System.out.printf("DEBUG: Found %d TABLEDATA elements\n", tableDataNodes.getLength());
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d TABLEDATA elements\n", tableDataNodes.getLength());
             
             if (tableDataNodes.getLength() == 0) {
                 // System.out.println("DEBUG: No TABLEDATA section found in VOTable");
@@ -1099,7 +1099,7 @@ RangeInfo {
             NodeList tableData = tableDataElement.getElementsByTagName("TR");
             int dataRows = tableData.getLength();
             
-            System.out.printf("DEBUG: Found %d TR elements in TABLEDATA\n", dataRows);
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d TR elements in TABLEDATA\n", dataRows);
             
             // Skip header row - count actual data rows
             int actualDataCount = 0;
@@ -1111,7 +1111,7 @@ RangeInfo {
                 }
             }
             
-            System.out.printf("DEBUG: Counted %d valid data rows (with >= 19 columns)\n", actualDataCount);
+            System.out.printf(java.util.Locale.US, "DEBUG: Counted %d valid data rows (with >= 19 columns)\n", actualDataCount);
             
             this.setTotalCount(actualDataCount);
             
@@ -1274,18 +1274,18 @@ RangeInfo {
             this.minDec = this.getLowerDec();
             this.maxDec = this.getUpperDec();
             
-            System.out.printf("DEBUG: Coordinate bounds set:\n");
-            System.out.printf("  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
-            System.out.printf("  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate bounds set:\n");
+            System.out.printf(java.util.Locale.US, "  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
+            System.out.printf(java.util.Locale.US, "  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
             
             // Convert to tangent plane coordinates for plotting
             this.convertToTangentPlane();
             
             // DEBUG: Check coordinate conversion
-            System.out.printf("DEBUG: Coordinate ranges after conversion:\n");
-            System.out.printf("  X range: %.6f to %.6f\n", this.minX, this.maxX);
-            System.out.printf("  Y range: %.6f to %.6f\n", this.minY, this.maxY);
-            System.out.printf("  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate ranges after conversion:\n");
+            System.out.printf(java.util.Locale.US, "  X range: %.6f to %.6f\n", this.minX, this.maxX);
+            System.out.printf(java.util.Locale.US, "  Y range: %.6f to %.6f\n", this.minY, this.maxY);
+            System.out.printf(java.util.Locale.US, "  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
             
             // Set up plotting ranges
             this.domainMin = this.minX;
@@ -1322,7 +1322,7 @@ RangeInfo {
             
             // ESA Gaia Archive uses gaiadr2.gaia_source table (not VizieR's I/345/gaia2)
             // Column names are the same but no quotes needed around table name
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 5000 ra, dec, parallax, parallax_error, " +
                 "phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, phot_g_n_obs, source_id " +
                 "FROM gaiadr2.gaia_source " +
@@ -1339,7 +1339,7 @@ RangeInfo {
             
             System.out.println("\n========== GAIA DR2 CATALOG LOADING ==========");
             System.out.println("Service: ESA Gaia Archive TAP (gaiadr2.gaia_source)");
-            System.out.printf("Field: RA=%.6f-%.6f, Dec=%.6f-%.6f, MagLimit=%.1f\n", 
+            System.out.printf(java.util.Locale.US, "Field: RA=%.6f-%.6f, Dec=%.6f-%.6f, MagLimit=%.1f\n", 
                 raMin, raMax, decMin, decMax, this.getLimitingMag());
             System.out.println("ADQL Query:");
             System.out.println(adqlQuery);
@@ -1366,7 +1366,7 @@ RangeInfo {
             
             long downloadTime = System.currentTimeMillis() - stepStartTime;
             double downloadRate = (totalBytes / 1024.0) / (downloadTime / 1000.0);
-            System.out.printf("✓ Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
+            System.out.printf(java.util.Locale.US, "Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
                 totalBytes, downloadTime / 1000.0, downloadRate);
             
             // Parse XML document
@@ -1376,14 +1376,14 @@ RangeInfo {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new java.io.ByteArrayInputStream(baos.toByteArray()));
             long parseXmlTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
             
             // Parse the VOTable and populate data arrays
             System.out.print("Processing catalog data... ");
             stepStartTime = System.currentTimeMillis();
             this.parseGaiaDR2VOTable(document);
             long parseDataTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Found %,d stars in %.2f sec\n", 
+            System.out.printf(java.util.Locale.US, "✓ Found %,d stars in %.2f sec\n", 
                 this.getTotalCount(), parseDataTime / 1000.0);
             
             // Hide loading indicator after successful query
@@ -1399,7 +1399,7 @@ RangeInfo {
             }
             
             long totalTime = System.currentTimeMillis() - totalStartTime;
-            System.out.printf("TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
             System.out.println("==============================================\n");
             
             // Close the star window
@@ -1431,7 +1431,7 @@ RangeInfo {
             NodeList trNodes = tableData.getElementsByTagName("TR");
             int dataRows = trNodes.getLength();
             
-            System.out.printf("DEBUG: Found %d data rows in Gaia DR2 VOTable\n", dataRows);
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d data rows in Gaia DR2 VOTable\n", dataRows);
             
             if (dataRows > 0) {
                 // Count actual valid rows (now expecting 9 columns: ra, dec, parallax, parallax_error, G, BP, RP, phot_g_n_obs, source_id)
@@ -1444,7 +1444,7 @@ RangeInfo {
                     }
                 }
                 
-                System.out.printf("DEBUG: Counted %d valid data rows\n", actualDataCount);
+                System.out.printf(java.util.Locale.US, "DEBUG: Counted %d valid data rows\n", actualDataCount);
                 this.setTotalCount(actualDataCount);
                 this.initializeArrays(5, actualDataCount);
                 
@@ -1620,18 +1620,18 @@ RangeInfo {
             this.minDec = this.getLowerDec();
             this.maxDec = this.getUpperDec();
             
-            System.out.printf("DEBUG: Coordinate bounds set:\n");
-            System.out.printf("  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
-            System.out.printf("  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate bounds set:\n");
+            System.out.printf(java.util.Locale.US, "  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
+            System.out.printf(java.util.Locale.US, "  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
             
             // Convert to tangent plane coordinates for plotting
             this.convertToTangentPlane();
             
             // DEBUG: Check coordinate conversion
-            System.out.printf("DEBUG: Coordinate ranges after conversion:\n");
-            System.out.printf("  X range: %.6f to %.6f\n", this.minX, this.maxX);
-            System.out.printf("  Y range: %.6f to %.6f\n", this.minY, this.maxY);
-            System.out.printf("  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate ranges after conversion:\n");
+            System.out.printf(java.util.Locale.US, "  X range: %.6f to %.6f\n", this.minX, this.maxX);
+            System.out.printf(java.util.Locale.US, "  Y range: %.6f to %.6f\n", this.minY, this.maxY);
+            System.out.printf(java.util.Locale.US, "  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
             
             // Set up plotting ranges
             this.domainMin = this.minX;
@@ -1667,7 +1667,7 @@ RangeInfo {
             double decMax = this.getUpperDec();
             
             // ESA Gaia Archive uses gaiadr3.gaia_source table
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 5000 ra, dec, parallax, parallax_error, " +
                 "phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, phot_g_n_obs, source_id " +
                 "FROM gaiadr3.gaia_source " +
@@ -1684,7 +1684,7 @@ RangeInfo {
             
             System.out.println("\n========== GAIA DR3 CATALOG LOADING ==========");
             System.out.println("Service: ESA Gaia Archive TAP (gaiadr3.gaia_source)");
-            System.out.printf("Field: RA=%.6f-%.6f, Dec=%.6f-%.6f, MagLimit=%.1f\n", 
+            System.out.printf(java.util.Locale.US, "Field: RA=%.6f-%.6f, Dec=%.6f-%.6f, MagLimit=%.1f\n", 
                 raMin, raMax, decMin, decMax, this.getLimitingMag());
             System.out.println("ADQL Query:");
             System.out.println(adqlQuery);
@@ -1711,7 +1711,7 @@ RangeInfo {
             
             long downloadTime = System.currentTimeMillis() - stepStartTime;
             double downloadRate = (totalBytes / 1024.0) / (downloadTime / 1000.0);
-            System.out.printf("✓ Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
+            System.out.printf(java.util.Locale.US, "Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
                 totalBytes, downloadTime / 1000.0, downloadRate);
             
             // Parse XML document
@@ -1721,14 +1721,14 @@ RangeInfo {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new java.io.ByteArrayInputStream(baos.toByteArray()));
             long parseXmlTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
             
             // Parse the VOTable and populate data arrays (use same parser as DR2)
             System.out.print("Processing catalog data... ");
             stepStartTime = System.currentTimeMillis();
             this.parseGaiaDR3VOTable(document);
             long parseDataTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Found %,d stars in %.2f sec\n", 
+            System.out.printf(java.util.Locale.US, "✓ Found %,d stars in %.2f sec\n", 
                 this.getTotalCount(), parseDataTime / 1000.0);
             
             // Hide loading indicator after successful query
@@ -1744,7 +1744,7 @@ RangeInfo {
             }
             
             long totalTime = System.currentTimeMillis() - totalStartTime;
-            System.out.printf("TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
             System.out.println("==============================================\n");
             
             // Close the star window
@@ -1795,7 +1795,7 @@ RangeInfo {
             // BOX expects width and height in degrees. getFieldSize() returns diameter in degrees.
             // Use full diameter as box size to match CIRCLE coverage
             double boxSizeDeg = this.getFieldSize();  // Field diameter in degrees
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 5000 RAJ2000, DEJ2000, e_RAJ2000, e_DEJ2000, " +
                 "gmag, e_gmag, rmag, e_rmag, imag, e_imag, Ng, objID " +
                 "FROM \"II/349/ps1\" " +
@@ -1815,7 +1815,7 @@ RangeInfo {
             
             System.out.println("\n========== PANSTARRS DR1 CATALOG LOADING ==========");
             System.out.println("Service: CDS VizieR TAP (II/349/ps1)");
-            System.out.printf("Field: RA=%.6f, Dec=%.6f, Radius=%.2f arcmin, MagLimit=%.1f (r<=%.1f)\n", 
+            System.out.printf(java.util.Locale.US, "Field: RA=%.6f, Dec=%.6f, Radius=%.2f arcmin, MagLimit=%.1f (r<=%.1f)\n", 
                 this.getCentralRA(), this.getCentralDec(), 
                 this.getFieldSize() * 60.0, this.getLimitingMag(), rMagLimit);
             System.out.println("ADQL Query:");
@@ -1843,7 +1843,7 @@ RangeInfo {
             
             long downloadTime = System.currentTimeMillis() - stepStartTime;
             double downloadRate = (totalBytes / 1024.0) / (downloadTime / 1000.0);
-            System.out.printf("✓ Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
+            System.out.printf(java.util.Locale.US, "Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
                 totalBytes, downloadTime / 1000.0, downloadRate);
             
             // Parse XML document
@@ -1853,14 +1853,14 @@ RangeInfo {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new java.io.ByteArrayInputStream(baos.toByteArray()));
             long parseXmlTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
             
             // Parse the VOTable and populate data arrays
             System.out.print("Processing catalog data... ");
             stepStartTime = System.currentTimeMillis();
             this.parsePanstarrsVOTableVizier(document);
             long parseDataTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Found %,d stars in %.2f sec\n", 
+            System.out.printf(java.util.Locale.US, "✓ Found %,d stars in %.2f sec\n", 
                 this.getTotalCount(), parseDataTime / 1000.0);
             
             // Hide loading indicator after successful query
@@ -1871,7 +1871,7 @@ RangeInfo {
                 double dec = this.getCentralDec();
                 if (dec < -30.0) {
                     showMessageDialogAsync(null, 
-                        String.format("No coverage by PanSTARRS in this area.\n\n" +
+                        String.format(java.util.Locale.US, "No coverage by PanSTARRS in this area.\n\n" +
                                     "PanSTARRS observes from Hawaii and has limited coverage south of Dec -30°.\n" +
                                     "Current field center: Dec = %.2f°", dec), 
                         "PanSTARRS Coverage Limitation", 
@@ -1887,11 +1887,11 @@ RangeInfo {
                 stepStartTime = System.currentTimeMillis();
                 this.processPanstarrsData();
                 long processTime = System.currentTimeMillis() - stepStartTime;
-                System.out.printf("✓ Completed in %.2f sec\n", processTime / 1000.0);
+                System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", processTime / 1000.0);
             }
             
             long totalTime = System.currentTimeMillis() - totalStartTime;
-            System.out.printf("TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
             System.out.println("===================================================\n");
             
             // Close the star window
@@ -1923,7 +1923,7 @@ RangeInfo {
             NodeList trNodes = tableData.getElementsByTagName("TR");
             int dataRows = trNodes.getLength();
             
-            System.out.printf("DEBUG: Found %d data rows in PanSTARRS DR2 VOTable\n", dataRows);
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d data rows in PanSTARRS DR2 VOTable\n", dataRows);
             
             if (dataRows > 0) {
                 // Count actual valid rows with valid photometry (not -999)
@@ -1943,7 +1943,7 @@ RangeInfo {
                             } else {
                                 skippedCount++;
                                 if (skippedCount <= 3) {
-                                    System.out.printf("DEBUG: Skipping row %d with null photometry: g=%.2f, r=%.2f, i=%.2f\n", 
+                                    System.out.printf(java.util.Locale.US, "DEBUG: Skipping row %d with null photometry: g=%.2f, r=%.2f, i=%.2f\n", 
                                         i, gmag, rmag, imag);
                                 }
                             }
@@ -1953,7 +1953,7 @@ RangeInfo {
                     }
                 }
                 
-                System.out.printf("DEBUG: Counted %d valid data rows with photometry (%d skipped with nulls)\n", 
+                System.out.printf(java.util.Locale.US, "DEBUG: Counted %d valid data rows with photometry (%d skipped with nulls)\n", 
                     actualDataCount, skippedCount);
                 this.setTotalCount(actualDataCount);
                 this.initializeArrays(5, actualDataCount);
@@ -1988,7 +1988,7 @@ RangeInfo {
                             // Skip -999.0 null values from MAST API
                             if (gmag < -900 || rmag < -900 || imag < -900) {
                                 if (recordIndex < 3) {
-                                    System.out.printf("DEBUG: Skipping row %d in parse loop: g=%.2f, r=%.2f, i=%.2f\n", 
+                                    System.out.printf(java.util.Locale.US, "DEBUG: Skipping row %d in parse loop: g=%.2f, r=%.2f, i=%.2f\n", 
                                         i, gmag, rmag, imag);
                                 }
                                 continue;
@@ -2035,7 +2035,7 @@ RangeInfo {
                             
                             // Debug first few stars
                             if (recordIndex < 5) {
-                                System.out.printf("DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, V-I=%.2f\n",
+                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, V-I=%.2f\n",
                                     recordIndex, gmag, rmag, imag, vmag, vi);
                             }
                             
@@ -2095,7 +2095,7 @@ RangeInfo {
             NodeList trNodes = tableData.getElementsByTagName("TR");
             int dataRows = trNodes.getLength();
             
-            System.out.printf("DEBUG: Found %d data rows in PanSTARRS DR1 VizieR VOTable\n", dataRows);
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d data rows in PanSTARRS DR1 VizieR VOTable\n", dataRows);
             
             if (dataRows > 0) {
                 this.setTotalCount(dataRows);
@@ -2166,7 +2166,7 @@ RangeInfo {
                             
                             // Debug first few stars
                             if (recordIndex < 5) {
-                                System.out.printf("DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, V-I=%.2f\n",
+                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, V-I=%.2f\n",
                                     recordIndex, gmag, rmag, imag, vmag, vi);
                             }
                             
@@ -2192,7 +2192,7 @@ RangeInfo {
                     }
                 }
                 
-                System.out.printf("DEBUG: Successfully parsed %d PanSTARRS DR1 stars from VizieR\n", recordIndex);
+                System.out.printf(java.util.Locale.US, "DEBUG: Successfully parsed %d PanSTARRS DR1 stars from VizieR\n", recordIndex);
                 
             } else {
                 this.setTotalCount(0);
@@ -2232,18 +2232,18 @@ RangeInfo {
             this.minDec = this.getLowerDec();
             this.maxDec = this.getUpperDec();
             
-            System.out.printf("DEBUG: Coordinate bounds set:\n");
-            System.out.printf("  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
-            System.out.printf("  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate bounds set:\n");
+            System.out.printf(java.util.Locale.US, "  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
+            System.out.printf(java.util.Locale.US, "  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
             
             // Convert to tangent plane coordinates for plotting
             this.convertToTangentPlane();
             
             // DEBUG: Check coordinate conversion
-            System.out.printf("DEBUG: Coordinate ranges after conversion:\n");
-            System.out.printf("  X range: %.6f to %.6f\n", this.minX, this.maxX);
-            System.out.printf("  Y range: %.6f to %.6f\n", this.minY, this.maxY);
-            System.out.printf("  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate ranges after conversion:\n");
+            System.out.printf(java.util.Locale.US, "  X range: %.6f to %.6f\n", this.minX, this.maxX);
+            System.out.printf(java.util.Locale.US, "  Y range: %.6f to %.6f\n", this.minY, this.maxY);
+            System.out.printf(java.util.Locale.US, "  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
             
             // Set up plotting ranges
             this.domainMin = this.minX;
@@ -2272,7 +2272,7 @@ RangeInfo {
         try {
             // Construct ADQL query for Tycho-2 catalog via CDS Vizier TAP
             String tapUrl = CDSMirrorSelector.getSelectedTapUrl();
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT RAmdeg, DEmdeg, BTmag, e_BTmag, VTmag, e_VTmag, TYC1, TYC2, TYC3, Num " +
                 "FROM \"I/259/tyc2\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RAmdeg, DEmdeg), " +
@@ -2291,11 +2291,11 @@ RangeInfo {
             System.out.println("Querying Tycho-2 via CDS Vizier TAP: " + queryUrl);
             
             // DEBUG: Print query parameters
-            System.out.printf("DEBUG Tycho-2 Query Parameters:\n");
-            System.out.printf("  Central RA: %.6f degrees\n", this.getCentralRA());
-            System.out.printf("  Central Dec: %.6f degrees\n", this.getCentralDec());
-            System.out.printf("  Field Size: %.1f degrees (%.1f arcmin)\n", this.getFieldSize(), this.getFieldSize() * 60.0);
-            System.out.printf("  Limiting Mag: %.1f\n", this.getLimitingMag());
+            System.out.printf(java.util.Locale.US, "DEBUG Tycho-2 Query Parameters:\n");
+            System.out.printf(java.util.Locale.US, "  Central RA: %.6f degrees\n", this.getCentralRA());
+            System.out.printf(java.util.Locale.US, "  Central Dec: %.6f degrees\n", this.getCentralDec());
+            System.out.printf(java.util.Locale.US, "  Field Size: %.1f degrees (%.1f arcmin)\n", this.getFieldSize(), this.getFieldSize() * 60.0);
+            System.out.printf(java.util.Locale.US, "  Limiting Mag: %.1f\n", this.getLimitingMag());
             System.out.println();
 
             URL url = new URL(queryUrl);
@@ -2313,7 +2313,7 @@ RangeInfo {
             // Close the EnterStar dialog when data loading is complete
             disposeStarWindowAsync();
             
-            System.out.printf("DEBUG Tycho-2 Results: Found %d stars\n", this.getTotalCount());
+            System.out.printf(java.util.Locale.US, "DEBUG Tycho-2 Results: Found %d stars\n", this.getTotalCount());
             
             if (this.getTotalCount() == 0) {
                 showMessageDialogAsync(null, 
@@ -2322,7 +2322,7 @@ RangeInfo {
             } else {
                 // Process the data for plotting
                 this.processTycho2Data();
-                System.out.printf("DEBUG: Processed %d Tycho-2 stars for plotting\n", this.getTotalCount());
+                System.out.printf(java.util.Locale.US, "DEBUG: Processed %d Tycho-2 stars for plotting\n", this.getTotalCount());
             }
             
         } catch (MalformedURLException e) {
@@ -2345,7 +2345,7 @@ RangeInfo {
             // Parse VOTable format from CDS Vizier - look for TABLEDATA section
             NodeList tableDataNodes = document.getElementsByTagName("TABLEDATA");
             
-            System.out.printf("DEBUG: Found %d TABLEDATA elements\n", tableDataNodes.getLength());
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d TABLEDATA elements\n", tableDataNodes.getLength());
             
             if (tableDataNodes.getLength() == 0) {
                 this.setTotalCount(0);
@@ -2357,7 +2357,7 @@ RangeInfo {
             NodeList tableData = tableDataElement.getElementsByTagName("TR");
             int dataRows = tableData.getLength();
             
-            System.out.printf("DEBUG: Found %d TR elements in TABLEDATA\n", dataRows);
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d TR elements in TABLEDATA\n", dataRows);
             
             // Count valid data rows
             int actualDataCount = 0;
@@ -2369,7 +2369,7 @@ RangeInfo {
                 }
             }
             
-            System.out.printf("DEBUG: Counted %d valid data rows\n", actualDataCount);
+            System.out.printf(java.util.Locale.US, "DEBUG: Counted %d valid data rows\n", actualDataCount);
             
             this.setTotalCount(actualDataCount);
             
@@ -2401,7 +2401,7 @@ RangeInfo {
                             // Parse Num field (number of observations)
                             String numStr = cells.item(9).getTextContent().trim();
                             int num = this.parseIntOrDefault(numStr, 1);
-                            System.out.printf("DEBUG Tycho-2: %s Num='%s' parsed as %d\n", starName, numStr, num);
+                            System.out.printf(java.util.Locale.US, "DEBUG Tycho-2: %s Num='%s' parsed as %d\n", starName, numStr, num);
                             
                             // Apply Tycho-2 to Johnson-Cousins transformations
                             // Source: Arne Henden 5/26/2003
@@ -2547,18 +2547,18 @@ RangeInfo {
             this.minDec = this.getLowerDec();
             this.maxDec = this.getUpperDec();
             
-            System.out.printf("DEBUG: Coordinate bounds set:\n");
-            System.out.printf("  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
-            System.out.printf("  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate bounds set:\n");
+            System.out.printf(java.util.Locale.US, "  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
+            System.out.printf(java.util.Locale.US, "  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
             
             // Convert to tangent plane coordinates for plotting
             this.convertToTangentPlane();
             
             // DEBUG: Check coordinate conversion
-            System.out.printf("DEBUG: Coordinate ranges after conversion:\n");
-            System.out.printf("  X range: %.6f to %.6f\n", this.minX, this.maxX);
-            System.out.printf("  Y range: %.6f to %.6f\n", this.minY, this.maxY);
-            System.out.printf("  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
+            System.out.printf(java.util.Locale.US, "DEBUG: Coordinate ranges after conversion:\n");
+            System.out.printf(java.util.Locale.US, "  X range: %.6f to %.6f\n", this.minX, this.maxX);
+            System.out.printf(java.util.Locale.US, "  Y range: %.6f to %.6f\n", this.minY, this.maxY);
+            System.out.printf(java.util.Locale.US, "  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
             
             // Set up plotting ranges
             this.domainMin = this.minX;
@@ -2595,7 +2595,7 @@ RangeInfo {
             // Use BOX instead of CIRCLE (VizieR has better indexing for BOX queries)
             // BOX expects width and height in degrees. getFieldSize() returns diameter in degrees.
             double boxSizeDeg = this.getFieldSize();  // Field diameter in degrees
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 5000 RA_ICRS, DE_ICRS, " +
                 "umag, e_umag, gmag, e_gmag, rmag, e_rmag, imag, e_imag, zmag, e_zmag, objID " +
                 "FROM \"V/147/sdss12\" " +
@@ -2616,7 +2616,7 @@ RangeInfo {
             
             System.out.println("\n========== SDSS DR12 CATALOG LOADING ==========");
             System.out.println("Service: CDS VizieR TAP (V/147/sdss12)");
-            System.out.printf("Field: RA=%.6f, Dec=%.6f, Box=%.2f°×%.2f°, MagLimit=%.1f (g<=%.1f)\n", 
+            System.out.printf(java.util.Locale.US, "Field: RA=%.6f, Dec=%.6f, Box=%.2f°×%.2f°, MagLimit=%.1f (g<=%.1f)\n", 
                 this.getCentralRA(), this.getCentralDec(), 
                 boxSizeDeg, boxSizeDeg, this.getLimitingMag(), gMagLimit);
             System.out.println("ADQL Query:");
@@ -2646,7 +2646,7 @@ RangeInfo {
             
             long downloadTime = System.currentTimeMillis() - stepStartTime;
             double downloadRate = (totalBytes / 1024.0) / (downloadTime / 1000.0);
-            System.out.printf("✓ Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
+            System.out.printf(java.util.Locale.US, "Downloaded %,d bytes in %.2f sec (%.1f KB/s)\n", 
                 totalBytes, downloadTime / 1000.0, downloadRate);
             
             // DEBUG: Show first 1000 chars of XML response
@@ -2662,14 +2662,14 @@ RangeInfo {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document document = db.parse(new java.io.ByteArrayInputStream(baos.toByteArray()));
             long parseXmlTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", parseXmlTime / 1000.0);
             
             // Parse the VOTable and populate data arrays
             System.out.print("Processing catalog data... ");
             stepStartTime = System.currentTimeMillis();
             this.parseSdssVOTable(document);
             long parseDataTime = System.currentTimeMillis() - stepStartTime;
-            System.out.printf("✓ Found %,d stars in %.2f sec\n", 
+            System.out.printf(java.util.Locale.US, "✓ Found %,d stars in %.2f sec\n", 
                 this.getTotalCount(), parseDataTime / 1000.0);
             
             // Hide loading indicator after successful query
@@ -2680,7 +2680,7 @@ RangeInfo {
                 double dec = this.getCentralDec();
                 if (dec < -10.0) {
                     showMessageDialogAsync(null, 
-                        String.format("No coverage by SDSS in this area.\n\n" +
+                        String.format(java.util.Locale.US, "No coverage by SDSS in this area.\n\n" +
                                     "SDSS was observed from Apache Point Observatory (New Mexico) and primarily\n" +
                                     "covers the northern hemisphere. Coverage is limited south of Dec -10°.\n" +
                                     "Current field center: Dec = %.2f°\n\n" +
@@ -2698,11 +2698,11 @@ RangeInfo {
                 stepStartTime = System.currentTimeMillis();
                 this.processSdssData();
                 long processTime = System.currentTimeMillis() - stepStartTime;
-                System.out.printf("✓ Completed in %.2f sec\n", processTime / 1000.0);
+                System.out.printf(java.util.Locale.US, "✓ Completed in %.2f sec\n", processTime / 1000.0);
             }
             
             long totalTime = System.currentTimeMillis() - totalStartTime;
-            System.out.printf("TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "TOTAL TIME: %.2f sec\n", totalTime / 1000.0);
             System.out.println("===============================================\n");
             
             // Close the star window
@@ -2734,7 +2734,7 @@ RangeInfo {
             NodeList trNodes = tableData.getElementsByTagName("TR");
             int dataRows = trNodes.getLength();
             
-            System.out.printf("DEBUG: Found %d data rows in SDSS DR12 VizieR VOTable\n", dataRows);
+            System.out.printf(java.util.Locale.US, "DEBUG: Found %d data rows in SDSS DR12 VizieR VOTable\n", dataRows);
             
             if (dataRows > 0) {
                 this.setTotalCount(dataRows);
@@ -2814,7 +2814,7 @@ RangeInfo {
                             
                             // Debug first few stars
                             if (recordIndex < 5) {
-                                System.out.printf("DEBUG: Star %d - u=%.2f, g=%.2f, r=%.2f, i=%.2f -> U=%.2f, B=%.2f, V=%.2f, R=%.2f, I=%.2f, B-V=%.2f\n",
+                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - u=%.2f, g=%.2f, r=%.2f, i=%.2f -> U=%.2f, B=%.2f, V=%.2f, R=%.2f, I=%.2f, B-V=%.2f\n",
                                     recordIndex, umag, gmag, rmag, imag, U_jc, B_jc, V_jc, R_jc, I_jc, bv);
                             }
                             
@@ -2849,7 +2849,7 @@ RangeInfo {
                     }
                 }
                 
-                System.out.printf("DEBUG: Successfully parsed %d SDSS DR12 stars from VizieR\n", recordIndex);
+                System.out.printf(java.util.Locale.US, "DEBUG: Successfully parsed %d SDSS DR12 stars from VizieR\n", recordIndex);
                 
             } else {
                 this.setTotalCount(0);
@@ -2867,7 +2867,7 @@ RangeInfo {
             this.minZ = 100.0;
             this.maxZ = -100.0;
             
-            System.out.printf("DEBUG: SDSS processSdssData() - Starting with %d stars\n", this.getTotalCount());
+            System.out.printf(java.util.Locale.US, "DEBUG: SDSS processSdssData() - Starting with %d stars\n", this.getTotalCount());
             
             // Calculate coordinate ranges and series assignments for SDSS DR12 data
             this.findVariables(); // Look for variables in the field
@@ -2875,7 +2875,7 @@ RangeInfo {
             // First, show a sample of the magnitude values
             System.out.println("DEBUG: Sample of first 5 SDSS star magnitudes:");
             for (int i = 0; i < Math.min(5, this.getTotalCount()); i++) {
-                System.out.printf("  Star %d: V=%.3f\n", i, this.getVmag(i));
+                System.out.printf(java.util.Locale.US, "  Star %d: V=%.3f\n", i, this.getVmag(i));
             }
             
             for (int i = 0; i < this.getTotalCount(); i++) {
@@ -2895,7 +2895,7 @@ RangeInfo {
                 }
             }
             
-            System.out.printf("DEBUG: SDSS After magnitude loop - minZ=%.3f, maxZ=%.3f\n", this.minZ, this.maxZ);
+            System.out.printf(java.util.Locale.US, "DEBUG: SDSS After magnitude loop - minZ=%.3f, maxZ=%.3f\n", this.minZ, this.maxZ);
             
             // Set coordinate ranges
             this.minRa = this.getLowerRA();
@@ -2903,18 +2903,18 @@ RangeInfo {
             this.minDec = this.getLowerDec();
             this.maxDec = this.getUpperDec();
             
-            System.out.printf("DEBUG: SDSS Coordinate bounds set:\n");
-            System.out.printf("  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
-            System.out.printf("  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
+            System.out.printf(java.util.Locale.US, "DEBUG: SDSS Coordinate bounds set:\n");
+            System.out.printf(java.util.Locale.US, "  RA bounds: %.6f to %.6f\n", this.minRa, this.maxRa);
+            System.out.printf(java.util.Locale.US, "  Dec bounds: %.6f to %.6f\n", this.minDec, this.maxDec);
             
             // Convert to tangent plane coordinates for plotting
             this.convertToTangentPlane();
             
             // DEBUG: Check coordinate conversion
-            System.out.printf("DEBUG: SDSS Coordinate ranges after conversion:\n");
-            System.out.printf("  X range: %.6f to %.6f\n", this.minX, this.maxX);
-            System.out.printf("  Y range: %.6f to %.6f\n", this.minY, this.maxY);
-            System.out.printf("  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
+            System.out.printf(java.util.Locale.US, "DEBUG: SDSS Coordinate ranges after conversion:\n");
+            System.out.printf(java.util.Locale.US, "  X range: %.6f to %.6f\n", this.minX, this.maxX);
+            System.out.printf(java.util.Locale.US, "  Y range: %.6f to %.6f\n", this.minY, this.maxY);
+            System.out.printf(java.util.Locale.US, "  Magnitude range: %.2f to %.2f\n", this.minZ, this.maxZ);
             
             // Set up plotting ranges
             this.domainMin = this.minX;
@@ -3000,7 +3000,7 @@ RangeInfo {
             }
             
             // Build VSP API URL
-            String vspUrl = String.format(
+            String vspUrl = String.format(java.util.Locale.US, 
                 "https://app.aavso.org/vsp/api/chart/?format=json&ra=%.6f&dec=%.6f&fov=%.1f&maglimit=%.1f",
                 this.getCentralRA(),
                 this.getCentralDec(),
@@ -3038,9 +3038,9 @@ RangeInfo {
                 int showCount = Math.min(3, vspCompStars.size());
                 for (int i = 0; i < showCount; i++) {
                     VSPCompStar star = vspCompStars.get(i);
-                    System.out.printf("  Star %d: AUID=%s, RA=%s (%.6f deg), Dec=%s (%.6f deg), V=%.3f, Label=%s\n",
+                    System.out.printf(java.util.Locale.US, "  Star %d: AUID=%s, RA=%s (%.6f deg), Dec=%s (%.6f deg), V=%.3f, Label=%s\n",
                         i+1, star.auid, star.raStr, star.ra, star.decStr, star.dec, star.vmag, star.label);
-                    System.out.printf("    B=%.3f, B-V=%.3f, V-I=%.3f, x=%.4f, y=%.4f\n",
+                    System.out.printf(java.util.Locale.US, "    B=%.3f, B-V=%.3f, V-I=%.3f, x=%.4f, y=%.4f\n",
                         star.bmag, star.bMinusV, star.vMinusI, star.x, star.y);
                 }
             } else {
@@ -3259,8 +3259,15 @@ RangeInfo {
     }
 
     public void findVariables() {
+        // Clear VSX arrays to prevent stale data from previous queries
+        java.util.Arrays.fill(this.varName, null);
+        java.util.Arrays.fill(this.varMax, null);
+        java.util.Arrays.fill(this.varMin, null);
+        java.util.Arrays.fill(this.varType, null);
+        this.numberOfVars = 0;
+        
         try {
-            URL vsxUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.list&fromra=" + String.format("%.6f", this.getLowerRA()) + "&tora=" + String.format("%.6f", this.getUpperRA()) + "&fromdec=" + String.format("%.6f", this.getLowerDec()) + "&todec=" + String.format("%.6f", this.getUpperDec()));
+            URL vsxUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.list&fromra=" + String.format(java.util.Locale.US, "%.6f", this.getLowerRA()) + "&tora=" + String.format(java.util.Locale.US, "%.6f", this.getUpperRA()) + "&fromdec=" + String.format(java.util.Locale.US, "%.6f", this.getLowerDec()) + "&todec=" + String.format(java.util.Locale.US, "%.6f", this.getUpperDec()));
             NodeList objNodes = this.getDocument(vsxUrl).getElementsByTagName("VSXObject");
             this.numberOfVars = Math.min(objNodes.getLength(), 5000); // Limit to array size
             if (this.numberOfVars != 0) {
@@ -3323,18 +3330,18 @@ RangeInfo {
             this.minRa += 180.0;
         }
         
-        System.out.printf("DEBUG: Converting %d stars to tangent plane coordinates\n", this.getTotalCount());
-        System.out.printf("DEBUG: Tangent plane projection center: RA=%.6f, Dec=%.6f\n", this.getCentralRA(), this.getCentralDec());
-        System.out.printf("DEBUG: Data RA range: %.6f to %.6f (midpoint=%.6f)\n", this.minRa, this.maxRa, (this.minRa + this.maxRa)/2.0);
-        System.out.printf("DEBUG: Data Dec range: %.6f to %.6f (midpoint=%.6f)\n", this.minDec, this.maxDec, (this.minDec + this.maxDec)/2.0);
+        System.out.printf(java.util.Locale.US, "DEBUG: Converting %d stars to tangent plane coordinates\n", this.getTotalCount());
+        System.out.printf(java.util.Locale.US, "DEBUG: Tangent plane projection center: RA=%.6f, Dec=%.6f\n", this.getCentralRA(), this.getCentralDec());
+        System.out.printf(java.util.Locale.US, "DEBUG: Data RA range: %.6f to %.6f (midpoint=%.6f)\n", this.minRa, this.maxRa, (this.minRa + this.maxRa)/2.0);
+        System.out.printf(java.util.Locale.US, "DEBUG: Data Dec range: %.6f to %.6f (midpoint=%.6f)\n", this.minDec, this.maxDec, (this.minDec + this.maxDec)/2.0);
         
         // Calculate actual sky coverage
         double raRange = this.maxRa - this.minRa;
         double decRange = this.maxDec - this.minDec;
         double raDegrees = raRange * Math.cos(Math.toRadians(this.getCentralDec()));
-        System.out.printf("DEBUG: Sky coverage: RA=%.3f° (%.1f arcmin), Dec=%.3f° (%.1f arcmin)\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Sky coverage: RA=%.3f° (%.1f arcmin), Dec=%.3f° (%.1f arcmin)\n", 
                          raRange, raRange * 60.0, decRange, decRange * 60.0);
-        System.out.printf("DEBUG: Projected RA width at Dec=%.1f°: %.3f° (cos correction: %.3f)\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Projected RA width at Dec=%.1f°: %.3f° (cos correction: %.3f)\n",
                          this.getCentralDec(), raDegrees, Math.cos(Math.toRadians(this.getCentralDec())));
         
         // Warn about tangent plane projection limits
@@ -3353,7 +3360,7 @@ RangeInfo {
             this.xVal[this.seriesValue[i]][i] = xy[0];
             this.yVal[this.seriesValue[i]][i] = xy[1];
             if (i < 3) { // Debug first few stars
-                System.out.printf("DEBUG: Star %d: RA=%.6f, Dec=%.6f -> X=%.6f, Y=%.6f, Series=%d\n", 
+                System.out.printf(java.util.Locale.US, "DEBUG: Star %d: RA=%.6f, Dec=%.6f -> X=%.6f, Y=%.6f, Series=%d\n", 
                                  i, this.ra[i], this.dec[i], xy[0], xy[1], this.seriesValue[i]);
             }
             ++i;
@@ -3365,8 +3372,8 @@ RangeInfo {
         this.maxX = xy[0];
         this.maxY = xy[1];
         
-        System.out.printf("DEBUG: Converted X range: %.6f to %.6f\n", this.minX, this.maxX);
-        System.out.printf("DEBUG: Converted Y range: %.6f to %.6f\n", this.minY, this.maxY);
+        System.out.printf(java.util.Locale.US, "DEBUG: Converted X range: %.6f to %.6f\n", this.minX, this.maxX);
+        System.out.printf(java.util.Locale.US, "DEBUG: Converted Y range: %.6f to %.6f\n", this.minY, this.maxY);
     }
 
     public void scaleDots() {
@@ -3489,7 +3496,7 @@ RangeInfo {
         long raMins = (long)tempMins;
         double raSecs = (tempMins - (double)raMins) * 60.0;
         
-        return String.format("%02d:%02d:%04.1f", raHrs, raMins, raSecs);
+        return String.format(java.util.Locale.US, "%02d:%02d:%04.1f", raHrs, raMins, raSecs);
     }
 
     // Format Dec for plot title as dd:mm:ss  
@@ -3502,7 +3509,7 @@ RangeInfo {
         long decMins = (long)tempMins;
         double decSecs = (tempMins - (double)decMins) * 60.0;
         
-        return String.format("%s%02d:%02d:%02.0f", sign, decDegs, decMins, decSecs);
+        return String.format(java.util.Locale.US, "%s%02d:%02d:%02.0f", sign, decDegs, decMins, decSecs);
     }
 
     public String getLabel(double vMag) {
@@ -4166,7 +4173,7 @@ RangeInfo {
     
     public void setTransitionMagnitude(Double mag) {
         this.transitionMagnitude = mag;
-        System.out.println("DEBUG: Transition magnitude set to: " + (mag != null ? String.format("%.2f", mag) : "null"));
+        System.out.println("DEBUG: Transition magnitude set to: " + (mag != null ? String.format(java.util.Locale.US, "%.2f", mag) : "null"));
     }
     
     public Double getTransitionMagnitude() {
@@ -4189,7 +4196,7 @@ RangeInfo {
     
     public void setOffsetCorrectionDeltaV(double deltaV) {
         this.offsetCorrectionDeltaV = deltaV;
-        System.out.println("DEBUG: Offset correction ΔV set to: " + String.format("%.3f", deltaV));
+        System.out.println("DEBUG: Offset correction ΔV set to: " + String.format(java.util.Locale.US, "%.3f", deltaV));
     }
     
     public double getOffsetCorrectionDeltaV() {
@@ -4198,7 +4205,7 @@ RangeInfo {
     
     public void setOffsetCorrectionRMS(double rms) {
         this.offsetCorrectionRMS = rms;
-        System.out.println("DEBUG: Offset correction RMS set to: " + String.format("%.3f", rms));
+        System.out.println("DEBUG: Offset correction RMS set to: " + String.format(java.util.Locale.US, "%.3f", rms));
     }
     
     public double getOffsetCorrectionRMS() {
@@ -4211,7 +4218,7 @@ RangeInfo {
      */
     public String getOffsetCorrectionComment() {
         if (offsetCorrectionEnabled) {
-            return String.format("%.3f (%.3f) correction", offsetCorrectionDeltaV, offsetCorrectionRMS);
+            return String.format(java.util.Locale.US, "%.3f (%.3f) correction", offsetCorrectionDeltaV, offsetCorrectionRMS);
         }
         return "";
     }
@@ -4288,7 +4295,7 @@ RangeInfo {
             }
             
             if (deepest != null) {
-                System.out.println("DEBUG: Transition filter - star at V=" + String.format("%.2f", starVMag) + 
+                System.out.println("DEBUG: Transition filter - star at V=" + String.format(java.util.Locale.US, "%.2f", starVMag) + 
                                  " switched from source " + starSource + " to preferred source " + deepest.source);
             }
             return deepest;
@@ -4301,7 +4308,7 @@ RangeInfo {
             // Want shallow but primary is deep - look for shallow match
             for (CatalogEntry match : matches) {
                 if (isShallowCatalog(match.source)) {
-                    System.out.println("DEBUG: Transition filter - star at V=" + String.format("%.2f", starVMag) + 
+                    System.out.println("DEBUG: Transition filter - star at V=" + String.format(java.util.Locale.US, "%.2f", starVMag) + 
                                      " switched from source " + starSource + " to preferred source " + match.source);
                     return match;
                 }
@@ -4322,7 +4329,7 @@ RangeInfo {
             }
             
             if (deepest != null) {
-                System.out.println("DEBUG: Transition filter - star at V=" + String.format("%.2f", starVMag) + 
+                System.out.println("DEBUG: Transition filter - star at V=" + String.format(java.util.Locale.US, "%.2f", starVMag) + 
                                  " switched from source " + starSource + " to preferred source " + deepest.source);
             }
             return deepest;
@@ -4895,7 +4902,7 @@ RangeInfo {
             System.out.println("Loading APASS9 as secondary catalog...");
             
             String tapUrl = CDSMirrorSelector.getSelectedTapUrl();
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT RAJ2000, DEJ2000, Vmag, e_Vmag, \"B-V\", \"e_B-V\", nobs " +
                 "FROM \"II/336/apass9\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RAJ2000, DEJ2000), " +
@@ -4911,12 +4918,12 @@ RangeInfo {
             System.out.println("  Connecting to VizieR...");
             long stepStart = System.currentTimeMillis();
             URL url = new URL(queryUrl);
-            System.out.printf("    → Opening connection to %s\n", url.getHost());
-            System.out.printf("    → Sending TAP request...\n");
+            System.out.printf(java.util.Locale.US, "    → Opening connection to %s\n", url.getHost());
+            System.out.printf(java.util.Locale.US, "    → Sending TAP request...\n");
             Document document = this.getDocument(url);
             long downloadTime = System.currentTimeMillis() - stepStart;
-            System.out.printf("    → Data received\n");
-            System.out.printf("✓ (%.1fs)\n", downloadTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "    → Data received\n");
+            System.out.printf(java.util.Locale.US, "✓ (%.1fs)\n", downloadTime / 1000.0);
             
             if (document == null) {
                 System.out.println("  ERROR: Failed to retrieve data");
@@ -4965,11 +4972,11 @@ RangeInfo {
             }
             
             long parseTime = System.currentTimeMillis() - stepStart;
-            System.out.printf("✓ (%.1fs)\n", parseTime / 1000.0);
-            System.out.printf("  Added %d APASS9 stars\n", addedCount);
+            System.out.printf(java.util.Locale.US, "✓ (%.1fs)\n", parseTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "  Added %d APASS9 stars\n", addedCount);
             
             long totalTime = System.currentTimeMillis() - startTime;
-            System.out.printf("  Total time: %.1fs\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "  Total time: %.1fs\n", totalTime / 1000.0);
         } catch (Exception e) {
             System.err.println("Error loading APASS9 secondary data: " + e.getMessage());
         }
@@ -4987,7 +4994,7 @@ RangeInfo {
             double decMax = this.getUpperDec();
             
             // Use ESA Gaia Archive with gaiadr2.gaia_source table (not VizieR)
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 5000 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, phot_g_n_obs " +
                 "FROM gaiadr2.gaia_source " +
                 "WHERE ra BETWEEN %.6f AND %.6f " +
@@ -5076,7 +5083,7 @@ RangeInfo {
             double decMax = this.getUpperDec();
             
             // Use ESA Gaia Archive with gaiadr3.gaia_source table
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 5000 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, phot_g_n_obs " +
                 "FROM gaiadr3.gaia_source " +
                 "WHERE ra BETWEEN %.6f AND %.6f " +
@@ -5164,7 +5171,7 @@ RangeInfo {
             
             // Build ADQL query for PanSTARRS DR1
             // Include NOT NULL constraints for all required photometry columns
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT RAJ2000, DEJ2000, gmag, rmag, imag, Ng " +
                 "FROM \"II/349/ps1\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RAJ2000, DEJ2000), " +
@@ -5181,12 +5188,12 @@ RangeInfo {
             System.out.println("  Connecting to VizieR...");
             long stepStart = System.currentTimeMillis();
             URL url = new URL(queryUrl);
-            System.out.printf("    → Opening connection to %s\n", url.getHost());
-            System.out.printf("    → Sending TAP request for PanSTARRS DR1...\n");
+            System.out.printf(java.util.Locale.US, "    → Opening connection to %s\n", url.getHost());
+            System.out.printf(java.util.Locale.US, "    → Sending TAP request for PanSTARRS DR1...\n");
             Document document = this.getDocument(url);
             long downloadTime = System.currentTimeMillis() - stepStart;
-            System.out.printf("    → Data received\n");
-            System.out.printf("  ✓ (%.1fs)\n", downloadTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "    → Data received\n");
+            System.out.printf(java.util.Locale.US, "  ✓ (%.1fs)\n", downloadTime / 1000.0);
             
             if (document == null) {
                 System.out.println("  ERROR: Failed to retrieve data");
@@ -5259,13 +5266,13 @@ RangeInfo {
             }
             
             long parseTime = System.currentTimeMillis() - stepStart;
-            System.out.printf("✓ (%.1fs)\n", parseTime / 1000.0);
-            System.out.printf("  Processed %d rows, added %d stars (%.1f%% passed magnitude filter)\n", 
+            System.out.printf(java.util.Locale.US, "✓ (%.1fs)\n", parseTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "  Processed %d rows, added %d stars (%.1f%% passed magnitude filter)\n", 
                 processedCount, addedCount, 
                 processedCount > 0 ? 100.0 * addedCount / processedCount : 0.0);
             
             long totalTime = System.currentTimeMillis() - startTime;
-            System.out.printf("  Total time: %.1fs\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "  Total time: %.1fs\n", totalTime / 1000.0);
             
             // Warn if no data and Dec < -30 (outside coverage)
             if (addedCount == 0 && this.getCentralDec() < -30.0) {
@@ -5286,7 +5293,7 @@ RangeInfo {
             
             // Build ADQL query for SDSS DR12
             double gMagLimit = this.getLimitingMag() + 1.0;
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT RA_ICRS, DE_ICRS, umag, gmag, rmag, imag " +
                 "FROM \"V/147/sdss12\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RA_ICRS, DE_ICRS), " +
@@ -5320,8 +5327,8 @@ RangeInfo {
             inputStream.close();
             
             long downloadTime = System.currentTimeMillis() - stepStart;
-            System.out.printf("    → Data received\n");
-            System.out.printf("  ✓ (%.1fs)\n", downloadTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "    → Data received\n");
+            System.out.printf(java.util.Locale.US, "  ✓ (%.1fs)\n", downloadTime / 1000.0);
             
             // Parse VOTable response
             System.out.print("  Parsing and transforming photometry... ");
@@ -5382,13 +5389,13 @@ RangeInfo {
             }
             
             long parseTime = System.currentTimeMillis() - stepStart;
-            System.out.printf("✓ (%.1fs)\n", parseTime / 1000.0);
-            System.out.printf("  Processed %d rows, added %d stars (%.1f%% passed magnitude filter)\n", 
+            System.out.printf(java.util.Locale.US, "✓ (%.1fs)\n", parseTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "  Processed %d rows, added %d stars (%.1f%% passed magnitude filter)\n", 
                 processedCount, addedCount, 
                 processedCount > 0 ? 100.0 * addedCount / processedCount : 0.0);
             
             long totalTime = System.currentTimeMillis() - startTime;
-            System.out.printf("  Total time: %.1fs\n", totalTime / 1000.0);
+            System.out.printf(java.util.Locale.US, "  Total time: %.1fs\n", totalTime / 1000.0);
         } catch (Exception e) {
             System.err.println("Error loading SDSS secondary data: " + e.getMessage());
         }
@@ -5398,7 +5405,7 @@ RangeInfo {
         try {
             System.out.println("Loading Tycho-2 as secondary catalog...");
             String tapUrl = CDSMirrorSelector.getSelectedTapUrl();
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT RAmdeg, DEmdeg, VTmag, e_VTmag, BTmag, e_BTmag, num " +
                 "FROM \"I/259/tyc2\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RAmdeg, DEmdeg), " +
@@ -5515,7 +5522,7 @@ RangeInfo {
                                      double targetRa, double targetDec, double searchRadius,
                                      int sourceNum, java.util.List<CatalogEntry> matches, double matchThreshold) {
         try {
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 1 %s, %s, %s, %s, %s, %s " +
                 "FROM \"%s\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', %s, %s), " +
@@ -5573,7 +5580,7 @@ RangeInfo {
     private void queryGaiaDR2ForMatch(String tapUrl, double targetRa, double targetDec, double searchRadius,
                                      java.util.List<CatalogEntry> matches, double matchThreshold) {
         try {
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 1 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag " +
                 "FROM \"I/345/gaia2\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', ra, dec), " +
@@ -5618,7 +5625,7 @@ RangeInfo {
                                 double vi = vmag - imag;
                                 
                                 matches.add(new CatalogEntry("Gaia DR2", ra, dec, vmag, 0.01, 99.999, 99.999, vi, 0.01, 48, 0));
-                                System.out.println("DEBUG: Found Gaia match at distance=" + (distance*3600) + " arcsec, V=" + String.format("%.2f", vmag));
+                                System.out.println("DEBUG: Found Gaia match at distance=" + (distance*3600) + " arcsec, V=" + String.format(java.util.Locale.US, "%.2f", vmag));
                             }
                         }
                     }
@@ -5634,7 +5641,7 @@ RangeInfo {
     private void queryPanstarrsForMatch(String tapUrl, double targetRa, double targetDec, double searchRadius,
                                        java.util.List<CatalogEntry> matches, double matchThreshold) {
         try {
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 1 RAJ2000, DEJ2000, gmag, rmag, imag " +
                 "FROM \"II/349/ps1\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RAJ2000, DEJ2000), " +
@@ -5681,7 +5688,7 @@ RangeInfo {
                                 double vi = vr + ri;
                                 
                                 matches.add(new CatalogEntry("PanSTARRS", ra, dec, vmag, 0.01, 99.999, 99.999, vi, 0.01, 46, 0));
-                                System.out.println("DEBUG: Found PanSTARRS match at distance=" + (distance*3600) + " arcsec, V=" + String.format("%.2f", vmag));
+                                System.out.println("DEBUG: Found PanSTARRS match at distance=" + (distance*3600) + " arcsec, V=" + String.format(java.util.Locale.US, "%.2f", vmag));
                             }
                         }
                     }
@@ -5697,7 +5704,7 @@ RangeInfo {
     private void queryTycho2ForMatch(String tapUrl, double targetRa, double targetDec, double searchRadius,
                                     java.util.List<CatalogEntry> matches, double matchThreshold) {
         try {
-            String adqlQuery = String.format(
+            String adqlQuery = String.format(java.util.Locale.US, 
                 "SELECT TOP 1 RAmdeg, DEmdeg, BTmag, VTmag " +
                 "FROM \"I/259/tyc2\" " +
                 "WHERE 1=CONTAINS(POINT('ICRS', RAmdeg, DEmdeg), " +
@@ -5741,7 +5748,7 @@ RangeInfo {
                                 double bv = bmag - vmag;
                                 
                                 matches.add(new CatalogEntry("Tycho-2", ra, dec, vmag, 0.01, bv, 0.01, 99.999, 99.999, 901, 0));
-                                System.out.println("DEBUG: Found Tycho-2 match at distance=" + (distance*3600) + " arcsec, V=" + String.format("%.2f", vmag));
+                                System.out.println("DEBUG: Found Tycho-2 match at distance=" + (distance*3600) + " arcsec, V=" + String.format(java.util.Locale.US, "%.2f", vmag));
                             }
                         }
                     }
@@ -5760,7 +5767,7 @@ RangeInfo {
             int secondaryCount = secondaryCatalogData.size();
             int totalCount = primaryCount + secondaryCount;
             
-            System.out.printf("DEBUG: Merging catalogs - Primary: %d, Secondary: %d, Total: %d\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: Merging catalogs - Primary: %d, Secondary: %d, Total: %d\n", 
                 primaryCount, secondaryCount, totalCount);
             
             if (secondaryCount == 0) {
@@ -5873,7 +5880,7 @@ RangeInfo {
             }
             
             int actualTotalCount = mergedIndex;
-            System.out.printf("DEBUG: Merge complete - Total: %d (%d duplicates removed)\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: Merge complete - Total: %d (%d duplicates removed)\n", 
                 actualTotalCount, duplicatesSkipped);
             
             // Resize arrays and update main data structures
@@ -5915,7 +5922,7 @@ RangeInfo {
                 }
             }
             
-            System.out.printf("DEBUG: Recalculated bounds - RA: %.6f to %.6f, Dec: %.6f to %.6f\n",
+            System.out.printf(java.util.Locale.US, "DEBUG: Recalculated bounds - RA: %.6f to %.6f, Dec: %.6f to %.6f\n",
                 this.minRa, this.maxRa, this.minDec, this.maxDec);
             
             // Check series distribution
@@ -5923,7 +5930,7 @@ RangeInfo {
             for (int i = 0; i < actualTotalCount; i++) {
                 seriesCounts[this.seriesValue[i]]++;
             }
-            System.out.printf("DEBUG: Series distribution after merge: [0]=%d, [1]=%d, [2]=%d, [3]=%d, [4]=%d\n",
+            System.out.printf(java.util.Locale.US, "DEBUG: Series distribution after merge: [0]=%d, [1]=%d, [2]=%d, [3]=%d, [4]=%d\n",
                 seriesCounts[0], seriesCounts[1], seriesCounts[2], seriesCounts[3], seriesCounts[4]);
             
             // Reprocess data for plotting

@@ -30,7 +30,7 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
             this.vmag = vmag;
             this.series = series;
             this.name = name;
-            this.info = String.format("RA: %.6f°, Dec: %.6f°, Mag: %.2f", ra, dec, vmag);
+            this.info = String.format(java.util.Locale.US, "RA: %.6f°, Dec: %.6f°, Mag: %.2f", ra, dec, vmag);
             
             // Set warm pastel color based on series
             switch(series) {
@@ -54,8 +54,8 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
     private double minX, maxX, minY, maxY;
     private int plotWidth, plotHeight;
     private int leftMargin = 80, rightMargin = 30, topMargin = 50, bottomMargin = 80;
-    private DecimalFormat df = new DecimalFormat("0.0000");
-    private DecimalFormat magFormat = new DecimalFormat("0.00");
+    private DecimalFormat df = new DecimalFormat("0.0000", new java.text.DecimalFormatSymbols(java.util.Locale.US));
+    private DecimalFormat magFormat = new DecimalFormat("0.00", new java.text.DecimalFormatSymbols(java.util.Locale.US));
     
     // Interaction variables
     private Star hoveredStar = null;
@@ -103,10 +103,10 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
             int series = i % 5;
             
             stars.add(new Star(centralRA + offsetRA, centralDec + offsetDec, 
-                              mag, series, String.format("Star_%d", i + 6)));
+                              mag, series, String.format(java.util.Locale.US, "Star_%d", i + 6)));
         }
         
-        System.out.printf("Added %d stars\n", stars.size());
+        System.out.printf(java.util.Locale.US, "Added %d stars\n", stars.size());
     }
     
     private void convertCoordinates() {
@@ -136,7 +136,7 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
         minY -= yPad;
         maxY += yPad;
         
-        System.out.printf("Coordinate ranges: X=[%.6f, %.6f], Y=[%.6f, %.6f]\n", 
+        System.out.printf(java.util.Locale.US, "Coordinate ranges: X=[%.6f, %.6f], Y=[%.6f, %.6f]\n", 
                          minX, maxX, minY, maxY);
     }
     
@@ -297,7 +297,7 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
         g2.setFont(new Font("Arial", Font.BOLD, 18));
         FontMetrics fm = g2.getFontMetrics();
         
-        String title = String.format("Star Field around EE Eri (RA: %.6f°, Dec: %.6f°)", 
+        String title = String.format(java.util.Locale.US, "Star Field around EE Eri (RA: %.6f°, Dec: %.6f°)", 
                                     centralRA, centralDec);
         int titleWidth = fm.stringWidth(title);
         g2.drawString(title, (getWidth() - titleWidth) / 2, 25);
@@ -305,7 +305,7 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
         // Subtitle with star count
         g2.setFont(new Font("Arial", Font.PLAIN, 12));
         fm = g2.getFontMetrics();
-        String subtitle = String.format("%d stars displayed", stars.size());
+        String subtitle = String.format(java.util.Locale.US, "%d stars displayed", stars.size());
         int subtitleWidth = fm.stringWidth(subtitle);
         g2.drawString(subtitle, (getWidth() - subtitleWidth) / 2, 42);
     }
@@ -319,7 +319,7 @@ public class AdvancedStarPlot extends JPanel implements MouseMotionListener {
         String[] lines = {
             hoveredStar.name,
             hoveredStar.info,
-            String.format("Series: %d", hoveredStar.series)
+            String.format(java.util.Locale.US, "Series: %d", hoveredStar.series)
         };
         
         int maxWidth = 0;

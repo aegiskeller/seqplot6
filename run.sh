@@ -25,7 +25,7 @@ fi
 # Set classpath for JFreeChart libraries
 CLASSPATH="build:lib/jcommon-1.0.23.jar:lib/jfreechart-1.0.19.jar"
 
-echo "🚀 Starting Seqplot 6.0.0..."
+echo "Starting Seqplot 6.0.0..."
 java -cp "$CLASSPATH" AAVSOtools.Seqplot
 
-echo "✨ Seqplot session ended"
+echo "Seqplot session ended"

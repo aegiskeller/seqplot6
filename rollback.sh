@@ -18,7 +18,7 @@ list_rollbacks() {
             if [ -d "$backup" ]; then
                 timestamp=$(echo "$backup" | sed 's/backup_v6.0.0_//')
                 formatted_date=$(date -j -f "%Y%m%d_%H%M%S" "$timestamp" "+%B %d, %Y at %I:%M:%S %p" 2>/dev/null || echo "$timestamp")
-                echo "  📁 $backup"
+                echo "  $backup"
                 echo "     Created: $formatted_date"
                 if [ -f "$backup/BACKUP_INFO.txt" ]; then
                     echo "     Status: Enhanced version with warm pastel colors"
@@ -61,7 +61,7 @@ restore_rollback() {
     rm -f *.class
     
     # Restore source files
-    echo "📁 Restoring source files..."
+    echo "Restoring source files..."
     if [ -d "$backup_dir/src" ]; then
         rm -rf src/
         cp -r "$backup_dir/src" .
@@ -92,7 +92,7 @@ restore_rollback() {
     echo
     echo "✅ Rollback completed successfully!"
     echo "🎨 Enhanced Seqplot 6.0.0 with warm pastel colors restored"
-    echo "🚀 Run ./run.sh to launch the application"
+    echo "Run ./run.sh to launch the application"
 }
 
 # Function to create a new rollback point

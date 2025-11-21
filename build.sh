@@ -32,7 +32,7 @@ if [ $? -eq 0 ]; then
     echo "Compilation successful!"
     
     # Copy resource files (icon)
-    echo "📁 Copying resource files..."
+    echo "Copying resource files..."
     mkdir -p build/AAVSOtools
     if [ -f "src/AAVSOtools/seqplot_icon.png" ]; then
         cp src/AAVSOtools/seqplot_icon.png build/AAVSOtools/

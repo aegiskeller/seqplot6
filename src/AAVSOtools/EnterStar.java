@@ -747,9 +747,9 @@ FocusListener {
     private static String formatNumber(double value) {
         double rounded = Math.rint(value);
         if (Math.abs(value - rounded) < 1e-6) {
-            return String.format(Locale.US, "%.0f", rounded);
+            return String.format(java.util.Locale.US, "%.0f", rounded);
         }
-        return String.format(Locale.US, "%.1f", value);
+        return String.format(java.util.Locale.US, "%.1f", value);
     }
 
     private static final class ChartSizePreset {
@@ -912,7 +912,7 @@ FocusListener {
         int mm = (int)raMinutes;
         double ss = (raMinutes - mm) * 60.0;
         
-        return String.format("%02d:%02d:%05.2f", hh, mm, ss);
+        return String.format(java.util.Locale.US, "%02d:%02d:%05.2f", hh, mm, ss);
     }
     
     /**
@@ -927,9 +927,9 @@ FocusListener {
         double ss = (decMinutes - mm) * 60.0;
         
         if (isNegative) {
-            return String.format("-%02d:%02d:%04.1f", dd, mm, ss);
+            return String.format(java.util.Locale.US, "-%02d:%02d:%04.1f", dd, mm, ss);
         } else {
-            return String.format("+%02d:%02d:%04.1f", dd, mm, ss);
+            return String.format(java.util.Locale.US, "+%02d:%02d:%04.1f", dd, mm, ss);
         }
     }
 
@@ -1015,7 +1015,7 @@ FocusListener {
                     // If limiting mag is brighter than (less than) the star's faintest magnitude
                     if (limitingMag < minMag) {
                         int response = JOptionPane.showConfirmDialog(this,
-                            String.format("Warning: Your limiting magnitude (%.1f) is brighter than\n" +
+                            String.format(java.util.Locale.US, "Warning: Your limiting magnitude (%.1f) is brighter than\n" +
                                          "the star's faintest magnitude (%.1f).\n\n" +
                                          "This may result in no comparison stars being found.\n" +
                                          "Recommended limiting magnitude: %.1f or fainter.\n\n" +
@@ -1332,7 +1332,7 @@ FocusListener {
         System.out.println("DEBUG: Using Limiting mag from field: " + magLimit);
         
         // Try to get VSP chart - first by star name, then by AUID if that fails
-        String vspPageUrl = String.format(Locale.US, "https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
+        String vspPageUrl = String.format(java.util.Locale.US, "https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
             starName.replace(" ", "+"), magLimit);
         
         // DEBUG: Print URL to console
@@ -1349,7 +1349,7 @@ FocusListener {
             String auid = db.getAuid();
             if (auid != null && !auid.isEmpty() && !auid.equals("NA")) {
                 System.out.println("WARNING: Star name lookup failed, trying AUID: " + auid);
-                vspPageUrl = String.format(Locale.US, "https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
+                vspPageUrl = String.format(java.util.Locale.US, "https://apps.aavso.org/vsp/chart/?star=%s&orientation=visual&type=chart&fov=60.0&maglimit=%.1f&resolution=75&north=down&east=right&lines=True",
                     auid, magLimit);
                 System.out.println("VSP Page URL (AUID): " + vspPageUrl);
                 vspImageUrl = extractImageUrlFromVspHtml(vspPageUrl);
@@ -1569,7 +1569,7 @@ FocusListener {
                 this.db.setCatalogReadTimeoutSeconds(newTimeout);
                 JOptionPane.showMessageDialog(
                     this,
-                    String.format("Catalog query timeout set to %d seconds.", 
+                    String.format(java.util.Locale.US, "Catalog query timeout set to %d seconds.", 
                         this.db.getCatalogReadTimeoutSeconds()),
                     "Timeout Updated",
                     JOptionPane.INFORMATION_MESSAGE
@@ -1973,7 +1973,7 @@ FocusListener {
             double magRange = minMag - maxMag;
             
             // Display the range
-            String displayText = String.format("Mag Range: %.2f - %.2f", maxMag, minMag);
+            String displayText = String.format(java.util.Locale.US, "Mag Range: %.2f - %.2f", maxMag, minMag);
             System.out.println("DEBUG: Setting mag range label to: '" + displayText + "'");
             this.magRangeLabel.setText(displayText);
             this.magRangeLabel.setVisible(true);
@@ -2034,16 +2034,16 @@ FocusListener {
                             if (elapsed < 2000) {
                                 // Fast response (< 2 seconds) - Green
                                 statusLabels[index].setForeground(new java.awt.Color(0, 150, 0));
-                                statusLabels[index].setToolTipText(String.format("Online (~%dms)", elapsed));
+                                statusLabels[index].setToolTipText(String.format(java.util.Locale.US, "Online (~%dms)", elapsed));
                             } else {
                                 // Slow response (2-5 seconds) - Orange
                                 statusLabels[index].setForeground(new java.awt.Color(255, 140, 0));
-                                statusLabels[index].setToolTipText(String.format("Slow (~%dms)", elapsed));
+                                statusLabels[index].setToolTipText(String.format(java.util.Locale.US, "Slow (~%dms)", elapsed));
                             }
                         } else {
                             // Error response - Red
                             statusLabels[index].setForeground(java.awt.Color.RED);
-                            statusLabels[index].setToolTipText(String.format("Error (HTTP %d)", responseCode));
+                            statusLabels[index].setToolTipText(String.format(java.util.Locale.US, "Error (HTTP %d)", responseCode));
                         }
                     });
                     

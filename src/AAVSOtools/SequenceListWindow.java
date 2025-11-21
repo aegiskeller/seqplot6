@@ -150,11 +150,11 @@ public class SequenceListWindow extends JFrame {
                     if (Math.abs(d - 99.999) < 0.001 || Math.abs(d - 9.999) < 0.001) {
                         value = "NA";
                     } else if (column == 3) {  // RA seconds - 3 decimal places
-                        value = String.format("%.3f", d);
+                        value = String.format(java.util.Locale.US, "%.3f", d);
                     } else if (column == 6) {  // Dec seconds - 1 decimal place
-                        value = String.format("%.1f", d);
+                        value = String.format(java.util.Locale.US, "%.1f", d);
                     } else {  // Other double values - 3 decimal places
-                        value = String.format("%.3f", d);
+                        value = String.format(java.util.Locale.US, "%.3f", d);
                     }
                 }
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -173,7 +173,7 @@ public class SequenceListWindow extends JFrame {
                     if (Math.abs(d - 99.999) < 0.001 || Math.abs(d - 9.999) < 0.001) {
                         value = "NA";
                     } else {
-                        value = String.format("%.3f", d);
+                        value = String.format(java.util.Locale.US, "%.3f", d);
                     }
                 } else if (value instanceof String && value.equals("NA")) {
                     // Already "NA" string from table model
@@ -637,7 +637,7 @@ public class SequenceListWindow extends JFrame {
         if (db.getOffsetCorrectionEnabled() && isDeepCatalog) {
             double correction = db.getOffsetCorrectionDeltaV();
             entry.v -= correction; // Subtract the offset to correct the magnitude
-            System.out.println(String.format("DEBUG: Applied offset correction of %.3f to star from source %d (V=%.3f -> V=%.3f)",
+            System.out.println(String.format(java.util.Locale.US, "DEBUG: Applied offset correction of %.3f to star from source %d (V=%.3f -> V=%.3f)",
                 correction, source, vmag, entry.v));
         }
         
@@ -742,15 +742,15 @@ public class SequenceListWindow extends JFrame {
         
         // Write header
         writer.println("#TYPE=VSDadmin1");
-        writer.printf("#Data requested for: %s RA: %.5f DEC: %.5f Field size: %.0f Limiting mag: %.1f%n",
+        writer.printf(java.util.Locale.US, "#Data requested for: %s RA: %.5f DEC: %.5f Field size: %.0f Limiting mag: %.1f%n",
             targetName, ra, dec, fov, limitingMag);
-        writer.printf("# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=%.6f&tora=%.6f&fromdec=%.6f&todec=%.6f&tomag=%.1f&source=29&limit=5000%n",
+        writer.printf(java.util.Locale.US, "# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=%.6f&tora=%.6f&fromdec=%.6f&todec=%.6f&tomag=%.1f&source=29&limit=5000%n",
             fromRA, toRA, fromDec, toDec, limitingMag);
-        writer.printf("# chart:, https://www.aavso.org/apps/vsp/chart/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f%n",
+        writer.printf(java.util.Locale.US, "# chart:, https://www.aavso.org/apps/vsp/chart/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f%n",
             targetName.replace(" ", "+"), ra, dec, fov, limitingMag);
-        writer.printf("# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f&all=on%n",
+        writer.printf(java.util.Locale.US, "# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f&all=on%n",
             targetName.replace(" ", "+"), ra, dec, fov, limitingMag);
-        writer.printf("#TARGET=%s%n", targetName);
+        writer.printf(java.util.Locale.US, "#TARGET=%s%n", targetName);
         writer.println("#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,V,Verr,B-V,B-Verr,U-B,U-Berr,V-R,V-Rerr,R-I,R-Ierr,V-I,V-Ierr,Source,# Comments");
         
         // Write data rows
@@ -792,18 +792,18 @@ public class SequenceListWindow extends JFrame {
             double viErr = viErrObj != null ? ((Number)viErrObj).doubleValue() : 0.0;
             
             // Format the line with proper handling of NA values (replace 99.999 and 9.999 with "NA")
-            String bvStr = (bv >= 9.999 || bv <= -9.999) ? "NA" : String.format("%.3f", bv);
-            String bvErrStr = (bvErr >= 9.999 || bvErr <= -9.999 || bvErr == 0.0) ? "NA" : String.format("%.3f", bvErr);
-            String ubStr = (Double.isNaN(ub) || ub >= 9.999 || ub <= -9.999) ? "NA" : String.format("%.3f", ub);
-            String ubErrStr = (Double.isNaN(ubErr) || ubErr >= 9.999 || ubErr <= -9.999 || ubErr == 0.0) ? "NA" : String.format("%.3f", ubErr);
-            String vrStr = (Double.isNaN(vr) || vr >= 9.999 || vr <= -9.999) ? "NA" : String.format("%.3f", vr);
-            String vrErrStr = (Double.isNaN(vrErr) || vrErr >= 9.999 || vrErr <= -9.999 || vrErr == 0.0) ? "NA" : String.format("%.3f", vrErr);
-            String riStr = (Double.isNaN(ri) || ri >= 9.999 || ri <= -9.999) ? "NA" : String.format("%.3f", ri);
-            String riErrStr = (Double.isNaN(riErr) || riErr >= 9.999 || riErr <= -9.999 || riErr == 0.0) ? "NA" : String.format("%.3f", riErr);
-            String viStr = (Double.isNaN(vi) || vi >= 9.999 || vi <= -9.999) ? "NA" : String.format("%.3f", vi);
-            String viErrStr = (Double.isNaN(viErr) || viErr >= 9.999 || viErr <= -9.999 || viErr == 0.0) ? "NA" : String.format("%.3f", viErr);
+            String bvStr = (bv >= 9.999 || bv <= -9.999) ? "NA" : String.format(java.util.Locale.US, "%.3f", bv);
+            String bvErrStr = (bvErr >= 9.999 || bvErr <= -9.999 || bvErr == 0.0) ? "NA" : String.format(java.util.Locale.US, "%.3f", bvErr);
+            String ubStr = (Double.isNaN(ub) || ub >= 9.999 || ub <= -9.999) ? "NA" : String.format(java.util.Locale.US, "%.3f", ub);
+            String ubErrStr = (Double.isNaN(ubErr) || ubErr >= 9.999 || ubErr <= -9.999 || ubErr == 0.0) ? "NA" : String.format(java.util.Locale.US, "%.3f", ubErr);
+            String vrStr = (Double.isNaN(vr) || vr >= 9.999 || vr <= -9.999) ? "NA" : String.format(java.util.Locale.US, "%.3f", vr);
+            String vrErrStr = (Double.isNaN(vrErr) || vrErr >= 9.999 || vrErr <= -9.999 || vrErr == 0.0) ? "NA" : String.format(java.util.Locale.US, "%.3f", vrErr);
+            String riStr = (Double.isNaN(ri) || ri >= 9.999 || ri <= -9.999) ? "NA" : String.format(java.util.Locale.US, "%.3f", ri);
+            String riErrStr = (Double.isNaN(riErr) || riErr >= 9.999 || riErr <= -9.999 || riErr == 0.0) ? "NA" : String.format(java.util.Locale.US, "%.3f", riErr);
+            String viStr = (Double.isNaN(vi) || vi >= 9.999 || vi <= -9.999) ? "NA" : String.format(java.util.Locale.US, "%.3f", vi);
+            String viErrStr = (Double.isNaN(viErr) || viErr >= 9.999 || viErr <= -9.999 || viErr == 0.0) ? "NA" : String.format(java.util.Locale.US, "%.3f", viErr);
             
-            writer.printf("%s,%d,%d,%.2f,%d,%d,%.1f,%.3f,%.3f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,# %s%n",
+            writer.printf(java.util.Locale.US, "%s,%d,%d,%.2f,%d,%d,%.1f,%.3f,%.3f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,# %s%n",
                 label, raHH, raMM, raSS, decDD, decMM, decSS,
                 v, vErr,
                 bvStr, bvErrStr,
@@ -825,15 +825,15 @@ public class SequenceListWindow extends JFrame {
         
         // Write header
         writer.println("#TYPE=VSDadmin2");
-        writer.printf("#Data requested for: %s RA: %.5f DEC: %.5f Field size: %.0f Limiting mag: %.1f%n",
+        writer.printf(java.util.Locale.US, "#Data requested for: %s RA: %.5f DEC: %.5f Field size: %.0f Limiting mag: %.1f%n",
             targetName, ra, dec, fov, limitingMag);
-        writer.printf("# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=%.6f&tora=%.6f&fromdec=%.6f&todec=%.6f&tomag=%.1f&source=29&limit=5000%n",
+        writer.printf(java.util.Locale.US, "# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=%.6f&tora=%.6f&fromdec=%.6f&todec=%.6f&tomag=%.1f&source=29&limit=5000%n",
             fromRA, toRA, fromDec, toDec, limitingMag);
-        writer.printf("# chart:, https://www.aavso.org/apps/vsp/chart/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f%n",
+        writer.printf(java.util.Locale.US, "# chart:, https://www.aavso.org/apps/vsp/chart/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f%n",
             targetName.replace(" ", "+"), ra, dec, fov, limitingMag);
-        writer.printf("# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f&all=on%n",
+        writer.printf(java.util.Locale.US, "# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f&all=on%n",
             targetName.replace(" ", "+"), ra, dec, fov, limitingMag);
-        writer.printf("#TARGET=%s%n", targetName);
+        writer.printf(java.util.Locale.US, "#TARGET=%s%n", targetName);
         writer.println("#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,source,[filter triplets with name, mag, err]");
         
         // Write data rows - need to calculate magnitudes from colors
@@ -885,20 +885,20 @@ public class SequenceListWindow extends JFrame {
             double iErr = !Double.isNaN(iMag) ? Math.sqrt(rErr*rErr + (riErrObj != null ? riErr*riErr : 0)) : 0.0;
             double szErr = siErr;
             
-            writer.printf("%s,%d,%d,%.2f,%d,%d,%.1f,%d,",
+            writer.printf(java.util.Locale.US, "%s,%d,%d,%.2f,%d,%d,%.1f,%d,",
                 label, raHH, raMM, raSS, decDD, decMM, decSS, source);
             
             // Write filter triplets
-            writer.printf(" V,%.3f,%.3f,", v, vErr);
-            if (!Double.isNaN(b)) writer.printf(" B,%.3f,%.3f,", b, bErr);
-            if (!Double.isNaN(sg)) writer.printf(" SG,%.3f,%.3f,", sg, sgErr);
-            if (!Double.isNaN(sr)) writer.printf(" SR,%.3f,%.3f,", sr, srErr);
-            if (!Double.isNaN(si)) writer.printf(" SI,%.3f,%.3f,", si, siErr);
-            if (!Double.isNaN(r)) writer.printf(" R,%.3f,%.3f,", r, rErr);
-            if (!Double.isNaN(iMag)) writer.printf(" I,%.3f,%.3f,", iMag, iErr);
-            if (!Double.isNaN(sz)) writer.printf(" SZ,%.3f,%.3f,", sz, szErr);
+            writer.printf(java.util.Locale.US, " V,%.3f,%.3f,", v, vErr);
+            if (!Double.isNaN(b)) writer.printf(java.util.Locale.US, " B,%.3f,%.3f,", b, bErr);
+            if (!Double.isNaN(sg)) writer.printf(java.util.Locale.US, " SG,%.3f,%.3f,", sg, sgErr);
+            if (!Double.isNaN(sr)) writer.printf(java.util.Locale.US, " SR,%.3f,%.3f,", sr, srErr);
+            if (!Double.isNaN(si)) writer.printf(java.util.Locale.US, " SI,%.3f,%.3f,", si, siErr);
+            if (!Double.isNaN(r)) writer.printf(java.util.Locale.US, " R,%.3f,%.3f,", r, rErr);
+            if (!Double.isNaN(iMag)) writer.printf(java.util.Locale.US, " I,%.3f,%.3f,", iMag, iErr);
+            if (!Double.isNaN(sz)) writer.printf(java.util.Locale.US, " SZ,%.3f,%.3f,", sz, szErr);
             
-            writer.printf("%n");
+            writer.printf(java.util.Locale.US, "%n");
         }
         
         writer.close();
@@ -912,15 +912,15 @@ public class SequenceListWindow extends JFrame {
         
         // Write header
         writer.println("#TYPE=VSDadmin3");
-        writer.printf("#Data requested for: %s RA: %.5f DEC: %.5f Field size: %.0f Limiting mag: %.1f%n",
+        writer.printf(java.util.Locale.US, "#Data requested for: %s RA: %.5f DEC: %.5f Field size: %.0f Limiting mag: %.1f%n",
             targetName, ra, dec, fov, limitingMag);
-        writer.printf("# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=%.6f&tora=%.6f&fromdec=%.6f&todec=%.6f&tomag=%.1f&source=29&limit=5000%n",
+        writer.printf(java.util.Locale.US, "# db call:, https://www.aavso.org/vsx/index.php?view=api.calib&fromra=%.6f&tora=%.6f&fromdec=%.6f&todec=%.6f&tomag=%.1f&source=29&limit=5000%n",
             fromRA, toRA, fromDec, toDec, limitingMag);
-        writer.printf("# chart:, https://www.aavso.org/apps/vsp/chart/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f%n",
+        writer.printf(java.util.Locale.US, "# chart:, https://www.aavso.org/apps/vsp/chart/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f%n",
             targetName.replace(" ", "+"), ra, dec, fov, limitingMag);
-        writer.printf("# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f&all=on%n",
+        writer.printf(java.util.Locale.US, "# photometry:, https://www.aavso.org/apps/vsp/photometry/?title=%s&ra=%.5f&dec=%.5f&fov=%.0f&maglimit=%.1f&all=on%n",
             targetName.replace(" ", "+"), ra, dec, fov, limitingMag);
-        writer.printf("#TARGET=%s%n", targetName);
+        writer.printf(java.util.Locale.US, "#TARGET=%s%n", targetName);
         writer.println("#Label,RA h,RA m,RA s,Dec d,Dec m,Dec s,source,B-V,U mag,U err,B mag,B err,V mag,V err,R mag,R err,I mag,I err,SU mag,SU err,SG mag,SG err,SR mag,SR err,SI mag,SI err,SZ mag,SZ err,Y mag,Y err,# Comments");
         
         // Write data rows
@@ -968,7 +968,7 @@ public class SequenceListWindow extends JFrame {
                 Math.sqrt(vErr*vErr + vrErr*vrErr + riErr*riErr) : 0.0;
             double szErr = siErr;
             
-            writer.printf("%s,%d,%d,%.2f,%d,%d,%.1f,%d,%.3f,",
+            writer.printf(java.util.Locale.US, "%s,%d,%d,%.2f,%d,%d,%.1f,%d,%.3f,",
                 label, raHH, raMM, raSS, decDD, decMM, decSS, source, 
                 (!Double.isNaN(bv) ? bv : 0.0));
             
@@ -976,51 +976,51 @@ public class SequenceListWindow extends JFrame {
             writer.print("NA,NA,");
             
             // B mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(b) ? String.format("%.3f", b) : "NA",
-                !Double.isNaN(b) && bErr > 0 ? String.format("%.3f", bErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(b) ? String.format(java.util.Locale.US, "%.3f", b) : "NA",
+                !Double.isNaN(b) && bErr > 0 ? String.format(java.util.Locale.US, "%.3f", bErr) : "NA");
             
             // V mag and error
-            writer.printf("%.3f,%.3f,", v, vErr);
+            writer.printf(java.util.Locale.US, "%.3f,%.3f,", v, vErr);
             
             // R mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(r) ? String.format("%.3f", r) : "NA",
-                !Double.isNaN(r) && rErr > 0 ? String.format("%.3f", rErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(r) ? String.format(java.util.Locale.US, "%.3f", r) : "NA",
+                !Double.isNaN(r) && rErr > 0 ? String.format(java.util.Locale.US, "%.3f", rErr) : "NA");
             
             // I mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(iMag) ? String.format("%.3f", iMag) : "NA",
-                !Double.isNaN(iMag) && iErr > 0 ? String.format("%.3f", iErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(iMag) ? String.format(java.util.Locale.US, "%.3f", iMag) : "NA",
+                !Double.isNaN(iMag) && iErr > 0 ? String.format(java.util.Locale.US, "%.3f", iErr) : "NA");
             
             // SU mag and error - typically NA
             writer.print("NA,NA,");
             
             // SG mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(sg) ? String.format("%.3f", sg) : "NA",
-                !Double.isNaN(sg) && sgErr > 0 ? String.format("%.3f", sgErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(sg) ? String.format(java.util.Locale.US, "%.3f", sg) : "NA",
+                !Double.isNaN(sg) && sgErr > 0 ? String.format(java.util.Locale.US, "%.3f", sgErr) : "NA");
             
             // SR mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(sr) ? String.format("%.3f", sr) : "NA",
-                !Double.isNaN(sr) && srErr > 0 ? String.format("%.3f", srErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(sr) ? String.format(java.util.Locale.US, "%.3f", sr) : "NA",
+                !Double.isNaN(sr) && srErr > 0 ? String.format(java.util.Locale.US, "%.3f", srErr) : "NA");
             
             // SI mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(si) ? String.format("%.3f", si) : "NA",
-                !Double.isNaN(si) && siErr > 0 ? String.format("%.3f", siErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(si) ? String.format(java.util.Locale.US, "%.3f", si) : "NA",
+                !Double.isNaN(si) && siErr > 0 ? String.format(java.util.Locale.US, "%.3f", siErr) : "NA");
             
             // SZ mag and error
-            writer.printf("%s,%s,", 
-                !Double.isNaN(sz) ? String.format("%.3f", sz) : "NA",
-                !Double.isNaN(sz) && szErr > 0 ? String.format("%.3f", szErr) : "NA");
+            writer.printf(java.util.Locale.US, "%s,%s,", 
+                !Double.isNaN(sz) ? String.format(java.util.Locale.US, "%.3f", sz) : "NA",
+                !Double.isNaN(sz) && szErr > 0 ? String.format(java.util.Locale.US, "%.3f", szErr) : "NA");
             
             // Y mag and error - typically NA
             writer.print("NA,NA,");
             
             // Comments
-            writer.printf("# %s%n", comments);
+            writer.printf(java.util.Locale.US, "# %s%n", comments);
         }
         
         writer.close();

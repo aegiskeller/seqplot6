@@ -97,7 +97,7 @@ public class PhotCompWindow extends JFrame {
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.add(new JLabel("Match tolerance (arcsec):"));
         // Format tolerance to 1 decimal place
-        DecimalFormat df1 = new DecimalFormat("0.0");
+        DecimalFormat df1 = new DecimalFormat("0.0", new java.text.DecimalFormatSymbols(java.util.Locale.US));
         matchToleranceField = new JTextField(df1.format(matchToleranceDeg * 3600));
         matchToleranceField.setPreferredSize(new Dimension(80, matchToleranceField.getPreferredSize().height));
         leftPanel.add(matchToleranceField);
@@ -535,7 +535,7 @@ public class PhotCompWindow extends JFrame {
                             }
                             
                             transitionMag = screenToDataX(e.getX());
-                            System.out.println("DEBUG PhotComp: Transition magnitude marked at V=" + String.format("%.2f", transitionMag));
+                            System.out.println("DEBUG PhotComp: Transition magnitude marked at V=" + String.format(java.util.Locale.US, "%.2f", transitionMag));
                             
                             // Store transition magnitude in DataConnector for filtering
                             db.setTransitionMagnitude(transitionMag);
@@ -547,11 +547,11 @@ public class PhotCompWindow extends JFrame {
                             
                             // Notify user that transition magnitude is set and correction applied
                             String correctionMessage = (lastDeltaV != 0.0) ?
-                                String.format("\nOffset correction ΔV=%.3f (RMS=%.3f) will be applied\nto the fainter catalog.", lastDeltaV, lastRMS) :
+                                String.format(java.util.Locale.US, "\nOffset correction ΔV=%.3f (RMS=%.3f) will be applied\nto the fainter catalog.", lastDeltaV, lastRMS) :
                                 "\nNo offset correction will be applied (ΔV=0).";
                             
                             JOptionPane.showMessageDialog(PhotCompWindow.this,
-                                String.format("Transition magnitude set to V=%.2f\n\n" +
+                                String.format(java.util.Locale.US, "Transition magnitude set to V=%.2f\n\n" +
                                     "Points View and Sky View will now show:\n" +
                                     "  • Brighter than V=%.2f: Shallow catalog\n" +
                                     "  • Fainter than V=%.2f: Deep catalog%s",
@@ -764,13 +764,13 @@ public class PhotCompWindow extends JFrame {
             // Choose decimal format based on range to avoid duplicate labels
             DecimalFormat yFormatter;
             if (rangeY < 0.1) {
-                yFormatter = new DecimalFormat("0.0000");
+                yFormatter = new DecimalFormat("0.0000", new java.text.DecimalFormatSymbols(java.util.Locale.US));
             } else if (rangeY < 1.0) {
-                yFormatter = new DecimalFormat("0.000");
+                yFormatter = new DecimalFormat("0.000", new java.text.DecimalFormatSymbols(java.util.Locale.US));
             } else if (rangeY < 10.0) {
-                yFormatter = new DecimalFormat("0.00");
+                yFormatter = new DecimalFormat("0.00", new java.text.DecimalFormatSymbols(java.util.Locale.US));
             } else {
-                yFormatter = new DecimalFormat("0.0");
+                yFormatter = new DecimalFormat("0.0", new java.text.DecimalFormatSymbols(java.util.Locale.US));
             }
             
             int numYTicks = 10;
@@ -931,7 +931,7 @@ public class PhotCompWindow extends JFrame {
             
             // Draw label
             g2.setFont(new Font("SansSerif", Font.BOLD, 12));
-            String label = String.format("Transition: V=%.2f", transitionMag);
+            String label = String.format(java.util.Locale.US, "Transition: V=%.2f", transitionMag);
             FontMetrics fm = g2.getFontMetrics();
             int labelWidth = fm.stringWidth(label);
             
@@ -1020,7 +1020,7 @@ public class PhotCompWindow extends JFrame {
             StringBuilder stats = new StringBuilder("<html><div style='background-color: #F0F0F0; padding: 4px; width: 280px; font-size: 9px;'>");
             stats.append("<table width='100%' cellpadding='0' cellspacing='0' border='0'>");
             stats.append("<tr><td style='text-align: center; font-weight: bold;' colspan='2'>Statistics (3σ clipped)</td></tr>");
-            stats.append(String.format("<tr><td colspan='2' style='text-align: center; padding: 2px;'>V mag Range: %.2f - %.2f</td></tr>", selectionStartX, selectionEndX));
+            stats.append(String.format(java.util.Locale.US, "<tr><td colspan='2' style='text-align: center; padding: 2px;'>V mag Range: %.2f - %.2f</td></tr>", selectionStartX, selectionEndX));
             
             boolean foundOverlap = false;
             boolean storedValues = false;
@@ -1057,17 +1057,17 @@ public class PhotCompWindow extends JFrame {
                 
                 // Two-column layout: Left = Statistics, Right = Offset
                 stats.append("<tr><td style='text-align: left; padding: 2px 4px; vertical-align: top;'>");
-                stats.append(String.format("<b>%s:</b><br>", getSourceName(sourceId)));
-                stats.append(String.format("N = %d", clippedDeltas.size()));
+                stats.append(String.format(java.util.Locale.US, "<b>%s:</b><br>", getSourceName(sourceId)));
+                stats.append(String.format(java.util.Locale.US, "N = %d", clippedDeltas.size()));
                 if (nRejected > 0) {
-                    stats.append(String.format(" (%d rejected)", nRejected));
+                    stats.append(String.format(java.util.Locale.US, " (%d rejected)", nRejected));
                 }
                 stats.append("</td>");
                 
                 stats.append("<td style='text-align: left; padding: 2px 4px; vertical-align: top;'>");
                 stats.append("<b>Offset:</b><br>");
-                stats.append(String.format("ΔV = %.3f<br>", mean));
-                stats.append(String.format("RMS = %.3f", rms));
+                stats.append(String.format(java.util.Locale.US, "ΔV = %.3f<br>", mean));
+                stats.append(String.format(java.util.Locale.US, "RMS = %.3f", rms));
                 stats.append("</td></tr>");
             }
             
@@ -1082,10 +1082,10 @@ public class PhotCompWindow extends JFrame {
                 recommendation.append("<b>Recommendation:</b><br>");
                 
                 if (significance > 3.0) {
-                    recommendation.append(String.format("<font color='#D32F2F'>There is a significant offset between the catalogs<br>(|ΔV|/RMS = %.1f > 3).<br><br>", significance));
+                    recommendation.append(String.format(java.util.Locale.US, "<font color='#D32F2F'>There is a significant offset between the catalogs<br>(|ΔV|/RMS = %.1f > 3).<br><br>", significance));
                     recommendation.append("<b>Make correction to align catalogs.</b></font>");
                 } else {
-                    recommendation.append(String.format("<font color='#388E3C'>There is no significant offset between the catalogs<br>(|ΔV|/RMS = %.1f ≤ 3).<br><br>", significance));
+                    recommendation.append(String.format(java.util.Locale.US, "<font color='#388E3C'>There is no significant offset between the catalogs<br>(|ΔV|/RMS = %.1f ≤ 3).<br><br>", significance));
                     recommendation.append("<b>No correction required.</b></font>");
                 }
                 recommendation.append("</div></html>");

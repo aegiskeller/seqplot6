@@ -76,7 +76,7 @@ public class SimpleStarPlot extends JPanel {
             stars.add(new Star(centralRA + offsetRA, centralDec + offsetDec, mag, series));
         }
         
-        System.out.printf("Added %d stars\n", stars.size());
+        System.out.printf(java.util.Locale.US, "Added %d stars\n", stars.size());
     }
     
     private void convertCoordinates() {
@@ -98,7 +98,7 @@ public class SimpleStarPlot extends JPanel {
             maxY = Math.max(maxY, star.y);
         }
         
-        System.out.printf("Coordinate ranges: X=[%.6f, %.6f], Y=[%.6f, %.6f]\n", 
+        System.out.printf(java.util.Locale.US, "Coordinate ranges: X=[%.6f, %.6f], Y=[%.6f, %.6f]\n", 
                          minX, maxX, minY, maxY);
     }
     
@@ -142,10 +142,10 @@ public class SimpleStarPlot extends JPanel {
         
         // Draw axis labels
         g2.setFont(new Font("Arial", Font.PLAIN, 12));
-        g2.drawString(String.format("X: %.4f to %.4f degrees", minX, maxX), margin, getHeight() - 10);
-        g2.drawString(String.format("Y: %.4f to %.4f degrees", minY, maxY), margin + 250, getHeight() - 10);
+        g2.drawString(String.format(java.util.Locale.US, "X: %.4f to %.4f degrees", minX, maxX), margin, getHeight() - 10);
+        g2.drawString(String.format(java.util.Locale.US, "Y: %.4f to %.4f degrees", minY, maxY), margin + 250, getHeight() - 10);
         
-        System.out.printf("Drawing %d stars in plot area %dx%d\n", stars.size(), plotWidth, plotHeight);
+        System.out.printf(java.util.Locale.US, "Drawing %d stars in plot area %dx%d\n", stars.size(), plotWidth, plotHeight);
         
         // Draw stars
         int drawnCount = 0;
@@ -168,17 +168,17 @@ public class SimpleStarPlot extends JPanel {
             g2.draw(circle);
             
             if (drawnCount < 5) {
-                System.out.printf("Drew star %d: world(%.6f,%.6f) -> screen(%d,%d) size=%d color=%s\n",
+                System.out.printf(java.util.Locale.US, "Drew star %d: world(%.6f,%.6f) -> screen(%d,%d) size=%d color=%s\n",
                                  drawnCount, star.x, star.y, screenX, screenY, star.size, star.color);
             }
             drawnCount++;
         }
         
-        System.out.printf("Total stars drawn: %d\n", drawnCount);
+        System.out.printf(java.util.Locale.US, "Total stars drawn: %d\n", drawnCount);
         
         // Draw star count
         g2.setColor(Color.WHITE);
-        g2.drawString(String.format("Stars: %d", stars.size()), getWidth() - 100, margin + 20);
+        g2.drawString(String.format(java.util.Locale.US, "Stars: %d", stars.size()), getWidth() - 100, margin + 20);
     }
     
     public static void main(String[] args) {

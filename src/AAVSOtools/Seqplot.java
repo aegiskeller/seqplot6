@@ -438,7 +438,7 @@ MouseListener {
         double maxX = this.db.getMaxX();
         double minY = this.db.getMinY();
         double maxY = this.db.getMaxY();
-        System.out.printf("DEBUG: Setting axis ranges - X: %.6f to %.6f, Y: %.6f to %.6f\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Setting axis ranges - X: %.6f to %.6f, Y: %.6f to %.6f\n", 
                          1.05 * minX, 1.05 * maxX, 1.05 * minY, 1.05 * maxY);
         domainAxis.setRange(1.05 * minX, 1.05 * maxX);
         domainAxis.setInverted(true);
@@ -451,13 +451,13 @@ MouseListener {
 
     public void setPreferredColors() {
         this.plot.setBackgroundPaint(this.getPlotColor(5));
-        System.out.printf("DEBUG: Plot background color set to: %s\n", this.getPlotColor(5));
+        System.out.printf(java.util.Locale.US, "DEBUG: Plot background color set to: %s\n", this.getPlotColor(5));
         this.plot.setRenderer(new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_BOTH_AXES));
         XYItemRenderer renderer = this.plot.getRenderer();
         int i = 0;
         while (i < 5) {
             Color seriesColor = this.getPlotColor(i);
-            System.out.printf("DEBUG: Series %d color set to: %s\n", i, seriesColor);
+            System.out.printf(java.util.Locale.US, "DEBUG: Series %d color set to: %s\n", i, seriesColor);
             renderer.setSeriesPaint(i, seriesColor);
             renderer.setSeriesOutlinePaint(i, seriesColor);
             renderer.setSeriesVisible(i, (Boolean)true);
@@ -537,7 +537,7 @@ MouseListener {
             
             // Reset View: restore to original RA/Dec/scale from Request Star dialog
             if (this.starPlotPanel != null && this.hasOriginalCoordinates) {
-                System.out.printf("DEBUG: Reset View - restoring to original RA=%.6f, Dec=%.6f, FOV=%.4f\n",
+                System.out.printf(java.util.Locale.US, "DEBUG: Reset View - restoring to original RA=%.6f, Dec=%.6f, FOV=%.4f\n",
                                  this.originalRA, this.originalDec, this.originalFieldSize);
                 
                 // Reset database to original coordinates
@@ -594,7 +594,7 @@ MouseListener {
                     this.mainTitle.setText(this.getMainTitleText());
                 }
                 String subtitle = "Data from the Calibration Database - limiting magnitude " + this.db.getLimitingMag() + 
-                    " - VSX position matching tolerance " + String.format("%.1f", this.db.getPositionTolerance() * 3600.0) + " arcseconds";
+                    " - VSX position matching tolerance " + String.format(java.util.Locale.US, "%.1f", this.db.getPositionTolerance() * 3600.0) + " arcseconds";
                 this.setSubtitleText(subtitle);
                 this.updateSubtitleText();
                 this.db.scaleDots();
@@ -692,7 +692,7 @@ MouseListener {
                     
                     // Update subtitle text to reflect new limiting magnitude
                     String subtitle = "Data from the Calibration Database - limiting magnitude " + this.db.getLimitingMag() + 
-                        " - VSX position matching tolerance " + String.format("%.1f", this.db.getPositionTolerance() * 3600.0) + " arcseconds";
+                        " - VSX position matching tolerance " + String.format(java.util.Locale.US, "%.1f", this.db.getPositionTolerance() * 3600.0) + " arcseconds";
                     this.setSubtitleText(subtitle);
                     this.updateSubtitleText();
                     
@@ -802,7 +802,7 @@ MouseListener {
                 "Seqplot will look for a star within a certain distance from a catalog star\n" +
                 "in order to decide if it is a variable or not. What value would you like to use\n" +
                 "for this offset (tolerance)? The recommended value is 10.8 arcseconds.\n" +
-                "(currently " + String.format("%.1f", currentToleranceArcsec) + " arcseconds)", 
+                "(currently " + String.format(java.util.Locale.US, "%.1f", currentToleranceArcsec) + " arcseconds)", 
                 "Set position tolerance", 3);
             
             if (positionToleranceString != null && !positionToleranceString.trim().equals("")) {
@@ -816,7 +816,7 @@ MouseListener {
                     
                     // Update subtitle text to reflect new position tolerance (display in arcseconds)
                     String subtitle = "Data from the Calibration Database - limiting magnitude " + this.db.getLimitingMag() + 
-                        " - VSX position matching tolerance " + String.format("%.1f", newPositionToleranceArcsec) + " arcseconds";
+                        " - VSX position matching tolerance " + String.format(java.util.Locale.US, "%.1f", newPositionToleranceArcsec) + " arcseconds";
                     this.setSubtitleText(subtitle);
                     this.updateSubtitleText();
                     
@@ -1229,33 +1229,33 @@ MouseListener {
                     readoutText.append(match.name).append(" (");
                     if (match.source == 48) {
                         // Gaia DR2
-                        readoutText.append("V=").append(String.format("%.2f", match.vmag));
+                        readoutText.append("V=").append(String.format(java.util.Locale.US, "%.2f", match.vmag));
                         if (match.ev > 0 && match.ev < 10) {
-                            readoutText.append(" (").append(String.format("%.2f", match.ev)).append(")");
+                            readoutText.append(" (").append(String.format(java.util.Locale.US, "%.2f", match.ev)).append(")");
                         }
-                        readoutText.append(" V-I=").append(String.format("%.2f", match.vMinusI));
+                        readoutText.append(" V-I=").append(String.format(java.util.Locale.US, "%.2f", match.vMinusI));
                         if (match.evi > 0 && match.evi < 10) {
-                            readoutText.append(" (").append(String.format("%.2f", match.evi)).append(")");
+                            readoutText.append(" (").append(String.format(java.util.Locale.US, "%.2f", match.evi)).append(")");
                         }
                     } else if (match.source == 46) {
                         // PanSTARRS DR2
-                        readoutText.append("V=").append(String.format("%.2f", match.vmag));
+                        readoutText.append("V=").append(String.format(java.util.Locale.US, "%.2f", match.vmag));
                         if (match.ev > 0 && match.ev < 10) {
-                            readoutText.append(" (").append(String.format("%.2f", match.ev)).append(")");
+                            readoutText.append(" (").append(String.format(java.util.Locale.US, "%.2f", match.ev)).append(")");
                         }
-                        readoutText.append(" V-I=").append(String.format("%.2f", match.vMinusI));
+                        readoutText.append(" V-I=").append(String.format(java.util.Locale.US, "%.2f", match.vMinusI));
                         if (match.evi > 0 && match.evi < 10) {
-                            readoutText.append(" (").append(String.format("%.2f", match.evi)).append(")");
+                            readoutText.append(" (").append(String.format(java.util.Locale.US, "%.2f", match.evi)).append(")");
                         }
                     } else {
                         // Other catalogs (e.g., Tycho-2)
-                        readoutText.append("V=").append(String.format("%.2f", match.vmag));
+                        readoutText.append("V=").append(String.format(java.util.Locale.US, "%.2f", match.vmag));
                         if (match.ev > 0 && match.ev < 10) {
-                            readoutText.append(" (").append(String.format("%.2f", match.ev)).append(")");
+                            readoutText.append(" (").append(String.format(java.util.Locale.US, "%.2f", match.ev)).append(")");
                         }
-                        readoutText.append(" B-V=").append(String.format("%.2f", match.bMinusV));
+                        readoutText.append(" B-V=").append(String.format(java.util.Locale.US, "%.2f", match.bMinusV));
                         if (match.ebv > 0 && match.ebv < 10) {
-                            readoutText.append(" (").append(String.format("%.2f", match.ebv)).append(")");
+                            readoutText.append(" (").append(String.format(java.util.Locale.US, "%.2f", match.ebv)).append(")");
                         }
                     }
                     readoutText.append(")");
@@ -1275,7 +1275,7 @@ MouseListener {
         double minutesDecimal = (raHours - hours) * 60.0;
         int minutes = (int) minutesDecimal;
         double seconds = (minutesDecimal - minutes) * 60.0;
-        return String.format("%02dh %02dm %.1fs", hours, minutes, seconds);
+        return String.format(java.util.Locale.US, "%02dh %02dm %.1fs", hours, minutes, seconds);
     }
 
     private String formatDec(double decDegrees) {
@@ -1286,7 +1286,7 @@ MouseListener {
         double arcminutesDecimal = (absDecDegrees - degrees) * 60.0;
         int arcminutes = (int) arcminutesDecimal;
         double arcseconds = (arcminutesDecimal - arcminutes) * 60.0;
-        return String.format("%s%d° %02d′ %.1f″", sign, (decDegrees < 0 ? -degrees : degrees), arcminutes, arcseconds);
+        return String.format(java.util.Locale.US, "%s%d° %02d′ %.1f″", sign, (decDegrees < 0 ? -degrees : degrees), arcminutes, arcseconds);
     }
 
     private String formatValueWithUncertainty(double value, double uncertainty) {
@@ -1832,7 +1832,7 @@ MouseListener {
             // Calculate appropriate field of view to match the star field exactly
             double fov = DSS2Manager.calculateFieldOfView(minRA, maxRA, minDec, maxDec, 1.1);
             
-            System.out.printf("DEBUG: DSS2 request - Center: RA=%.6f, Dec=%.6f, FOV=%.4f\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: DSS2 request - Center: RA=%.6f, Dec=%.6f, FOV=%.4f\n", 
                              centerRA, centerDec, fov);
             
             // Force fresh request - clear any existing cache first
@@ -1852,7 +1852,7 @@ MouseListener {
                 
                 @Override
                 public void onImageLoadFailed(String error) {
-                    System.err.printf("DSS2 load failed: %s\n", error);
+                    System.err.printf(java.util.Locale.US, "DSS2 load failed: %s\n", error);
                     if (starPlotPanel != null) {
                         starPlotPanel.setLoadingIndicator(false);
                     }
@@ -2037,7 +2037,7 @@ MouseListener {
         
         if (!newSurvey.equals(selectedSurvey)) {
             selectedSurvey = newSurvey;
-            System.out.printf("DEBUG: Survey changed to %s (%s)\n", selected, selectedSurvey);
+            System.out.printf(java.util.Locale.US, "DEBUG: Survey changed to %s (%s)\n", selected, selectedSurvey);
             
             // Re-fetch image at new survey if in sky view
             if (isInSkyView && starPlotPanel != null && db != null) {
@@ -2065,7 +2065,7 @@ MouseListener {
         
         if (newResolution != dss2Resolution) {
             dss2Resolution = newResolution;
-            System.out.printf("DEBUG: Resolution changed to %dpx\n", dss2Resolution);
+            System.out.printf(java.util.Locale.US, "DEBUG: Resolution changed to %dpx\n", dss2Resolution);
             
             // Re-fetch DSS2 image at new resolution if in sky view
             if (isInSkyView && starPlotPanel != null && db != null) {
@@ -2127,7 +2127,7 @@ MouseListener {
             this.originalFieldSize = this.db.getFieldSize();
             this.hasOriginalCoordinates = true;
             System.out.println("\n*** STORED ORIGINAL COORDINATES FOR RESET VIEW ***");
-            System.out.printf("    RA=%.6f, Dec=%.6f, FOV=%.4f\n",
+            System.out.printf(java.util.Locale.US, "    RA=%.6f, Dec=%.6f, FOV=%.4f\n",
                              this.originalRA, this.originalDec, this.originalFieldSize);
             System.out.println("***************************************************\n");
         }
@@ -2284,7 +2284,7 @@ MouseListener {
      * Re-query database at new coordinates after panning
      */
     public void requeryDatabaseAtCoordinates(double newRA, double newDec) {
-        System.out.printf("DEBUG: Seqplot.requeryDatabaseAtCoordinates(%.6f, %.6f)\n", newRA, newDec);
+        System.out.printf(java.util.Locale.US, "DEBUG: Seqplot.requeryDatabaseAtCoordinates(%.6f, %.6f)\n", newRA, newDec);
         
         // Show loading indicator
         if (starPlotPanel != null) {
@@ -2322,7 +2322,7 @@ MouseListener {
                         starPlotPanel.setLoadingIndicator(false);
                     }
                     
-                    System.out.printf("DEBUG: Database re-query complete - found %d stars\n", db.getTotalCount());
+                    System.out.printf(java.util.Locale.US, "DEBUG: Database re-query complete - found %d stars\n", db.getTotalCount());
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2345,9 +2345,9 @@ MouseListener {
         System.out.println("\n" + repeatString("=", 80));
         System.out.println("*** ZOOM TRIGGERED DATABASE REQUERY ***");
         System.out.println(repeatString("=", 80));
-        System.out.printf("DEBUG: Seqplot.requeryDatabaseAtCoordinatesWithFOV(%.6f, %.6f, %.4f degrees = %.2f arcmin)\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Seqplot.requeryDatabaseAtCoordinatesWithFOV(%.6f, %.6f, %.4f degrees = %.2f arcmin)\n", 
                          newRA, newDec, newFOV, newFOV * 60.0);
-        System.out.printf("DEBUG: CIRCLE search will use: CIRCLE('ICRS', %.6f, %.6f, %.6f) [radius in degrees]\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: CIRCLE search will use: CIRCLE('ICRS', %.6f, %.6f, %.6f) [radius in degrees]\n",
                          newRA, newDec, newFOV / 2.0);
         System.out.println(repeatString("=", 80) + "\n");
         
@@ -2364,7 +2364,7 @@ MouseListener {
         db.setCentralDec(newDec);
         db.setFieldSize(newFOV);
         
-        System.out.printf("DEBUG: Updated DataConnector - CentralRA=%.6f, CentralDec=%.6f, FieldSize=%.4f deg (radius=%.4f deg)\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Updated DataConnector - CentralRA=%.6f, CentralDec=%.6f, FieldSize=%.4f deg (radius=%.4f deg)\n",
                          db.getCentralRA(), db.getCentralDec(), db.getFieldSize(), db.getFieldSize() / 2.0);
         
         // Re-query on background thread
@@ -2372,7 +2372,7 @@ MouseListener {
             try {
                 db.findUpperLowerRa();
                 db.findUpperLowerDec();
-                System.out.printf("DEBUG: RA range: %.6f to %.6f, Dec range: %.6f to %.6f\n",
+                System.out.printf(java.util.Locale.US, "DEBUG: RA range: %.6f to %.6f, Dec range: %.6f to %.6f\n",
                                  db.getLowerRA(), db.getUpperRA(), db.getLowerDec(), db.getUpperDec());
                 db.getData();
                 
@@ -2396,7 +2396,7 @@ MouseListener {
                         starPlotPanel.setLoadingIndicator(false);
                     }
                     
-                    System.out.printf("DEBUG: Database re-query with FOV complete - found %d stars (zoom was reset to 1.0 at start)\n", db.getTotalCount());
+                    System.out.printf(java.util.Locale.US, "DEBUG: Database re-query with FOV complete - found %d stars (zoom was reset to 1.0 at start)\n", db.getTotalCount());
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2416,7 +2416,7 @@ MouseListener {
      * Fetch new DSS2 image at coordinates after panning in sky view
      */
     public void fetchDSS2ImageAtCoordinates(double newRA, double newDec) {
-        System.out.printf("DEBUG: Seqplot.fetchDSS2ImageAtCoordinates(%.6f, %.6f)\n", newRA, newDec);
+        System.out.printf(java.util.Locale.US, "DEBUG: Seqplot.fetchDSS2ImageAtCoordinates(%.6f, %.6f)\n", newRA, newDec);
         
         // Show loading indicator
         if (starPlotPanel != null) {
@@ -2430,7 +2430,7 @@ MouseListener {
         // Calculate FOV from current field size
         double fov = db.getFieldSize();  // Already in degrees
         
-        System.out.printf("DEBUG: Fetching DSS2 at new center - RA=%.6f, Dec=%.6f, FOV=%.4f\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Fetching DSS2 at new center - RA=%.6f, Dec=%.6f, FOV=%.4f\n", 
                          newRA, newDec, fov);
         
         // Fetch new image on background thread
@@ -2511,7 +2511,7 @@ MouseListener {
      * Fetch DSS2 image at specific coordinates and FOV (for zoom operations)
      */
     public void fetchDSS2ImageAtCoordinatesWithFOV(double newRA, double newDec, double newFOV) {
-        System.out.printf("DEBUG: Seqplot.fetchDSS2ImageAtCoordinatesWithFOV(%.6f, %.6f, FOV=%.4f)\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Seqplot.fetchDSS2ImageAtCoordinatesWithFOV(%.6f, %.6f, FOV=%.4f)\n", 
                          newRA, newDec, newFOV);
         
         // Show loading indicator with zoom-specific message

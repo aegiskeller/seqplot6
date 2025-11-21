@@ -247,7 +247,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
                          "  RA: " + dataConnector.getFormattedRA() + 
                          "  Dec: " + dataConnector.getFormattedDec() + 
                          "  FoV: " + Math.round(dataConnector.getFieldSize() * 60.0) + " arcmin" +
-                         "  V lim: " + String.format("%.1f", dataConnector.getLimitingMag());
+                         "  V lim: " + String.format(java.util.Locale.US, "%.1f", dataConnector.getLimitingMag());
         
         // Draw white text
         g2.setColor(Color.WHITE);
@@ -373,7 +373,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
                 }
                 
                 // if (drawnCount < 5) { // Debug first few stars
-                //     System.out.printf("DEBUG: WCS Star %d: RA=%.6f, Dec=%.6f -> DSS2pixel(%.2f,%.2f) -> screen(%d,%d) | WCS center=(%.6f,%.6f) cdelt=(%.6f,%.6f) crpix=(%.1f,%.1f)\\n", 
+                //     System.out.printf(java.util.Locale.US, "DEBUG: WCS Star %d: RA=%.6f, Dec=%.6f -> DSS2pixel(%.2f,%.2f) -> screen(%d,%d) | WCS center=(%.6f,%.6f) cdelt=(%.6f,%.6f) crpix=(%.1f,%.1f)\\n", 
                 //                      drawnCount, starRA, starDec, dss2X, dss2Y, screenX, screenY, 
                 //                      wcs.crval1, wcs.crval2, wcs.cdelt1, wcs.cdelt2, wcs.crpix1, wcs.crpix2);
                 // }
@@ -382,7 +382,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             }
         }
         
-        // System.out.printf("DEBUG: Total direct WCS stars drawn: %d, Mag range: %.2f to %.2f\\n", 
+        // System.out.printf(java.util.Locale.US, "DEBUG: Total direct WCS stars drawn: %d, Mag range: %.2f to %.2f\\n", 
         //                  drawnCount, minVMag, maxVMag);
     }
     
@@ -576,7 +576,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
                         double brightMag = Math.min(maxMag, minMag);
                         double faintMag = Math.max(maxMag, minMag);
                         
-                        magRangeText = String.format("Mag Range: %.1f - %.1f", brightMag, faintMag);
+                        magRangeText = String.format(java.util.Locale.US, "Mag Range: %.1f - %.1f", brightMag, faintMag);
                     } catch (NumberFormatException e) {
                         // Fall through to catalog range
                     }
@@ -591,7 +591,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             double minVMag = dataConnector.getMinVMag();
             double maxVMag = dataConnector.getMaxVMag();
             
-            System.out.println("DEBUG: Using catalog fallback - minVMag: " + minVMag + ", maxVMag: " + maxVMag);
+            System.out.println(String.format(java.util.Locale.US, "DEBUG: Using catalog fallback - minVMag: %.3f, maxVMag: %.3f", minVMag, maxVMag));
             
             // Skip if no valid magnitudes
             if (minVMag == 99.999 || maxVMag == 99.999 || Double.isNaN(minVMag) || Double.isNaN(maxVMag)) {
@@ -603,7 +603,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             double brightMag = Math.min(minVMag, maxVMag);
             double faintMag = Math.max(minVMag, maxVMag);
             
-            magRangeText = String.format("Mag Range: %.1f - %.1f", brightMag, faintMag);
+            magRangeText = String.format(java.util.Locale.US, "Mag Range: %.1f - %.1f", brightMag, faintMag);
         }
         
         // Set font and get metrics
@@ -830,11 +830,11 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double viewMaxY = centerY + rangeY / 2.0 + panOffsetY;
         
         // Debug output (commented out - was useful for debugging zoom/view bounds issues)
-        // System.out.printf("DEBUG: drawStars() - data bounds X:[%.3f,%.3f] Y:[%.3f,%.3f], zoom=%.2f\n",
+        // System.out.printf(java.util.Locale.US, "DEBUG: drawStars() - data bounds X:[%.3f,%.3f] Y:[%.3f,%.3f], zoom=%.2f\n",
         //                  minX, maxX, minY, maxY, zoomLevel);
-        // System.out.printf("DEBUG: drawStars() - view bounds X:[%.3f,%.3f] Y:[%.3f,%.3f] (range: %.3f x %.3f)\n",
+        // System.out.printf(java.util.Locale.US, "DEBUG: drawStars() - view bounds X:[%.3f,%.3f] Y:[%.3f,%.3f] (range: %.3f x %.3f)\n",
         //                  viewMinX, viewMaxX, viewMinY, viewMaxY, viewMaxX - viewMinX, viewMaxY - viewMinY);
-        // System.out.printf("DEBUG: drawStars() - data range: %.3f x %.3f, view/data ratio: %.2f\n",
+        // System.out.printf(java.util.Locale.US, "DEBUG: drawStars() - data range: %.3f x %.3f, view/data ratio: %.2f\n",
         //                  maxX - minX, maxY - minY, (viewMaxX - viewMinX) / (maxX - minX));
         
         // Get magnitude range for star sizing
@@ -1005,10 +1005,10 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         // Debug output
         if (hoveredRecord < 3) { // Only for first few stars to avoid spam
             if (preferred != null) {
-                System.out.printf("DEBUG: Hover Star %d (using preferred source %d) - RA=%.6f, Dec=%.6f, CenterRA=%.6f, CenterDec=%.6f\n",
+                System.out.printf(java.util.Locale.US, "DEBUG: Hover Star %d (using preferred source %d) - RA=%.6f, Dec=%.6f, CenterRA=%.6f, CenterDec=%.6f\n",
                                  hoveredRecord, source, ra, dec, centerRa, centerDec);
             } else {
-                System.out.printf("DEBUG: Star %d - RA=%.6f, Dec=%.6f, CenterRA=%.6f, CenterDec=%.6f\n",
+                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - RA=%.6f, Dec=%.6f, CenterRA=%.6f, CenterDec=%.6f\n",
                                  hoveredRecord, ra, dec, centerRa, centerDec);
             }
         }
@@ -1020,9 +1020,9 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double distanceArcmin = distanceArcsec / 60.0;
         
         String[] lines = {
-            String.format("%s: %.3f (%.3f)", magLabel, vmag, vmagError),
-            String.format("%s: %.3f (%.3f)", colorLabel, colorValue, colorErrorValue),
-            String.format("Dist: %.1f\" (%.2f')", distanceArcsec, distanceArcmin)
+            String.format(java.util.Locale.US, "%s: %.3f (%.3f)", magLabel, vmag, vmagError),
+            String.format(java.util.Locale.US, "%s: %.3f (%.3f)", colorLabel, colorValue, colorErrorValue),
+            String.format(java.util.Locale.US, "Dist: %.1f\" (%.2f')", distanceArcsec, distanceArcmin)
         };
         
         int maxWidth = 0;
@@ -1228,9 +1228,9 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         if (star.vmag < 99.0) {
             readoutText.append("   V: ");
             if (star.vError > 0 && star.vError < 10) {
-                readoutText.append(String.format("%.3f (%.3f)", star.vmag, star.vError));
+                readoutText.append(String.format(java.util.Locale.US, "%.3f (%.3f)", star.vmag, star.vError));
             } else {
-                readoutText.append(String.format("%.3f", star.vmag));
+                readoutText.append(String.format(java.util.Locale.US, "%.3f", star.vmag));
             }
         }
         
@@ -1238,9 +1238,9 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         if (star.bMinusV < 99.0) {
             readoutText.append("   B-V: ");
             if (star.bvError > 0 && star.bvError < 10) {
-                readoutText.append(String.format("%.3f (%.3f)", star.bMinusV, star.bvError));
+                readoutText.append(String.format(java.util.Locale.US, "%.3f (%.3f)", star.bMinusV, star.bvError));
             } else {
-                readoutText.append(String.format("%.3f", star.bMinusV));
+                readoutText.append(String.format(java.util.Locale.US, "%.3f", star.bMinusV));
             }
         }
         
@@ -1248,9 +1248,9 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         if (star.vMinusI < 99.0) {
             readoutText.append("   V-I: ");
             if (star.viError > 0 && star.viError < 10) {
-                readoutText.append(String.format("%.3f (%.3f)", star.vMinusI, star.viError));
+                readoutText.append(String.format(java.util.Locale.US, "%.3f (%.3f)", star.vMinusI, star.viError));
             } else {
-                readoutText.append(String.format("%.3f", star.vMinusI));
+                readoutText.append(String.format(java.util.Locale.US, "%.3f", star.vMinusI));
             }
         }
         
@@ -1262,7 +1262,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             parentSeqplot.setReadoutText(readoutText.toString());
         }
         
-        System.out.printf("DEBUG: Clicked VSP star - AUID=%s, RA=%s, Dec=%s, V=%.3f\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Clicked VSP star - AUID=%s, RA=%s, Dec=%s, V=%.3f\n",
                          star.auid, star.raStr, star.decStr, star.vmag);
     }
     
@@ -1620,14 +1620,14 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
                 double raDelta = -imagePixelDeltaX * wcs.cdelt1;  // Negate to pan opposite to drag
                 double decDelta = imagePixelDeltaY * wcs.cdelt2;   // cdelt2 is usually negative, so this works out
                 
-                System.out.printf("DEBUG: Pan drag - deltaX=%d, deltaY=%d, imagePixelDelta=(%.2f,%.2f), raDelta=%.6f, decDelta=%.6f\n",
+                System.out.printf(java.util.Locale.US, "DEBUG: Pan drag - deltaX=%d, deltaY=%d, imagePixelDelta=(%.2f,%.2f), raDelta=%.6f, decDelta=%.6f\n",
                                  deltaX, deltaY, imagePixelDeltaX, imagePixelDeltaY, raDelta, decDelta);
                 
                 // Accumulate pan offset
                 panOffsetX += raDelta;
                 panOffsetY += decDelta;
                 
-                System.out.printf("DEBUG: Accumulated panOffset - X=%.6f (RA), Y=%.6f (Dec)\n", panOffsetX, panOffsetY);
+                System.out.printf(java.util.Locale.US, "DEBUG: Accumulated panOffset - X=%.6f (RA), Y=%.6f (Dec)\n", panOffsetX, panOffsetY);
                 
                 // Repaint to show visual feedback during drag
                 repaint();
@@ -1698,7 +1698,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
                 showCrosshairs = pointsVisible;
             }
             
-            System.out.printf("DEBUG: Clicked on star record %d - RA=%.6f, Dec=%.6f, VMag=%.2f, B-V=%.3f\n", 
+            System.out.printf(java.util.Locale.US, "DEBUG: Clicked on star record %d - RA=%.6f, Dec=%.6f, VMag=%.2f, B-V=%.3f\n", 
                              clickedRecord, ra, dec, vmag, bMinusV);
             
             // Store the selected star index for sequence list
@@ -1737,9 +1737,9 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             double newCenterRA = wcs.crval1 + panOffsetX;
             double newCenterDec = wcs.crval2 + panOffsetY;
             
-            System.err.println(String.format("DEBUG: Sky view center calculation - original RA=%.6f, Dec=%.6f, panOffset=(%.6f,%.6f) -> new RA=%.6f, Dec=%.6f",
+            System.err.println(String.format(java.util.Locale.US, "DEBUG: Sky view center calculation - original RA=%.6f, Dec=%.6f, panOffset=(%.6f,%.6f) -> new RA=%.6f, Dec=%.6f",
                 wcs.crval1, wcs.crval2, panOffsetX, panOffsetY, newCenterRA, newCenterDec));
-            System.err.println(String.format("DEBUG: Pan ended - new center: RA=%.6f, Dec=%.6f", newCenterRA, newCenterDec));
+            System.err.println(String.format(java.util.Locale.US, "DEBUG: Pan ended - new center: RA=%.6f, Dec=%.6f", newCenterRA, newCenterDec));
             System.err.println("DEBUG: Fetching new DSS2 image and re-querying database at panned location");
             
             // Reset pan offset before fetching (new image will be the new reference)
@@ -1787,7 +1787,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
     public void setPointSizeScale(double scale) {
         this.pointSizeScale = Math.max(0.1, Math.min(3.0, scale)); // Limit range
         repaint();
-        System.out.printf("DEBUG: Point size scale set to %.2f\n", this.pointSizeScale);
+        System.out.printf(java.util.Locale.US, "DEBUG: Point size scale set to %.2f\n", this.pointSizeScale);
     }
     
     public double getPointSizeScale() {
@@ -1809,7 +1809,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             panOffsetX *= 0.8; // Adjust pan to maintain center
             panOffsetY *= 0.8;
             repaint();
-            System.out.printf("DEBUG: Zoomed out to level %.2f\n", zoomLevel);
+            System.out.printf(java.util.Locale.US, "DEBUG: Zoomed out to level %.2f\n", zoomLevel);
             
             // If in sky view, schedule DSS2 image fetch after zoom settles
             if (dss2Image != null && dss2Manager != null) {
@@ -1825,7 +1825,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         if (zoomLevel < maxZoomLevel) {
             zoomLevel *= 1.25;
             repaint();
-            System.out.printf("DEBUG: Zoomed in to level %.2f\n", zoomLevel);
+            System.out.printf(java.util.Locale.US, "DEBUG: Zoomed in to level %.2f\n", zoomLevel);
             
             // If in sky view, schedule DSS2 image fetch after zoom settles
             if (dss2Image != null && dss2Manager != null) {
@@ -1980,7 +1980,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             
             // Save the image
             ImageIO.write(image, format, file);
-            System.out.printf("DEBUG: Plot saved as %s\n", file.getAbsolutePath());
+            System.out.printf(java.util.Locale.US, "DEBUG: Plot saved as %s\n", file.getAbsolutePath());
             
             JOptionPane.showMessageDialog(this, 
                 "Plot saved successfully to:\n" + file.getAbsolutePath(), 
@@ -2024,7 +2024,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             return;
         }
         
-        System.out.printf("DEBUG: Drawing DSS2 background with WCS: %s\n", wcs);
+        System.out.printf(java.util.Locale.US, "DEBUG: Drawing DSS2 background with WCS: %s\n", wcs);
         
         // Get current view bounds in TANGENT PLANE coordinates (X, Y)
         double minX = dataConnector.getMinX();
@@ -2043,9 +2043,9 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double viewMinY = centerY - rangeY / 2.0 + panOffsetY;
         double viewMaxY = centerY + rangeY / 2.0 + panOffsetY;
         
-        System.out.printf("DEBUG: Current view bounds (tangent plane) - X(%.6f to %.6f), Y(%.6f to %.6f)\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Current view bounds (tangent plane) - X(%.6f to %.6f), Y(%.6f to %.6f)\n",
                          viewMinX, viewMaxX, viewMinY, viewMaxY);
-        System.out.printf("DEBUG: Tangent plane center: RA=%.6f, Dec=%.6f\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Tangent plane center: RA=%.6f, Dec=%.6f\n", 
                          dataConnector.getTangentPlaneCenterRA(), dataConnector.getTangentPlaneCenterDec());
         
         // Convert tangent plane corners to RA/Dec coordinates
@@ -2054,11 +2054,11 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double[] topRight = dataConnector.XYtoRaDec(viewMaxX, viewMaxY);
         double[] topLeft = dataConnector.XYtoRaDec(viewMinX, viewMaxY);
         
-        System.out.printf("DEBUG: Corner coordinates in RA/Dec:\n");
-        System.out.printf("  Bottom-left: RA=%.6f, Dec=%.6f\n", bottomLeft[0], bottomLeft[1]);
-        System.out.printf("  Bottom-right: RA=%.6f, Dec=%.6f\n", bottomRight[0], bottomRight[1]);
-        System.out.printf("  Top-right: RA=%.6f, Dec=%.6f\n", topRight[0], topRight[1]);
-        System.out.printf("  Top-left: RA=%.6f, Dec=%.6f\n", topLeft[0], topLeft[1]);
+        System.out.printf(java.util.Locale.US, "DEBUG: Corner coordinates in RA/Dec:\n");
+        System.out.printf(java.util.Locale.US, "  Bottom-left: RA=%.6f, Dec=%.6f\n", bottomLeft[0], bottomLeft[1]);
+        System.out.printf(java.util.Locale.US, "  Bottom-right: RA=%.6f, Dec=%.6f\n", bottomRight[0], bottomRight[1]);
+        System.out.printf(java.util.Locale.US, "  Top-right: RA=%.6f, Dec=%.6f\n", topRight[0], topRight[1]);
+        System.out.printf(java.util.Locale.US, "  Top-left: RA=%.6f, Dec=%.6f\n", topLeft[0], topLeft[1]);
         
         // Convert plot corners from RA/Dec coordinates to DSS2 image pixel coordinates
         double[][] corners = {bottomLeft, bottomRight, topRight, topLeft};
@@ -2077,7 +2077,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             maxPixelY = Math.max(maxPixelY, pixelCoords[1]);
         }
         
-        System.out.printf("DEBUG: DSS2 pixel bounds for plot area - X(%.2f to %.2f), Y(%.2f to %.2f)\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: DSS2 pixel bounds for plot area - X(%.2f to %.2f), Y(%.2f to %.2f)\n",
                          minPixelX, maxPixelX, minPixelY, maxPixelY);
         
         // Set clipping to plot area
@@ -2099,7 +2099,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         int dstWidth = plotWidth;
         int dstHeight = plotHeight;
         
-        System.out.printf("DEBUG: Drawing DSS2 region - src(%d,%d,%dx%d) -> dst(%d,%d,%dx%d)\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Drawing DSS2 region - src(%d,%d,%dx%d) -> dst(%d,%d,%dx%d)\n",
                          srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
         
         if (srcWidth > 0 && srcHeight > 0) {
@@ -2130,7 +2130,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         this.dss2Manager = manager;
         
         if (manager != null && manager.hasWCS()) {
-            System.out.printf("DEBUG: DSS2 background set with WCS: %s\n", manager.getCurrentWCS());
+            System.out.printf(java.util.Locale.US, "DEBUG: DSS2 background set with WCS: %s\n", manager.getCurrentWCS());
         } else {
             // System.out.println("DEBUG: DSS2 background set without WCS parameters");
         }
@@ -2150,7 +2150,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         // For legacy calls, we don't have WCS - this should be avoided
         this.dss2Manager = null;
         
-        System.out.printf("DEBUG: DSS2 background set (legacy mode) - RA=%.6f, Dec=%.6f, FOV=%.4f°\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: DSS2 background set (legacy mode) - RA=%.6f, Dec=%.6f, FOV=%.4f°\n",
                          centerRA, centerDec, fov);
         System.out.println("WARNING: Using legacy DSS2 mode without WCS - coordinate alignment may be imprecise");
         
@@ -2293,7 +2293,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
                 g2.drawOval(screenX - starSize/2, screenY - starSize/2, starSize, starSize);
                 
                 if (drawnCount < 5) { // Debug first few stars
-                    System.out.printf("DEBUG: WCS Star %d: world(%.6f,%.6f) -> screen(%d,%d) vMag=%.2f size=%d series=%d\\n", 
+                    System.out.printf(java.util.Locale.US, "DEBUG: WCS Star %d: world(%.6f,%.6f) -> screen(%d,%d) vMag=%.2f size=%d series=%d\\n", 
                                      drawnCount, worldX, worldY, screenX, screenY, vMag, starSize, series);
                 }
                 
@@ -2304,7 +2304,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         // Restore original clipping
         g2.setClip(originalClip);
         
-        System.out.printf("DEBUG: Total WCS stars drawn: %d, Mag range: %.2f to %.2f\\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Total WCS stars drawn: %d, Mag range: %.2f to %.2f\\n", 
                          drawnCount, minVMag, maxVMag);
     }
     
@@ -2324,12 +2324,12 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         
         // Add corner coordinate labels
         double[] cornerRA_Dec = wcs.pixelToWorld(0, 0);
-        String cornerLabel = String.format("%.3f°, %.3f°", cornerRA_Dec[0], cornerRA_Dec[1]);
+        String cornerLabel = String.format(java.util.Locale.US, "%.3f°, %.3f°", cornerRA_Dec[0], cornerRA_Dec[1]);
         g2.drawString(cornerLabel, leftMargin + 5, topMargin + 15);
         
         // Add center coordinates
         double[] centerRA_Dec = wcs.pixelToWorld(wcs.naxis1/2, wcs.naxis2/2);
-        String centerLabel = String.format("Center: %.6f°, %.6f°", centerRA_Dec[0], centerRA_Dec[1]);
+        String centerLabel = String.format(java.util.Locale.US, "Center: %.6f°, %.6f°", centerRA_Dec[0], centerRA_Dec[1]);
         g2.drawString(centerLabel, leftMargin + 5, getHeight() - 10);
         
         // System.out.println("DEBUG: WCS axes drawn with coordinate labels");
@@ -2675,7 +2675,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double hours = ra / 15.0;
         int h = (int) hours;
         int m = (int) ((hours - h) * 60);
-        return String.format("%02dh%02dm", h, m);
+        return String.format(java.util.Locale.US, "%02dh%02dm", h, m);
     }
     
     private String formatDec(double dec) {
@@ -2684,7 +2684,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         dec = Math.abs(dec);
         int d = (int) dec;
         int m = (int) ((dec - d) * 60);
-        return String.format("%c%02d°%02d'", sign, d, m);
+        return String.format(java.util.Locale.US, "%c%02d°%02d'", sign, d, m);
     }
     
     /**
@@ -2773,7 +2773,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         
         final double finalFOV = newFOV;
         
-        System.out.printf("DEBUG: Zoom ended in points view - requerying at RA=%.6f, Dec=%.6f, FOV=%.4f (zoom=%.2f)\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Zoom ended in points view - requerying at RA=%.6f, Dec=%.6f, FOV=%.4f (zoom=%.2f)\n", 
                          centerRA, centerDec, finalFOV, zoomLevel);
         
         // Requery in background thread
@@ -2816,7 +2816,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         
         final double finalFOV = newFOV;
         
-        System.out.printf("DEBUG: Zoom ended - fetching DSS2 at RA=%.6f, Dec=%.6f, FOV=%.4f (zoom=%.2f)\n", 
+        System.out.printf(java.util.Locale.US, "DEBUG: Zoom ended - fetching DSS2 at RA=%.6f, Dec=%.6f, FOV=%.4f (zoom=%.2f)\n", 
                          centerRA, centerDec, finalFOV, zoomLevel);
         
         // Show progress indicator
@@ -2846,7 +2846,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double newRA = centerCoords[0];
         double newDec = centerCoords[1];
         
-        System.out.printf("DEBUG: Pan ended - new center: RA=%.6f, Dec=%.6f\n", newRA, newDec);
+        System.out.printf(java.util.Locale.US, "DEBUG: Pan ended - new center: RA=%.6f, Dec=%.6f\n", newRA, newDec);
         
         if (fetchFITS) {
             // In sky view - fetch new DSS2 image
@@ -2885,7 +2885,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             if (newDec > 90) newDec = 90;
             if (newDec < -90) newDec = -90;
             
-            System.out.printf("DEBUG: Sky view center calculation - original RA=%.6f, Dec=%.6f, panOffset=(%.6f,%.6f) -> new RA=%.6f, Dec=%.6f\n",
+            System.out.printf(java.util.Locale.US, "DEBUG: Sky view center calculation - original RA=%.6f, Dec=%.6f, panOffset=(%.6f,%.6f) -> new RA=%.6f, Dec=%.6f\n",
                              centerRA, centerDec, panOffsetX, panOffsetY, newRA, newDec);
             
             return new double[]{newRA, newDec};
@@ -2895,7 +2895,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         if (Math.abs(panOffsetX) < 1e-10 && Math.abs(panOffsetY) < 1e-10) {
             double centerRA = dataConnector.getCentralRA();
             double centerDec = dataConnector.getCentralDec();
-            System.out.printf("DEBUG: Points view center (no panning) - using original center RA=%.6f, Dec=%.6f\n",
+            System.out.printf(java.util.Locale.US, "DEBUG: Points view center (no panning) - using original center RA=%.6f, Dec=%.6f\n",
                              centerRA, centerDec);
             return new double[]{centerRA, centerDec};
         }
@@ -2913,15 +2913,15 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         double centerX = minX + rangeX / 2 + panOffsetX;
         double centerY = minY + rangeY / 2 + panOffsetY;
         
-        System.out.printf("DEBUG: Points view center calculation (with panning) - minX=%.6f, maxX=%.6f, minY=%.6f, maxY=%.6f\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: Points view center calculation (with panning) - minX=%.6f, maxX=%.6f, minY=%.6f, maxY=%.6f\n",
                          minX, maxX, minY, maxY);
-        System.out.printf("DEBUG: zoomLevel=%.2f, rangeX=%.6f, rangeY=%.6f, panOffset=(%.6f,%.6f)\n",
+        System.out.printf(java.util.Locale.US, "DEBUG: zoomLevel=%.2f, rangeX=%.6f, rangeY=%.6f, panOffset=(%.6f,%.6f)\n",
                          zoomLevel, rangeX, rangeY, panOffsetX, panOffsetY);
-        System.out.printf("DEBUG: Tangent plane center: centerX=%.6f, centerY=%.6f\n", centerX, centerY);
+        System.out.printf(java.util.Locale.US, "DEBUG: Tangent plane center: centerX=%.6f, centerY=%.6f\n", centerX, centerY);
         
         // Convert tangent plane coordinates back to RA/Dec
         double[] raDec = tangentPlaneToRADec(centerX, centerY);
-        System.out.printf("DEBUG: Converted to RA=%.6f, Dec=%.6f\n", raDec[0], raDec[1]);
+        System.out.printf(java.util.Locale.US, "DEBUG: Converted to RA=%.6f, Dec=%.6f\n", raDec[0], raDec[1]);
         return raDec;
     }
     
@@ -3038,7 +3038,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
      */
     public void setPointsVisible(boolean visible) {
         this.pointsVisible = visible;
-        System.out.printf("DEBUG: Points visibility set to: %s\n", visible);
+        System.out.printf(java.util.Locale.US, "DEBUG: Points visibility set to: %s\n", visible);
         repaint(); // Trigger redraw with new visibility setting
     }
     
@@ -3047,7 +3047,7 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
      */
     public void setImageInverted(boolean inverted) {
         this.imageInverted = inverted;
-        System.out.printf("DEBUG: Image inversion set to: %s\n", inverted);
+        System.out.printf(java.util.Locale.US, "DEBUG: Image inversion set to: %s\n", inverted);
         repaint(); // Trigger redraw with new inversion setting
     }
     
@@ -3179,8 +3179,8 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         int decM = (int)decMinutes;
         double decS = (decMinutes - decM) * 60.0;
         
-        String raStr = String.format("%02d:%02d:%04.1f", raH, raM, raS);
-        String decStr = String.format("%s%02d:%02d:%02.0f", negative ? "-" : "+", decD, decM, decS);
+        String raStr = String.format(java.util.Locale.US, "%02d:%02d:%04.1f", raH, raM, raS);
+        String decStr = String.format(java.util.Locale.US, "%s%02d:%02d:%02.0f", negative ? "-" : "+", decD, decM, decS);
         
         return "RA: " + raStr + "  Dec: " + decStr;
     }
