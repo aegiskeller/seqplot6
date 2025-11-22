@@ -1,0 +1,24 @@
+CHANGELOG - Seqplot v6.0.0
+==========================
+
+2025-11-08 - Version 6.0.0
+--------------------------
+New Features:
+  * VSP API integration for AAVSO comparison stars
+  * Click detection for VSP labels with detailed photometry display
+  * "Check VSX" button on Request Star dialog
+  * Help menu with Sequence Team Homepage link
+  * Automatic maglimit calculation (MinMag + 2) for VSP queries
+
+Improvements:
+  * Request Star dialog width increased to 600px
+  * VSP labels: white text, 10pt font, rounded corners
+  * Coordinate system fixes for tangent plane projection
+  * X-axis negation for proper sky orientation
+  * More transparent label backgrounds (alpha=150)
+
+Bug Fixes:
+  * Fixed Y-axis flip in Points View
+  * Corrected VSP star positioning (radians→degrees conversion)
+  * Improved coordinate projection accuracy
+

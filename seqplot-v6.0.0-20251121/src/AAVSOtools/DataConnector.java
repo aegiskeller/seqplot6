@@ -1259,11 +1259,11 @@ RangeInfo {
                     
                 this.seriesValue[i] = series;
                 
-                // Update magnitude range (skip sentinels 99.999 and nulls 0.00)
-                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                // Update magnitude range
+                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999) {
                     this.minZ = this.getVmag(i);
                 }
-                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999) {
                     this.maxZ = this.getVmag(i);
                 }
             }
@@ -1520,19 +1520,14 @@ RangeInfo {
                             this.setVmag(recordIndex, vmag);
                             this.setEv(recordIndex, e_vmag);
                             
-                            // Store V-I as the preferred color index for Gaia
+                            // Store V-I as the primary color index for Gaia
                             if (vi != 99.999) {
-                                this.setVMinusI(recordIndex, vi);
-                                this.setEvi(recordIndex, e_vi);
+                                this.setBMinusV(recordIndex, vi);  // Store V-I in the B-V field
+                                this.setEbv(recordIndex, e_vi);
                             } else {
-                                this.setVMinusI(recordIndex, 99.999);
-                                this.setEvi(recordIndex, 99.999);
+                                this.setBMinusV(recordIndex, 99.999);
+                                this.setEbv(recordIndex, 99.999);
                             }
-                            
-                            // B-V not directly available for Gaia, but can be estimated from BP-RP
-                            // For now, mark as unavailable
-                            this.setBMinusV(recordIndex, 99.999);
-                            this.setEbv(recordIndex, 99.999);
                             
                             // Store number of G-band observations
                             this.setNobs(recordIndex, nobs);
@@ -1610,11 +1605,11 @@ RangeInfo {
                     
                 this.seriesValue[i] = series;
                 
-                // Update magnitude range (skip sentinels 99.999 and nulls 0.00)
-                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                // Update magnitude range
+                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999) {
                     this.minZ = this.getVmag(i);
                 }
-                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999) {
                     this.maxZ = this.getVmag(i);
                 }
             }
@@ -1964,7 +1959,6 @@ RangeInfo {
                 this.initializeArrays(5, actualDataCount);
                 
                 int recordIndex = 0;
-                int filteredByVMag = 0;
                 for (int i = 0; i < dataRows; i++) {
                     Element row = (Element) trNodes.item(i);
                     NodeList cells = row.getElementsByTagName("TD");
@@ -2014,12 +2008,6 @@ RangeInfo {
                             double vmag = gmag - 0.59 * g_r - 0.01;
                             double e_vmag = Math.sqrt(e_gmag * e_gmag + (0.59 * 0.59) * (e_gmag * e_gmag + e_rmag * e_rmag));
                             
-                            // Apply post-transformation magnitude filter: skip if V > user's limiting magnitude
-                            if (vmag > this.getLimitingMag()) {
-                                filteredByVMag++;
-                                continue;
-                            }
-                            
                             // B-V color
                             double bv = g_r + 0.22;
                             double e_bv = Math.sqrt(e_gmag * e_gmag + e_rmag * e_rmag);
@@ -2047,13 +2035,13 @@ RangeInfo {
                             
                             // Debug first few stars
                             if (recordIndex < 5) {
-                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, B-V=%.2f, V-I=%.2f\n",
-                                    recordIndex, gmag, rmag, imag, vmag, bv, vi);
+                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, V-I=%.2f\n",
+                                    recordIndex, gmag, rmag, imag, vmag, vi);
                             }
                             
-                            // Store both B-V and V-I (V-I is preferred for PanSTARRS)
-                            this.setBMinusV(recordIndex, bv);
-                            this.setEbv(recordIndex, e_bv);
+                            // Store V-I as the primary color index (in B-V field for compatibility)
+                            this.setBMinusV(recordIndex, vi);
+                            this.setEbv(recordIndex, e_vi);
                             
                             // Store other color indices
                             this.setVMinusR(recordIndex, vr);
@@ -2062,7 +2050,6 @@ RangeInfo {
                             this.setRMinusI(recordIndex, ri);
                             this.setEri(recordIndex, e_ri);
                             
-                            // Store V-I as the preferred color index for PanSTARRS
                             this.setVMinusI(recordIndex, vi);
                             this.setEvi(recordIndex, e_vi);
                             
@@ -2086,10 +2073,6 @@ RangeInfo {
                 
                 // Update actual count in case some rows failed to parse
                 this.setTotalCount(recordIndex);
-                if (filteredByVMag > 0) {
-                    System.out.printf(java.util.Locale.US, "DEBUG: Filtered %d stars with V > %.1f mag (after transformation)\n", 
-                        filteredByVMag, this.getLimitingMag());
-                }
             }
             
         } catch (Exception e) {
@@ -2119,7 +2102,6 @@ RangeInfo {
                 this.initializeArrays(5, dataRows);
                 
                 int recordIndex = 0;
-                int filteredByVMag = 0;
                 for (int i = 0; i < dataRows; i++) {
                     Element row = (Element) trNodes.item(i);
                     NodeList cells = row.getElementsByTagName("TD");
@@ -2157,12 +2139,6 @@ RangeInfo {
                             double vmag = gmag - 0.59 * g_r - 0.01;
                             double e_vmag = Math.sqrt(e_gmag * e_gmag + (0.59 * 0.59) * (e_gmag * e_gmag + e_rmag * e_rmag));
                             
-                            // Apply post-transformation magnitude filter: skip if V > user's limiting magnitude
-                            if (vmag > this.getLimitingMag()) {
-                                filteredByVMag++;
-                                continue;
-                            }
-                            
                             // B-V color
                             double bv = g_r + 0.22;
                             double e_bv = Math.sqrt(e_gmag * e_gmag + e_rmag * e_rmag);
@@ -2190,28 +2166,13 @@ RangeInfo {
                             
                             // Debug first few stars
                             if (recordIndex < 5) {
-                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, B-V=%.2f, V-I=%.2f\n",
-                                    recordIndex, gmag, rmag, imag, vmag, bv, vi);
+                                System.out.printf(java.util.Locale.US, "DEBUG: Star %d - g=%.2f, r=%.2f, i=%.2f -> V=%.2f, V-I=%.2f\n",
+                                    recordIndex, gmag, rmag, imag, vmag, vi);
                             }
                             
-                            // Store both B-V and V-I (V-I is preferred for PanSTARRS)
-                            this.setBMinusV(recordIndex, bv);
-                            this.setEbv(recordIndex, e_bv);
-                            
-                            // Store other color indices
-                            this.setVMinusR(recordIndex, vr);
-                            this.setEvr(recordIndex, e_vr);
-                            
-                            this.setRMinusI(recordIndex, ri);
-                            this.setEri(recordIndex, e_ri);
-                            
-                            // Store V-I as the preferred color index for PanSTARRS
-                            this.setVMinusI(recordIndex, vi);
-                            this.setEvi(recordIndex, e_vi);
-                            
-                            // U-B not available
-                            this.setUMinusB(recordIndex, 99.999);
-                            this.setEub(recordIndex, 99.999);
+                            // Store V-I as the primary color index (in B-V field for compatibility)
+                            this.setBMinusV(recordIndex, vi);
+                            this.setEbv(recordIndex, e_vi);
                             
                             // Store positional errors
                             this.setRaerr(recordIndex, e_ra);
@@ -2232,10 +2193,6 @@ RangeInfo {
                 }
                 
                 System.out.printf(java.util.Locale.US, "DEBUG: Successfully parsed %d PanSTARRS DR1 stars from VizieR\n", recordIndex);
-                if (filteredByVMag > 0) {
-                    System.out.printf(java.util.Locale.US, "DEBUG: Filtered %d stars with V > %.1f mag (after transformation)\n", 
-                        filteredByVMag, this.getLimitingMag());
-                }
                 
             } else {
                 this.setTotalCount(0);
@@ -2260,11 +2217,11 @@ RangeInfo {
                     
                 this.seriesValue[i] = series;
                 
-                // Update magnitude range (skip sentinels 99.999 and nulls 0.00)
-                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                // Update magnitude range
+                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999) {
                     this.minZ = this.getVmag(i);
                 }
-                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999) {
                     this.maxZ = this.getVmag(i);
                 }
             }
@@ -2576,10 +2533,10 @@ RangeInfo {
                 if (this.getDec(i) > this.maxDec && this.getDec(i) != 99.999) {
                     this.maxDec = this.getDec(i);
                 }
-                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                if (this.getVmag(i) < this.minZ && this.getVmag(i) != 99.999) {
                     this.minZ = this.getVmag(i);
                 }
-                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999 && Math.abs(this.getVmag(i)) > 0.001) {
+                if (this.getVmag(i) > this.maxZ && this.getVmag(i) != 99.999) {
                     this.maxZ = this.getVmag(i);
                 }
             }
@@ -3313,7 +3270,6 @@ RangeInfo {
             URL vsxUrl = new URL(String.valueOf(this.getBaseURL()) + "vsx/index.php?view=api.list&fromra=" + String.format(java.util.Locale.US, "%.6f", this.getLowerRA()) + "&tora=" + String.format(java.util.Locale.US, "%.6f", this.getUpperRA()) + "&fromdec=" + String.format(java.util.Locale.US, "%.6f", this.getLowerDec()) + "&todec=" + String.format(java.util.Locale.US, "%.6f", this.getUpperDec()));
             NodeList objNodes = this.getDocument(vsxUrl).getElementsByTagName("VSXObject");
             this.numberOfVars = Math.min(objNodes.getLength(), 5000); // Limit to array size
-            System.out.printf(java.util.Locale.US, "DEBUG: VSX returned %d variables in field\n", this.numberOfVars);
             if (this.numberOfVars != 0) {
                 int i = 0;
                 while (i < this.numberOfVars) {
@@ -3338,8 +3294,6 @@ RangeInfo {
                         }
                         ++j;
                     }
-                    System.out.printf(java.util.Locale.US, "DEBUG: VSX[%d] Name='%s', MaxMag='%s', MinMag='%s'\n", 
-                        i, this.varName[i], this.varMax[i], this.varMin[i]);
                     ++i;
                 }
             }
@@ -4782,46 +4736,6 @@ RangeInfo {
         return this.varType[i];
     }
 
-    // Get VSX variable data directly from the VSX arrays (not catalog records)
-    public String getVsxVarMax(int vsxIndex) {
-        if (vsxIndex >= 0 && vsxIndex < this.numberOfVars) {
-            return this.varMax[vsxIndex];
-        }
-        return null;
-    }
-
-    public String getVsxVarMin(int vsxIndex) {
-        if (vsxIndex >= 0 && vsxIndex < this.numberOfVars) {
-            return this.varMin[vsxIndex];
-        }
-        return null;
-    }
-
-    public String getVsxVarName(int vsxIndex) {
-        if (vsxIndex >= 0 && vsxIndex < this.numberOfVars) {
-            return this.varName[vsxIndex];
-        }
-        return null;
-    }
-
-    public int getNumberOfVsxVars() {
-        return this.numberOfVars;
-    }
-    
-    public double getVsxRA(int vsxIndex) {
-        if (vsxIndex >= 0 && vsxIndex < this.numberOfVars) {
-            return this.rVar[vsxIndex];
-        }
-        return 0.0;
-    }
-    
-    public double getVsxDec(int vsxIndex) {
-        if (vsxIndex >= 0 && vsxIndex < this.numberOfVars) {
-            return this.dVar[vsxIndex];
-        }
-        return 0.0;
-    }
-
     public Boolean getQuitSelected() {
         return this.quitSelected;
     }
@@ -4840,9 +4754,6 @@ RangeInfo {
     }
 
     public String getTablefile(String v) {
-        if (this.tablefile == null) {
-            return "table_" + v + ".txt";
-        }
         String[] ss = this.tablefile.split("\\.");
         return String.valueOf(ss[0]) + "_" + v + "." + ss[1];
     }
@@ -4979,10 +4890,11 @@ RangeInfo {
     
     // Method to add entry to secondary catalog
     public void addSecondaryCatalogEntry(String name, double ra, double dec, double vmag, double ev,
-                                         double bMinusV, double ebv, double vMinusR, double evr,
-                                         double rMinusI, double eri, double vMinusI, double evi, int source, int nobs) {
-        secondaryCatalogData.add(new CatalogEntry(name, ra, dec, vmag, ev, bMinusV, ebv, vMinusR, evr, rMinusI, eri, vMinusI, evi, source, nobs));
-    }    // Secondary catalog loading methods - these populate secondaryCatalogData for cross-matching
+                                        double bMinusV, double ebv, double vMinusI, double evi, int source, int nobs) {
+        secondaryCatalogData.add(new CatalogEntry(name, ra, dec, vmag, ev, bMinusV, ebv, vMinusI, evi, source, nobs));
+    }
+    
+    // Secondary catalog loading methods - these populate secondaryCatalogData for cross-matching
     
     private void loadApass9Secondary() {
         try {
@@ -5041,16 +4953,16 @@ RangeInfo {
                             double ra = Double.parseDouble(cells.item(0).getTextContent().trim());
                             double dec = Double.parseDouble(cells.item(1).getTextContent().trim());
                             double vmag = Double.parseDouble(cells.item(2).getTextContent().trim());
-                            double e_vmag = cells.item(3).getTextContent().trim().isEmpty() ? 99.999 : 
+                            double e_vmag = cells.item(3).getTextContent().trim().isEmpty() ? 0.0 : 
                                           Double.parseDouble(cells.item(3).getTextContent().trim());
-                            double bminusv = cells.item(4).getTextContent().trim().isEmpty() ? 99.999 : 
+                            double bminusv = cells.item(4).getTextContent().trim().isEmpty() ? 0.0 : 
                                            Double.parseDouble(cells.item(4).getTextContent().trim());
-                            double e_bminusv = cells.item(5).getTextContent().trim().isEmpty() ? 99.999 : 
+                            double e_bminusv = cells.item(5).getTextContent().trim().isEmpty() ? 0.0 : 
                                              Double.parseDouble(cells.item(5).getTextContent().trim());
                             int nobs = this.parseIntOrDefault(cells.item(6).getTextContent().trim(), 0);
                             
-                            // APASS9 has B-V but not V-I, so we pass 99.999 for V-I values
-                            addSecondaryCatalogEntry("APASS9", ra, dec, vmag, e_vmag, bminusv, e_bminusv, 99.999, 99.999, 99.999, 99.999, 99.999, 99.999, 29, nobs);
+                            // APASS9 has B-V but not V-I, so we pass 0.0 for V-I values
+                            addSecondaryCatalogEntry("APASS9", ra, dec, vmag, e_vmag, bminusv, e_bminusv, 0.0, 0.0, 29, nobs);
                             addedCount++;
                         } catch (NumberFormatException e) {
                             // Skip invalid entries
@@ -5083,14 +4995,11 @@ RangeInfo {
             
             // Use ESA Gaia Archive with gaiadr2.gaia_source table (not VizieR)
             String adqlQuery = String.format(java.util.Locale.US, 
-                "SELECT TOP 5000 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, " +
-                "phot_g_mean_flux_over_error, phot_bp_mean_flux_over_error, phot_rp_mean_flux_over_error, phot_g_n_obs " +
+                "SELECT TOP 5000 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, phot_g_n_obs " +
                 "FROM gaiadr2.gaia_source " +
                 "WHERE ra BETWEEN %.6f AND %.6f " +
                 "AND dec BETWEEN %.6f AND %.6f " +
                 "AND phot_g_mean_mag IS NOT NULL AND phot_bp_mean_mag IS NOT NULL AND phot_rp_mean_mag IS NOT NULL " +
-                "AND phot_g_mean_flux_over_error IS NOT NULL AND phot_bp_mean_flux_over_error IS NOT NULL " +
-                "AND phot_rp_mean_flux_over_error IS NOT NULL " +
                 "AND phot_bp_mean_mag < 19.0 AND phot_g_mean_mag <= %.1f",
                 raMin, raMax, decMin, decMax, this.getLimitingMag()
             );
@@ -5113,25 +5022,17 @@ RangeInfo {
                     Element row = (Element) rows.item(i);
                     NodeList cells = row.getElementsByTagName("TD");
                     
-                    if (cells.getLength() >= 9) {
+                    if (cells.getLength() >= 6) {
                         try {
                             double ra = Double.parseDouble(cells.item(0).getTextContent().trim());
                             double dec = Double.parseDouble(cells.item(1).getTextContent().trim());
                             double G = Double.parseDouble(cells.item(2).getTextContent().trim());
                             double BP = Double.parseDouble(cells.item(3).getTextContent().trim());
                             double RP = Double.parseDouble(cells.item(4).getTextContent().trim());
-                            double g_flux_over_error = Double.parseDouble(cells.item(5).getTextContent().trim());
-                            double bp_flux_over_error = Double.parseDouble(cells.item(6).getTextContent().trim());
-                            double rp_flux_over_error = Double.parseDouble(cells.item(7).getTextContent().trim());
-                            int o_Gmag = this.parseIntOrDefault(cells.item(8).getTextContent().trim(), 0);
-                            
-                            // Convert flux_over_error to magnitude uncertainties
-                            // sigma_mag = 1.086 / (flux/error) = 1.086 / flux_over_error
-                            double e_G = 1.086 / g_flux_over_error;
-                            double e_BP = 1.086 / bp_flux_over_error;
-                            double e_RP = 1.086 / rp_flux_over_error;
+                            int o_Gmag = this.parseIntOrDefault(cells.item(5).getTextContent().trim(), 0);
                             
                             // Apply Gaia DR2 → Johnson-Cousins transformations (Evans et al. 2018)
+                            // Same as primary parser
                             double bp_rp = BP - RP;
                             double bp_rp_sq = bp_rp * bp_rp;
                             
@@ -5139,44 +5040,24 @@ RangeInfo {
                             double v_correction = -(-0.01760 - 0.006860 * bp_rp - 0.1732 * bp_rp_sq);
                             double V = G + v_correction;
                             
-                            // R magnitude
-                            double r_correction = -(-0.003226 + 0.3833 * bp_rp - 0.1345 * bp_rp_sq);
-                            double R = G + r_correction;
-                            
                             // I magnitude
                             double i_correction = -(-0.02085 + 0.7419 * bp_rp - 0.09631 * bp_rp_sq);
                             double I = G + i_correction;
                             
-                            // Calculate color indices
-                            double V_R = V - R;
-                            double R_I = R - I;
+                            // V-I color (calculated from transformed V and I)
                             double V_I = V - I;
                             
-                            // Propagate errors through transformations
-                            // For V: dV/dG = 1, dV/d(BP-RP) = -0.00686 - 2*0.1732*(BP-RP)
-                            double dV_dBPRP = -0.00686 - 2.0 * 0.1732 * bp_rp;
-                            double e_BPRP = Math.sqrt(e_BP * e_BP + e_RP * e_RP);
-                            double e_V = Math.sqrt(e_G * e_G + dV_dBPRP * dV_dBPRP * e_BPRP * e_BPRP);
-                            
-                            // For R: dR/dG = 1, dR/d(BP-RP) = 0.3833 - 2*0.1345*(BP-RP)
-                            double dR_dBPRP = 0.3833 - 2.0 * 0.1345 * bp_rp;
-                            double e_R = Math.sqrt(e_G * e_G + dR_dBPRP * dR_dBPRP * e_BPRP * e_BPRP);
-                            
-                            // For I: dI/dG = 1, dI/d(BP-RP) = 0.7419 - 2*0.09631*(BP-RP)
-                            double dI_dBPRP = 0.7419 - 2.0 * 0.09631 * bp_rp;
-                            double e_I = Math.sqrt(e_G * e_G + dI_dBPRP * dI_dBPRP * e_BPRP * e_BPRP);
-                            
-                            // Color index errors
-                            double e_VR = Math.sqrt(e_V * e_V + e_R * e_R);
-                            double e_RI = Math.sqrt(e_R * e_R + e_I * e_I);
-                            double e_VI = Math.sqrt(e_V * e_V + e_I * e_I);
+                            // Estimate errors (simplified)
+                            double e_V = 0.03; // Conservative estimate
+                            double e_VI = 0.05;
                             
                             // Filter by limiting magnitude (using transformed V)
                             if (V <= this.getLimitingMag()) {
-                                // Gaia DR2 has V and V-I, but not B-V - set to unavailable
-                                double B_V = 99.999;
-                                double e_BV = 99.999;
-                                addSecondaryCatalogEntry("Gaia DR2", ra, dec, V, e_V, B_V, e_BV, V_R, e_VR, R_I, e_RI, V_I, e_VI, 48, o_Gmag);
+                                // Gaia DR2 has V and V-I, but not B-V directly; we can estimate B-V from V-I
+                                // Typical relation: B-V ≈ 0.87 * V-I (approximate for solar-type stars)
+                                double B_V = 0.87 * V_I;
+                                double e_BV = 0.87 * e_VI;
+                                addSecondaryCatalogEntry("Gaia DR2", ra, dec, V, e_V, B_V, e_BV, V_I, e_VI, 48, o_Gmag);
                             }
                         } catch (NumberFormatException e) {
                             // Skip invalid entries
@@ -5203,14 +5084,11 @@ RangeInfo {
             
             // Use ESA Gaia Archive with gaiadr3.gaia_source table
             String adqlQuery = String.format(java.util.Locale.US, 
-                "SELECT TOP 5000 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, " +
-                "phot_g_mean_flux_over_error, phot_bp_mean_flux_over_error, phot_rp_mean_flux_over_error, phot_g_n_obs " +
+                "SELECT TOP 5000 ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, phot_g_n_obs " +
                 "FROM gaiadr3.gaia_source " +
                 "WHERE ra BETWEEN %.6f AND %.6f " +
                 "AND dec BETWEEN %.6f AND %.6f " +
                 "AND phot_g_mean_mag IS NOT NULL AND phot_bp_mean_mag IS NOT NULL AND phot_rp_mean_mag IS NOT NULL " +
-                "AND phot_g_mean_flux_over_error IS NOT NULL AND phot_bp_mean_flux_over_error IS NOT NULL " +
-                "AND phot_rp_mean_flux_over_error IS NOT NULL " +
                 "AND phot_bp_mean_mag < 19.0 AND phot_g_mean_mag <= %.1f",
                 raMin, raMax, decMin, decMax, this.getLimitingMag()
             );
@@ -5233,23 +5111,14 @@ RangeInfo {
                     Element row = (Element) rows.item(i);
                     NodeList cells = row.getElementsByTagName("TD");
                     
-                    if (cells.getLength() >= 9) {
+                    if (cells.getLength() >= 6) {
                         try {
                             double ra = Double.parseDouble(cells.item(0).getTextContent().trim());
                             double dec = Double.parseDouble(cells.item(1).getTextContent().trim());
                             double G = Double.parseDouble(cells.item(2).getTextContent().trim());
                             double BP = Double.parseDouble(cells.item(3).getTextContent().trim());
                             double RP = Double.parseDouble(cells.item(4).getTextContent().trim());
-                            double g_flux_over_error = Double.parseDouble(cells.item(5).getTextContent().trim());
-                            double bp_flux_over_error = Double.parseDouble(cells.item(6).getTextContent().trim());
-                            double rp_flux_over_error = Double.parseDouble(cells.item(7).getTextContent().trim());
-                            int o_Gmag = this.parseIntOrDefault(cells.item(8).getTextContent().trim(), 0);
-                            
-                            // Convert flux_over_error to magnitude uncertainties
-                            // sigma_mag = 1.086 / (flux/error) = 1.086 / flux_over_error
-                            double e_G = 1.086 / g_flux_over_error;
-                            double e_BP = 1.086 / bp_flux_over_error;
-                            double e_RP = 1.086 / rp_flux_over_error;
+                            int o_Gmag = this.parseIntOrDefault(cells.item(5).getTextContent().trim(), 0);
                             
                             // Apply Gaia DR3 → Johnson-Cousins transformations (same as DR2, Evans et al. 2018)
                             double bp_rp = BP - RP;
@@ -5259,44 +5128,23 @@ RangeInfo {
                             double v_correction = -(-0.01760 - 0.006860 * bp_rp - 0.1732 * bp_rp_sq);
                             double V = G + v_correction;
                             
-                            // R magnitude
-                            double r_correction = -(-0.003226 + 0.3833 * bp_rp - 0.1345 * bp_rp_sq);
-                            double R = G + r_correction;
-                            
                             // I magnitude
                             double i_correction = -(-0.02085 + 0.7419 * bp_rp - 0.09631 * bp_rp_sq);
                             double I = G + i_correction;
                             
-                            // Calculate color indices
-                            double V_R = V - R;
-                            double R_I = R - I;
+                            // V-I color (calculated from transformed V and I)
                             double V_I = V - I;
                             
-                            // Propagate errors through transformations
-                            // For V: dV/dG = 1, dV/d(BP-RP) = -0.00686 - 2*0.1732*(BP-RP)
-                            double dV_dBPRP = -0.00686 - 2.0 * 0.1732 * bp_rp;
-                            double e_BPRP = Math.sqrt(e_BP * e_BP + e_RP * e_RP);
-                            double e_V = Math.sqrt(e_G * e_G + dV_dBPRP * dV_dBPRP * e_BPRP * e_BPRP);
-                            
-                            // For R: dR/dG = 1, dR/d(BP-RP) = 0.3833 - 2*0.1345*(BP-RP)
-                            double dR_dBPRP = 0.3833 - 2.0 * 0.1345 * bp_rp;
-                            double e_R = Math.sqrt(e_G * e_G + dR_dBPRP * dR_dBPRP * e_BPRP * e_BPRP);
-                            
-                            // For I: dI/dG = 1, dI/d(BP-RP) = 0.7419 - 2*0.09631*(BP-RP)
-                            double dI_dBPRP = 0.7419 - 2.0 * 0.09631 * bp_rp;
-                            double e_I = Math.sqrt(e_G * e_G + dI_dBPRP * dI_dBPRP * e_BPRP * e_BPRP);
-                            
-                            // Color index errors
-                            double e_VR = Math.sqrt(e_V * e_V + e_R * e_R);
-                            double e_RI = Math.sqrt(e_R * e_R + e_I * e_I);
-                            double e_VI = Math.sqrt(e_V * e_V + e_I * e_I);
+                            // Estimate errors (simplified)
+                            double e_V = 0.03; // Conservative estimate
+                            double e_VI = 0.05;
                             
                             // Filter by limiting magnitude (using transformed V)
                             if (V <= this.getLimitingMag()) {
-                                // Gaia DR3 has V and V-I, but not B-V - set to unavailable
-                                double B_V = 99.999;
-                                double e_BV = 99.999;
-                                addSecondaryCatalogEntry("Gaia DR3", ra, dec, V, e_V, B_V, e_BV, V_R, e_VR, R_I, e_RI, V_I, e_VI, 49, o_Gmag);
+                                // Estimate B-V from V-I (B-V ≈ 0.87 * V-I)
+                                double B_V = 0.87 * V_I;
+                                double e_BV = 0.87 * e_VI;
+                                addSecondaryCatalogEntry("Gaia DR3", ra, dec, V, e_V, B_V, e_BV, V_I, e_VI, 49, o_Gmag);
                             }
                         } catch (NumberFormatException e) {
                             // Skip invalid entries
@@ -5392,24 +5240,22 @@ RangeInfo {
                             double B_V = g_r + 0.22;
                             
                             // V-R color
-                            double V_R = 1.09 * r_i_raw + 0.22;
+                            double vr = 1.09 * r_i_raw + 0.22;
                             
                             // R-I color
-                            double R_I = r_i_raw + 0.21;
+                            double ri = r_i_raw + 0.21;
                             
                             // V-I color (primary for PanSTARRS)
-                            double V_I = V_R + R_I;
+                            double V_I = vr + ri;
                             
                             // Estimate errors (simplified)
                             double e_V = 0.03;
-                            double e_VR = 0.05;
-                            double e_RI = 0.05;
                             double e_VI = 0.05;
                             double e_BV = 0.05;
                             
                             // Filter by limiting magnitude
                             if (V <= this.getLimitingMag()) {
-                                addSecondaryCatalogEntry("PanSTARRS DR1", ra, dec, V, e_V, B_V, e_BV, V_R, e_VR, R_I, e_RI, V_I, e_VI, 46, ng);
+                                addSecondaryCatalogEntry("PanSTARRS DR1", ra, dec, V, e_V, B_V, e_BV, V_I, e_VI, 46, ng);
                                 addedCount++;
                             }
                         } catch (NumberFormatException e) {
@@ -5532,7 +5378,7 @@ RangeInfo {
                             double e_VI = 0.03;
                             
                             if (V_jc <= this.getLimitingMag()) {
-                                addSecondaryCatalogEntry("SDSS DR12", ra, dec, V_jc, e_V, BV, e_BV, 99.999, 99.999, 99.999, 99.999, V_I, e_VI, 21, 0);
+                                addSecondaryCatalogEntry("SDSS DR12", ra, dec, V_jc, e_V, BV, e_BV, V_I, e_VI, 21, 0);
                                 addedCount++;
                             }
                         } catch (NumberFormatException e) {
@@ -5612,7 +5458,7 @@ RangeInfo {
                             
                             // Filter by limiting magnitude
                             if (V <= this.getLimitingMag()) {
-                                addSecondaryCatalogEntry("Tycho-2", ra, dec, V, e_V, B_V, e_BV, 99.999, 99.999, 99.999, 99.999, V_I, e_VI, 901, num);
+                                addSecondaryCatalogEntry("Tycho-2", ra, dec, V, e_V, B_V, e_BV, V_I, e_VI, 901, num);
                             }
                         } catch (NumberFormatException e) {
                             // Skip invalid entries
@@ -5719,7 +5565,7 @@ RangeInfo {
                                 double ebv = this.parseDoubleOrDefault(cells.item(5).getTextContent().trim(), 99.999);
                                 
                                 String catalogName = catalog.split("/")[1];
-                                matches.add(new CatalogEntry(catalogName, ra, dec, vmag, ev, bv, ebv, 99.999, 99.999, 99.999, 99.999, 99.999, 99.999, sourceNum, 0));
+                                matches.add(new CatalogEntry(catalogName, ra, dec, vmag, ev, bv, ebv, 99.999, 99.999, sourceNum, 0));
                             }
                         }
                     }
@@ -5778,7 +5624,7 @@ RangeInfo {
                                 double imag = gmag - (-0.02085 + 0.7419 * bp_rp - 0.09631 * bp_rp * bp_rp);
                                 double vi = vmag - imag;
                                 
-                                matches.add(new CatalogEntry("Gaia DR2", ra, dec, vmag, 0.01, 99.999, 99.999, 99.999, 99.999, 99.999, 99.999, vi, 0.01, 48, 0));
+                                matches.add(new CatalogEntry("Gaia DR2", ra, dec, vmag, 0.01, 99.999, 99.999, vi, 0.01, 48, 0));
                                 System.out.println("DEBUG: Found Gaia match at distance=" + (distance*3600) + " arcsec, V=" + String.format(java.util.Locale.US, "%.2f", vmag));
                             }
                         }
@@ -5841,7 +5687,7 @@ RangeInfo {
                                 double ri = r_i_raw + 0.21;
                                 double vi = vr + ri;
                                 
-                                matches.add(new CatalogEntry("PanSTARRS", ra, dec, vmag, 0.01, 99.999, 99.999, 99.999, 99.999, 99.999, 99.999, vi, 0.01, 46, 0));
+                                matches.add(new CatalogEntry("PanSTARRS", ra, dec, vmag, 0.01, 99.999, 99.999, vi, 0.01, 46, 0));
                                 System.out.println("DEBUG: Found PanSTARRS match at distance=" + (distance*3600) + " arcsec, V=" + String.format(java.util.Locale.US, "%.2f", vmag));
                             }
                         }
@@ -5901,7 +5747,7 @@ RangeInfo {
                                 double bmag = btmag + 0.018 - 0.2580 * bt_vt;
                                 double bv = bmag - vmag;
                                 
-                                matches.add(new CatalogEntry("Tycho-2", ra, dec, vmag, 0.01, bv, 0.01, 99.999, 99.999, 99.999, 99.999, 99.999, 99.999, 901, 0));
+                                matches.add(new CatalogEntry("Tycho-2", ra, dec, vmag, 0.01, bv, 0.01, 99.999, 99.999, 901, 0));
                                 System.out.println("DEBUG: Found Tycho-2 match at distance=" + (distance*3600) + " arcsec, V=" + String.format(java.util.Locale.US, "%.2f", vmag));
                             }
                         }
@@ -6132,18 +5978,13 @@ RangeInfo {
         public double ev;
         public double bMinusV;
         public double ebv;
-        public double vMinusR;
-        public double evr;
-        public double rMinusI;
-        public double eri;
         public double vMinusI;
         public double evi;
         public int source;
         public int nobs;
         
         public CatalogEntry(String name, double ra, double dec, double vmag, double ev, 
-                           double bMinusV, double ebv, double vMinusR, double evr,
-                           double rMinusI, double eri, double vMinusI, double evi, int source, int nobs) {
+                           double bMinusV, double ebv, double vMinusI, double evi, int source, int nobs) {
             this.name = name;
             this.ra = ra;
             this.dec = dec;
@@ -6151,10 +5992,6 @@ RangeInfo {
             this.ev = ev;
             this.bMinusV = bMinusV;
             this.ebv = ebv;
-            this.vMinusR = vMinusR;
-            this.evr = evr;
-            this.rMinusI = rMinusI;
-            this.eri = eri;
             this.vMinusI = vMinusI;
             this.evi = evi;
             this.source = source;

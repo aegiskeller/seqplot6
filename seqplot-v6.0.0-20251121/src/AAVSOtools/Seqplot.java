@@ -1115,25 +1115,23 @@ MouseListener {
             String raText = this.db.getSexagesimalRA(recordNumber);
             String decText = this.db.getSexagesimalDEC(recordNumber);
             
+            // Check if source is Gaia DR2 (48) or PanSTARRS (46)
             int source = this.db.getSource(recordNumber);
-            String magLabel = "V";
-            String vText = formatValueWithUncertainty(this.db.getVmag(recordNumber), this.db.getEv(recordNumber));
-            
-            // Prefer B-V if available, otherwise use V-I
-            String colorLabel, bvText;
-            double bMinusV = this.db.getBMinusV(recordNumber);
-            if (bMinusV < 99.0) {
-                // B-V is available
-                colorLabel = "B-V";
-                double bvUncertainty = computeBvUncertainty(recordNumber);
-                bvText = formatValueWithUncertainty(bMinusV, bvUncertainty);
+            String magLabel, colorLabel;
+            if (source == 48) {
+                magLabel = "V";      // Gaia transformed V magnitude
+                colorLabel = "V-I";  // Gaia V-I color (stored in B-V field)
+            } else if (source == 46) {
+                magLabel = "V";      // PanSTARRS transformed V magnitude
+                colorLabel = "V-I";  // PanSTARRS V-I color (stored in B-V field)
             } else {
-                // B-V not available - use V-I
-                colorLabel = "V-I";
-                double vMinusI = this.db.getVMinusI(recordNumber);
-                double evi = this.db.getEvi(recordNumber);
-                bvText = formatValueWithUncertainty(vMinusI, evi);
+                magLabel = "V";      // Standard V magnitude
+                colorLabel = "B-V";  // Standard B-V color
             }
+            
+            String vText = formatValueWithUncertainty(this.db.getVmag(recordNumber), this.db.getEv(recordNumber));
+            double bvUncertainty = computeBvUncertainty(recordNumber);
+            String bvText = formatValueWithUncertainty(this.db.getBMinusV(recordNumber), bvUncertainty);
             this.readout.setText(" Variable: " + this.db.getVarName(recordNumber) + this.getVarTypeLabel(this.db.getVarType(recordNumber)) + this.getMaxMinLabel(this.db.getVarMax(recordNumber), this.db.getVarMin(recordNumber)) + "  RA: " + raText + "   Dec: " + decText + "   " + magLabel + ": " + vText + "   " + colorLabel + ": " + bvText + "   Source: " + getSourceName(source));
         } else if (recordNumber != -1) {
             // Check if there's a preferred catalog based on transition magnitude
@@ -1156,18 +1154,22 @@ MouseListener {
                 bvUncertainty = preferred.ebv;
                 nobs = preferred.nobs; // Use catalog's nobs value
                 
-                // Labels based on color availability (prefer B-V if available)
-                magLabel = "V";
-                vText = formatValueWithUncertainty(vmag, ev);
-                
-                if (bMinusV < 99.0) {
-                    // B-V is available - use it
-                    colorLabel = "B-V";
-                    bvText = formatValueWithUncertainty(bMinusV, bvUncertainty);
-                } else {
-                    // B-V not available - use V-I
-                    colorLabel = "V-I";
+                // Labels based on preferred source
+                if (source == 48) {
+                    magLabel = "V";      // Gaia transformed V magnitude
+                    colorLabel = "V-I";  // Gaia V-I color
+                    vText = formatValueWithUncertainty(vmag, ev);
                     bvText = formatValueWithUncertainty(vMinusI, evi);
+                } else if (source == 46) {
+                    magLabel = "V";      // PanSTARRS transformed V magnitude
+                    colorLabel = "V-I";  // PanSTARRS V-I color
+                    vText = formatValueWithUncertainty(vmag, ev);
+                    bvText = formatValueWithUncertainty(vMinusI, evi);
+                } else {
+                    magLabel = "V";      // Standard V magnitude
+                    colorLabel = "B-V";  // Standard B-V color
+                    vText = formatValueWithUncertainty(vmag, ev);
+                    bvText = formatValueWithUncertainty(bMinusV, bvUncertainty);
                 }
             } else {
                 // Use primary catalog data
@@ -1180,21 +1182,20 @@ MouseListener {
                 bvUncertainty = computeBvUncertainty(recordNumber);
                 nobs = this.db.getNobs(recordNumber);
                 
-                // Labels based on color availability (prefer B-V if available)
-                magLabel = "V";
-                vText = formatValueWithUncertainty(vmag, ev);
-                
-                if (bMinusV < 99.0) {
-                    // B-V is available - use it
-                    colorLabel = "B-V";
-                    bvText = formatValueWithUncertainty(bMinusV, bvUncertainty);
+                // Labels based on source
+                if (source == 48) {
+                    magLabel = "V";      // Gaia transformed V magnitude
+                    colorLabel = "V-I";  // Gaia V-I color (stored in B-V field)
+                } else if (source == 46) {
+                    magLabel = "V";      // PanSTARRS transformed V magnitude
+                    colorLabel = "V-I";  // PanSTARRS V-I color (stored in B-V field)
                 } else {
-                    // B-V not available - use V-I
-                    colorLabel = "V-I";
-                    vMinusI = this.db.getVMinusI(recordNumber);
-                    evi = this.db.getEvi(recordNumber);
-                    bvText = formatValueWithUncertainty(vMinusI, evi);
+                    magLabel = "V";      // Standard V magnitude
+                    colorLabel = "B-V";  // Standard B-V color
                 }
+                
+                vText = formatValueWithUncertainty(vmag, ev);
+                bvText = formatValueWithUncertainty(bMinusV, bvUncertainty);
             }
             
             // Build basic readout text

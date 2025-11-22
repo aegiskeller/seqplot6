@@ -100,7 +100,7 @@ public class SequenceListWindow extends JFrame {
         JLabel instructionLabel = new JLabel(
             "<html><i>Comparison stars added from main plot. Click star → Send to Comps. " +
             "Double-click Comments cell to edit. Select row and click Delete to remove. " +
-            "Color values and errors are red if error > 0.1 (V, B-V, V-R, R-I, V-I).</i></html>"
+            "Rows with V error ≥ 0.1 are highlighted in red.</i></html>"
         );
         instructionLabel.setFont(new Font("Arial", Font.PLAIN, 11));
         instructionLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
@@ -120,61 +120,17 @@ public class SequenceListWindow extends JFrame {
             public java.awt.Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 java.awt.Component c = super.prepareRenderer(renderer, row, column);
                 
-                // Column indices: V=7, V_error=8, B-V=9, B-V_error=10, U-B=11, U-B_error=12,
-                //                 V-R=13, V-R_error=14, R-I=15, R-I_error=16, V-I=17, V-I_error=18
-                boolean highlightRed = false;
-                
-                // Check if we should highlight V or V_error columns (columns 7 and 8)
+                // Check V error (column 8)
                 Object vErrObj = getValueAt(row, 8);
                 if (vErrObj != null && vErrObj instanceof Number) {
                     double vErr = ((Number)vErrObj).doubleValue();
-                    if (vErr > 0.1 && (column == 7 || column == 8)) {
-                        highlightRed = true;
+                    if (vErr >= 0.1) {
+                        c.setBackground(new Color(255, 200, 200)); // Soft red
+                    } else {
+                        c.setBackground(isRowSelected(row) ? getSelectionBackground() : getBackground());
                     }
-                }
-                
-                // Check if we should highlight B-V or B-V_error columns (columns 9 and 10)
-                Object bvErrObj = getValueAt(row, 10);
-                if (bvErrObj != null && bvErrObj instanceof Number) {
-                    double bvErr = ((Number)bvErrObj).doubleValue();
-                    if (bvErr > 0.1 && (column == 9 || column == 10)) {
-                        highlightRed = true;
-                    }
-                }
-                
-                // Check if we should highlight V-R or V-R_error columns (columns 13 and 14)
-                Object vrErrObj = getValueAt(row, 14);
-                if (vrErrObj != null && vrErrObj instanceof Number) {
-                    double vrErr = ((Number)vrErrObj).doubleValue();
-                    if (vrErr > 0.1 && (column == 13 || column == 14)) {
-                        highlightRed = true;
-                    }
-                }
-                
-                // Check if we should highlight R-I or R-I_error columns (columns 15 and 16)
-                Object riErrObj = getValueAt(row, 16);
-                if (riErrObj != null && riErrObj instanceof Number) {
-                    double riErr = ((Number)riErrObj).doubleValue();
-                    if (riErr > 0.1 && (column == 15 || column == 16)) {
-                        highlightRed = true;
-                    }
-                }
-                
-                // Check if we should highlight V-I or V-I_error columns (columns 17 and 18)
-                Object viErrObj = getValueAt(row, 18);
-                if (viErrObj != null && viErrObj instanceof Number) {
-                    double viErr = ((Number)viErrObj).doubleValue();
-                    if (viErr > 0.1 && (column == 17 || column == 18)) {
-                        highlightRed = true;
-                    }
-                }
-                
-                if (highlightRed) {
-                    c.setBackground(new Color(255, 200, 200)); // Soft red
-                    c.setForeground(Color.RED);
                 } else {
                     c.setBackground(isRowSelected(row) ? getSelectionBackground() : getBackground());
-                    c.setForeground(isRowSelected(row) ? getSelectionForeground() : getForeground());
                 }
                 
                 return c;
@@ -596,20 +552,26 @@ public class SequenceListWindow extends JFrame {
             vErr = preferred.ev;
             source = preferred.source;
             
-            // Get color indices from preferred catalog
-            // PanSTARRS and Gaia now store both B-V and V-I in their proper fields
-            bMinusV = preferred.bMinusV;
-            bvErr = preferred.ebv;
-            vMinusR = preferred.vMinusR;
-            vrErr = preferred.evr;
-            rMinusI = preferred.rMinusI;
-            riErr = preferred.eri;
-            vMinusI = preferred.vMinusI;
-            viErr = preferred.evi;
+            // Deep catalogs (Gaia DR2, Gaia DR3, PanSTARRS) have V-I instead of B-V
+            if (source == 48 || source == 49 || source == 46) {
+                vMinusI = preferred.vMinusI;
+                viErr = preferred.evi;
+                bMinusV = preferred.bMinusV; // May be derived or unavailable
+                bvErr = preferred.ebv;
+            } else {
+                bMinusV = preferred.bMinusV;
+                bvErr = preferred.ebv;
+                vMinusI = preferred.vMinusI;
+                viErr = preferred.evi;
+            }
             
-            // U-B not available in preferred catalog
+            // Other colors typically not available in secondary catalog data
             uMinusB = 99.999;
             ubErr = 99.999;
+            vMinusR = 99.999;
+            vrErr = 99.999;
+            rMinusI = 99.999;
+            riErr = 99.999;
             
             System.out.println("DEBUG: Adding star to sequence list using preferred catalog (source " + source + ")");
         } else {
@@ -617,23 +579,20 @@ public class SequenceListWindow extends JFrame {
             ra = db.getRa(starIndex);
             dec = db.getDec(starIndex);
             vmag = db.getVmag(starIndex);
-            source = db.getSource(starIndex);
-            
-            vErr = db.getEv(starIndex);
-            
-            // Get color indices - PanSTARRS and Gaia now store both B-V and V-I properly
             bMinusV = db.getBMinusV(starIndex);
-            bvErr = db.getEbv(starIndex);
-            vMinusI = db.getVMinusI(starIndex);
-            viErr = db.getEvi(starIndex);
-            
             uMinusB = db.getUMinusB(starIndex);
             vMinusR = db.getVMinusR(starIndex);
             rMinusI = db.getRMinusI(starIndex);
+            vMinusI = db.getVMinusI(starIndex);
             
+            vErr = db.getEv(starIndex);
+            bvErr = db.getEbv(starIndex);
             ubErr = db.getEub(starIndex);
             vrErr = db.getEvr(starIndex);
             riErr = db.getEri(starIndex);
+            viErr = db.getEvi(starIndex);
+            
+            source = db.getSource(starIndex);
         }
         
         // Calculate #Comp label from V magnitude: int(round(mag*10))
@@ -666,17 +625,17 @@ public class SequenceListWindow extends JFrame {
         entry.decMM = decMM;
         entry.decSS = decSS;
         entry.v = vmag;
-        entry.vErr = (vErr < 99.0) ? vErr : Double.NaN;
+        entry.vErr = vErr > 0 ? vErr : Double.NaN;
         entry.bv = bMinusV;
-        entry.bvErr = (bvErr < 99.0) ? bvErr : Double.NaN;
+        entry.bvErr = bvErr > 0 ? bvErr : Double.NaN;
         entry.ub = uMinusB;
-        entry.ubErr = (ubErr < 99.0) ? ubErr : Double.NaN;
+        entry.ubErr = ubErr > 0 ? ubErr : Double.NaN;
         entry.vr = vMinusR;
-        entry.vrErr = (vrErr < 99.0) ? vrErr : Double.NaN;
+        entry.vrErr = vrErr > 0 ? vrErr : Double.NaN;
         entry.ri = rMinusI;
-        entry.riErr = (riErr < 99.0) ? riErr : Double.NaN;
+        entry.riErr = riErr > 0 ? riErr : Double.NaN;
         entry.vi = vMinusI;
-        entry.viErr = (viErr < 99.0) ? viErr : Double.NaN;
+        entry.viErr = viErr > 0 ? viErr : Double.NaN;
         entry.source = source;
         
         // Apply offset correction if enabled and this is from a deep catalog

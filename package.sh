@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo "=== Seqplot 6.0.0 JAR Packaging ==="
-echo "Creating standlone executable JAR with all dependencies"
-echo "===Caution: Drop Bears may be present===
+echo "Creating standalone executable JAR with all dependencies"
+echo "===Caution: Drop Bears may be present==="
 
 # Clean and build first
 echo "Building application..."

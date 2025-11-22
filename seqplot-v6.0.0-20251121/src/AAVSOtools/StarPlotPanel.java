@@ -523,66 +523,87 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
         
         String magRangeText = null;
         
-        // Find the VSX variable closest to the central (target) coordinates
-        // VSX returns all variables in the field, not necessarily with target first
+        // Try to get target star VSX magnitude range first
         try {
-            int numVsxVars = dataConnector.getNumberOfVsxVars();
-            if (numVsxVars > 0) {
-                double targetRA = dataConnector.getCentralRA();
-                double targetDec = dataConnector.getCentralDec();
+            int totalCount = dataConnector.getTotalCount();
+            
+            if (totalCount > 0) {
+                // Search for the target star (the variable star we're studying)
+                String targetVarMax = null;
+                String targetVarMin = null;
                 
-                // Find closest VSX variable to target coordinates
-                int closestIndex = -1;
-                double minDistance = Double.MAX_VALUE;
-                
-                for (int i = 0; i < numVsxVars; i++) {
-                    double vsxRA = dataConnector.getVsxRA(i);
-                    double vsxDec = dataConnector.getVsxDec(i);
+                // Check first few entries to find target star
+                for (int i = 0; i < Math.min(totalCount, 5); i++) {
+                    String varMax = dataConnector.getVarMax(i);
+                    String varMin = dataConnector.getVarMin(i);
+                    String varType = dataConnector.getVarType(i);
                     
-                    // Simple angular distance (good enough for small fields)
-                    double dRA = (vsxRA - targetRA) * Math.cos(Math.toRadians(targetDec));
-                    double dDec = vsxDec - targetDec;
-                    double distance = Math.sqrt(dRA * dRA + dDec * dDec);
-                    
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        closestIndex = i;
-                    }
-                }
-                
-                if (closestIndex >= 0) {
-                    String varMax = dataConnector.getVsxVarMax(closestIndex);
-                    String varMin = dataConnector.getVsxVarMin(closestIndex);
-                    
+                    // Look for the main variable star (not comparison star)
                     if (varMax != null && varMin != null && 
                         !varMax.trim().isEmpty() && !varMin.trim().isEmpty() && 
-                        !varMax.equals("?") && !varMin.equals("?")) {
+                        !varMax.equals("?") && !varMin.equals("?") &&
+                        (varType == null || (!varType.contains("CV") && !varType.contains("comp")))) {
                         
-                        String maxNumStr = varMax.trim().split("\\s+")[0];
-                        String minNumStr = varMin.trim().split("\\s+")[0];
-                        
+                        // Try parsing the values to see if they're reasonable for a target star
                         try {
+                            String maxNumStr = varMax.trim().split("\\s+")[0];
+                            String minNumStr = varMin.trim().split("\\s+")[0];
                             double maxMag = Double.parseDouble(maxNumStr);
                             double minMag = Double.parseDouble(minNumStr);
                             
-                            // Ensure proper order: brighter magnitude first (smaller number)
-                            double brightMag = Math.min(maxMag, minMag);
-                            double faintMag = Math.max(maxMag, minMag);
-                            
-                            magRangeText = String.format(java.util.Locale.US, "Var Mag Range: %.1f - %.1f", brightMag, faintMag);
+                            // Target stars typically have magnitudes in a reasonable range (not too faint)
+                            if (maxMag < 16.0 && minMag < 16.0) {
+                                targetVarMax = varMax;
+                                targetVarMin = varMin;
+                                break;
+                            }
                         } catch (NumberFormatException e) {
-                            // Ignore parsing errors for invalid magnitude values
+                            // Continue searching
                         }
+                    }
+                }
+                
+                // If we found target star data, use it
+                if (targetVarMax != null && targetVarMin != null) {
+                    String maxNumStr = targetVarMax.trim().split("\\s+")[0];
+                    String minNumStr = targetVarMin.trim().split("\\s+")[0];
+                    
+                    try {
+                        double maxMag = Double.parseDouble(maxNumStr);
+                        double minMag = Double.parseDouble(minNumStr);
+                        
+                        // Ensure proper order: brighter magnitude first (smaller number)
+                        double brightMag = Math.min(maxMag, minMag);
+                        double faintMag = Math.max(maxMag, minMag);
+                        
+                        magRangeText = String.format(java.util.Locale.US, "Mag Range: %.1f - %.1f", brightMag, faintMag);
+                    } catch (NumberFormatException e) {
+                        // Fall through to catalog range
                     }
                 }
             }
         } catch (Exception e) {
-            // Ignore errors in VSX data retrieval
+            // Fall through to catalog range
         }
         
-        // Only show Var Mag Range if we have valid VSX data for the variable star
+        // Fall back to catalog magnitude range if VSX data unavailable
         if (magRangeText == null) {
-            return;
+            double minVMag = dataConnector.getMinVMag();
+            double maxVMag = dataConnector.getMaxVMag();
+            
+            System.out.println(String.format(java.util.Locale.US, "DEBUG: Using catalog fallback - minVMag: %.3f, maxVMag: %.3f", minVMag, maxVMag));
+            
+            // Skip if no valid magnitudes
+            if (minVMag == 99.999 || maxVMag == 99.999 || Double.isNaN(minVMag) || Double.isNaN(maxVMag)) {
+                System.out.println("DEBUG: Invalid catalog magnitudes, skipping footnote");
+                return;
+            }
+            
+            // Ensure proper order: brighter magnitude first (smaller number)  
+            double brightMag = Math.min(minVMag, maxVMag);
+            double faintMag = Math.max(minVMag, maxVMag);
+            
+            magRangeText = String.format(java.util.Locale.US, "Mag Range: %.1f - %.1f", brightMag, faintMag);
         }
         
         // Set font and get metrics
@@ -949,31 +970,32 @@ public class StarPlotPanel extends JPanel implements MouseMotionListener, MouseL
             vmag = dataConnector.getVmag(hoveredRecord);
             vmagError = dataConnector.getEv(hoveredRecord);
             bMinusV = dataConnector.getBMinusV(hoveredRecord);
-            vMinusI = dataConnector.getVMinusI(hoveredRecord);
-            bmagError = dataConnector.getEbv(hoveredRecord);  // B-V color error, not B magnitude error
-            colorError = dataConnector.getEvi(hoveredRecord); // V-I color error
+            vMinusI = bMinusV; // For deep catalogs, this is stored in B-V field
+            bmagError = dataConnector.getE_Bmag(hoveredRecord);
+            colorError = bmagError;
             source = dataConnector.getSource(hoveredRecord);
         }
         
-        // Determine preferred color based on availability
-        // If B-V is available (not 99.999), use it as preferred color
-        // Otherwise, use V-I (common for deep catalogs like Gaia DR2/DR3 (48/49) and PanSTARRS (46))
-        String magLabel = "V";
-        String colorLabel;
+        // Determine labels and values based on source
+        String magLabel, colorLabel;
         double colorValue, colorErrorValue;
         
-        // Check if B-V is available (valid values are typically -0.5 to +3.0 for stars)
-        if (bMinusV < 99.0) {
-            // B-V is available: use it as preferred color
-            colorLabel = "B-V";
-            colorValue = bMinusV;
-            // Use B-V error directly (bmagError is actually ebv, the B-V color error)
-            colorErrorValue = bmagError;
-        } else {
-            // B-V not available: use V-I as fallback (typical for deep catalogs)
-            colorLabel = "V-I";
+        if (source == 48) {
+            magLabel = "V";      // Gaia transformed V magnitude
+            colorLabel = "V-I";  // Gaia V-I color
             colorValue = vMinusI;
             colorErrorValue = colorError;
+        } else if (source == 46) {
+            magLabel = "V";      // PanSTARRS transformed V magnitude
+            colorLabel = "V-I";  // PanSTARRS V-I color
+            colorValue = vMinusI;
+            colorErrorValue = colorError;
+        } else {
+            magLabel = "V";      // Standard V magnitude
+            colorLabel = "B-V";  // Standard B-V color
+            colorValue = bMinusV;
+            // Calculate B-V error using quadrature: sqrt(e_B^2 + e_V^2)
+            colorErrorValue = Math.sqrt(bmagError * bmagError + vmagError * vmagError);
         }
         
         // Calculate distance from center in arcseconds
